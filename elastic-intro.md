@@ -54,6 +54,8 @@ layout: two-cols
 
 ::right::
 
+<v-click>
+
 # GenAI
 
 - Vector search
@@ -70,6 +72,8 @@ layout: two-cols
 - AI Assistant  
 ...  
 ...  
+
+</v-click>
 
 ---
 layout: default
