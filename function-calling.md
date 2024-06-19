@@ -60,9 +60,12 @@ layoutClass: gap-30
 
 
 ---
-layout: intro
+src: elastic-intro.md
 ---
 
+---
+layout: intro
+---
 
 # Function calling
 <img src="/public/openai.svg"  class="" width="250"/>
@@ -73,7 +76,19 @@ layout: intro
 <v-click>
 Function calling in OpenAI refers to the capability of AI models to interact with external functions or APIs, allowing them to perform tasks beyond text generation.
 
+
 </v-click>
+
+<br>
+<br>
+
+
+<v-clicks>
+
+- `fetch_from_elasticsearch(nl_query)`
+- `weather_report(latitude, longitude)`
+
+</v-clicks>
 
 ---
 layout: default
@@ -266,17 +281,15 @@ layout: default
 | Notebook | https://github.com/elastic/elasticsearch-labs | 
 | Gemini | https://ai.google.dev/gemini-api/docs/function-calling |
 | Mistral | https://docs.mistral.ai/capabilities/function_calling/ |
-| Deck | https://ashish.one/decks/function_calling.pdf |
+| slides | https://slides.ashish.one/function-calling/1 |
 
 ---
-layout: end
+layout: center
 ---
 
 # Thank You 
 
-
-
 <span><carbon-logo-linkedin /> in/ashishtiwari93 </span>  
 <span><carbon-logo-twitter /> @_ashish_tiwari </span>
 
-<img src="/public/linkedin.jpg" width="300" class="center"/>
+<img src="/public/linkedin.jpg" width="100" class="absolute left-445px"/>
