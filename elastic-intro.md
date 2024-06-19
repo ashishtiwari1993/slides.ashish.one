@@ -31,21 +31,45 @@ image: elastic-overview.png
 <img src="/public/elastic-white.png" width="75" class="absolute left-10px top-10px"/>
 
 ---
-layout: default
+layout: two-cols
 ---
 
 # And lot more ...
 
-- full-text search
-- aggregation
-- bkd-tree
-- hilighters
-- language analyzers
-- geo-match
-- data platform
-- timeseries  
+
+- Full-text search
+- Aggregation
+- BKD-tree
+- Hilighters
+- Language analyzers
+- Geo-match
+- Data platform
+- Timeseries  
+- Analyzers 
+- Permission based search
+- Document level security
+- Cross cluster search / Replication  
 ...  
 ...
+
+::right::
+
+# GenAI
+
+- Vector search
+- ANN
+- KNN
+- Reranking
+- Inference
+- ELSER
+- RAG
+- Embeddings on fly
+- ELAND
+- Multilingual search
+- Hybrid Search
+- AI Assistant  
+...  
+...  
 
 ---
 layout: default

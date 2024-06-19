@@ -196,7 +196,8 @@ layout: default
 ```python
 def weather_report(latitude, longitude):
 
-    url = f"""{OPEN_METEO_ENDPOINT}?latitude={latitude}&longitude={longitude}&current=temperature_2m,precipitation,cloud_cover,visibility,wind_speed_10m"""
+    url = f"""{OPEN_METEO_ENDPOINT}?latitude={latitude}&longitude={longitude}&current=temperature_2m,
+           precipitation,cloud_cover,visibility,wind_speed_10m"""
 
     resp = requests.request("GET", url)
     resp = json.loads(resp.text)
@@ -281,7 +282,7 @@ layout: default
 | Notebook | https://github.com/elastic/elasticsearch-labs | 
 | Gemini | https://ai.google.dev/gemini-api/docs/function-calling |
 | Mistral | https://docs.mistral.ai/capabilities/function_calling/ |
-| slides | https://slides.ashish.one/function-calling/1 |
+| slides | https://slides.ashish.one/function-calling |
 
 ---
 layout: center
@@ -292,4 +293,4 @@ layout: center
 <span><carbon-logo-linkedin /> in/ashishtiwari93 </span>  
 <span><carbon-logo-twitter /> @_ashish_tiwari </span>
 
-<img src="/public/linkedin.jpg" width="100" class="absolute left-445px"/>
+<img src="/public/linkedin.jpg" width="130" class="absolute left-423px"/>
