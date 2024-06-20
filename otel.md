@@ -12,7 +12,7 @@ layover: cover
 Ashish Tiwari  
 Senior Developer Advocate
 
-<img src="/public/elastic-white.png" width="100"/>
+<img src="/public/elastic.svg" width="100"/>
 
 
 ---
@@ -239,13 +239,5 @@ layout: default
 | OTel | https://opentelemetry.io | 
 
 ---
-layout: end
+src: end.md 
 ---
-
-# Thank You 
-
-
-
-<span><carbon-logo-linkedin /> in/ashishtiwari93 </span>  
-<span><carbon-logo-twitter /> @_ashish_tiwari </span>
-

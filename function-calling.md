@@ -11,7 +11,7 @@ layover: cover
 Ashish Tiwari  
 Senior Developer Advocate
 
-<img src="/public/elastic-white.png" width="100"/>
+<img src="/public/elastic.svg" width="100"/>
 
 
 ---
@@ -285,12 +285,5 @@ layout: default
 | slides | https://slides.ashish.one/function-calling |
 
 ---
-layout: center
+src: end.md
 ---
-
-# Thank You 
-
-<span><carbon-logo-linkedin /> in/ashishtiwari93 </span>  
-<span><carbon-logo-twitter /> @_ashish_tiwari </span>
-
-<img src="/public/linkedin.jpg" width="130" class="absolute left-423px"/>
