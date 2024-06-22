@@ -271,6 +271,12 @@ layout: center
 
 
 ---
+layout: section
+---
+
+# RAG vs Function calling
+
+---
 layout: default
 ---
 
