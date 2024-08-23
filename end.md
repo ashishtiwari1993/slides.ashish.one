@@ -7,6 +7,15 @@ url: https://www.elastic.co/search-labs/blog/category/generative-ai
 
 <img src="/public/elastic-genai-qr.png" width="200" class="mx-auto pt-35"/>
 
+---
+layout: iframe-left
+
+# the web page source
+url: https://www.elastic.co/observability-labs/blog/elastic-universal-profiling-agent-open-source
+---
+
+<h1 style="text-align: center;" class="mx-auto pt-55"> Observability Labs</h1>
+
 
 ---
 layout: center
