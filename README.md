@@ -14,7 +14,7 @@
 
 ## Build
 
-`npm run build function-calling.md --base /function-calling/ --out docs/function-calling`
+`yarn run build function-calling.md --base /function-calling/ --out docs/function-calling`
 
 visit http://localhost:3030
 
