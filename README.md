@@ -1,4 +1,4 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Welcome to [slides.ashish.one](https://slides.ashish.one)!
 
 ## Setup
 
