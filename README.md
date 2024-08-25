@@ -1,11 +1,22 @@
 # Welcome to [Slidev](https://github.com/slidevjs/slidev)!
 
-To start the slide show:
+## Setup
 
-- `npm install`
-- `npm run dev`
-- visit http://localhost:3030
+`git clone https://github.com/ashishtiwari1993/slides.ashish.one.git`
 
-Edit the [slides.md](./slides.md) to see the changes.
+## Install
+
+`yarn install`
+
+## Run
+
+`yarn run dev otel.md`
+
+## Build
+
+`npm run build function-calling.md --base /function-calling/ --out docs/function-calling`
+
+visit http://localhost:3030
+
 
 Learn more about Slidev on [documentations](https://sli.dev/).
