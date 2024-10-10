@@ -57,7 +57,7 @@ layout: center
 
 - Moved from Apache 2.0 to 
     - SSPL(Server Side Public License) 
-    - Elastic license (ELv1, Elv2)
+    - Elastic license (ELv1, ELv2)
 
 </v-clicks>
 
@@ -94,7 +94,7 @@ layout: center
 - **No  change** - No impact on the overwhelming majority of our user community
 
 
-- We were still **Open** ~~Source~~ and **Free**.
+- We were still **Open** <span v-mark.circle="{ at: 2, color: '', type: 'crossed-off' }">Source</span> and **Free**.
 
 </v-clicks>
 
@@ -137,7 +137,7 @@ Ref - https://spdx.org/licenses/Apache-2.0.html
 
 - Extra strong copyleft
 
-- <span v-mark="{ at: 4, color: '#ff0000', type: 'circle' }"> Share improvements, modifications & code publicly for entire service stack (including unrelated components) </span>
+- <span v-mark="{ at: 4, color: '#FFFF00', type: 'highlight' }"> Share improvements, modifications & code publicly for entire service stack (including unrelated components) </span>
 
 Ref - https://spdx.org/licenses/SSPL-1.0.html
 
@@ -154,7 +154,7 @@ Ref - https://spdx.org/licenses/SSPL-1.0.html
 
 - Copyright
 
-- <span v-mark.circle="{ at: 4, color: '#ff0000', type: 'circle' }"> Code is open and accessible </span>
+- <span v-mark.circle="{ at: 4, color: '#FFFF00', type: 'highlight' }"> Code is open and accessible </span>
 
 - Prohibition on Third-Party Hosting
 
@@ -182,15 +182,15 @@ There was disappointment among developers due to several misunderstandings. Some
 
 - Elastic was not free. Since it became closed source, we can't use it.
 
-    - ___We can use freely. There are large number of users who using community edition.___
+    - ___We can use <span v-mark.circle="{ at: 1, color: '#FF0000', type: 'underline' }"> freely </span>. There are large number of users who using community edition.___
 
 - You stole the community's work.
 
-    - ___All contributions are available on [< 7.10 branch](https://github.com/elastic/elasticsearch/tree/7.10)___ and it will be maintained forever.
+    - ___All contributions are available on [< 7.10 branch](https://github.com/elastic/elasticsearch/tree/7.10)___ and it will be <span v-mark.circle="{ at: 2, color: '#ff0000', type: 'underline' }"> maintained forever </span>.
 
 - You're only a wrapper around Lucene and sell their work.
 
-    - ___Yes, but with millions of lines of code added to develop features like cluster management, Sharding, Aggregations and much more.___
+    - ___Yes, but with <span v-mark.circle="{ at: 3, color: '#ff0000', type: 'underline' }"> millions of lines of code</span> added to develop features like cluster management, Sharding, Aggregations and much more.___
 
 - Elastic no more supporting to OpenSource community 
 
