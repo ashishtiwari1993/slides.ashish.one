@@ -40,7 +40,7 @@ The ELK Stack (Elasticsearch, Logstash, Kibana) became famous within the communi
 
 <v-click>
 
-All Elastic stacks were under Apache 2.0
+All Elastic stack were under Apache 2.0
 
 </v-click>
 
@@ -70,10 +70,10 @@ layout: center
 <v-clicks>
 
 
-1. **Protection against misuse**:  
+1. **Capitalizing on Open Source**:  
    Cloud service providers were offering Elastic's open-source software as a service without contributing back, diverting resources that could have been reinvested into the product for innovation.
 
-2. **Exploitation issues**:  
+2. **Misuse**:  
    Elastic experienced misuse of trademarks, attempts to splinter their community, and repackaging of their OSS products, similar to what other open-source companies faced.
 
 3. **Maintaining openness**:  
@@ -91,7 +91,7 @@ layout: center
 
 <v-clicks>
 
-- **Nothing much** - No impact on the overwhelming majority of our user community
+- **No  change** - No impact on the overwhelming majority of our user community
 
 
 - We were still **Open** ~~Source~~ and **Free**.
@@ -108,16 +108,13 @@ layout: default
 
 # Apache 2.0 vs SSPL vs ELv2
 
-<br>
-<br>
-<br>
 
 <div class="grid grid-cols-3 gap-4">
 <v-click>
 <div>
 
 
-# Apache 2.0
+**Apache 2.0**
 
 - Permissive
 
@@ -134,11 +131,11 @@ Ref - https://spdx.org/licenses/Apache-2.0.html
 
 <div>
 
-# SSPL
+**SSPL**
 
 - By MongoDB
 
-- Weak copyleft
+- Extra strong copyleft
 
 - <span v-mark="{ at: 4, color: '#ff0000', type: 'circle' }"> Share improvements, modifications & code publicly for entire service stack (including unrelated components) </span>
 
@@ -151,13 +148,19 @@ Ref - https://spdx.org/licenses/SSPL-1.0.html
 
 <div>
 
-# Elv2
+**ELv2**
 
 - By Elastic
 
 - Copyright
 
 - <span v-mark.circle="{ at: 4, color: '#ff0000', type: 'circle' }"> Code is open and accessible </span>
+
+- Prohibition on Third-Party Hosting
+
+- License Key Protection
+
+- Notice and Trademark Compliance 
 
 Ref - https://spdx.org/licenses/Elastic-2.0.html
 
@@ -173,9 +176,7 @@ layout: Default
 
 # Myths / Misunderstandings
 
-There was disappointment among developers due to several misunderstandings.
-
-Some of them -
+There was disappointment among developers due to several misunderstandings. Some of them -
 
 <v-clicks>
 
@@ -289,7 +290,7 @@ FAQ - https://www.elastic.co/pricing/faq/licensing
 
 # AGPLv3
 
-- Weak copyleft
+- Strong copyleft
 
 - OSI approved license.
 
