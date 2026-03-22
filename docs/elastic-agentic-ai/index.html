@@ -502,32 +502,34 @@
   }
 
   @media (max-width: 768px) {
-    html, body { overflow: auto; }
+    html, body { overflow: hidden; }
     .slide {
-      position: relative; top: auto; left: auto;
-      min-height: 100vh; height: auto;
-      padding: 52px 16px 24px;
+      padding: 48px 16px 32px;
       justify-content: flex-start;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .slide-header { padding: 0 16px; }
     .slide-header img { height: 22px; }
 
     .slide-title { font-size: clamp(22px, 5vw, 32px) !important; letter-spacing: -0.5px; margin-bottom: 10px; }
     .slide-subtitle { font-size: 14px !important; }
-    .section-label { font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+    .section-label { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 4px; }
 
-    .two-col, .three-col { grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
-    .card { padding: 16px; border-radius: 10px; }
-    .card h3 { font-size: 16px; }
-    .card p { font-size: 13px; }
-    .card .icon { font-size: 20px; margin-bottom: 6px; }
+    .slide-title { margin-bottom: 8px; }
+    .slide-subtitle { margin-bottom: 8px !important; }
+    .two-col, .three-col { grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
+    .card { padding: 12px 14px; border-radius: 10px; }
+    .card h3 { font-size: 15px; margin-bottom: 4px; }
+    .card p { font-size: 12px; line-height: 1.4; }
+    .card .icon { font-size: 18px; margin-bottom: 4px; }
 
-    .feature-list li { font-size: 13px; padding: 3px 0; }
-    .tag { font-size: 11px; padding: 4px 10px; }
-    .tag-list { gap: 4px; }
+    .feature-list { margin-top: 6px; }
+    .feature-list li { font-size: 12px; padding: 2px 0; }
+    .tag { font-size: 10px; padding: 3px 8px; }
+    .tag-list { gap: 4px; margin-top: 6px; }
 
-    .code-block { font-size: 10px; padding: 12px; }
+    .code-block { font-size: 10px; padding: 10px; margin-top: 8px; }
 
     .pipeline { flex-direction: column; gap: 8px; }
     .pipeline-phase { padding: 14px; }
@@ -575,7 +577,7 @@
   }
 
   @media (max-width: 480px) {
-    .slide { padding: 48px 12px 20px; }
+    .slide { padding: 44px 12px 24px; }
     .slide-title { font-size: clamp(18px, 5vw, 26px) !important; }
     .slide-subtitle { font-size: 13px !important; }
     .section-label { font-size: 10px; }
@@ -675,6 +677,31 @@
 
     /* Title slide particle canvas */
     #particleCanvas { display: none !important; }
+
+    /* Reduce all inline margins/gaps on mobile */
+    .slide [style*="margin-top: 14px"] { margin-top: 8px !important; }
+    .slide [style*="margin-top: 16px"] { margin-top: 8px !important; }
+    .slide [style*="margin-top: 20px"] { margin-top: 10px !important; }
+    .slide [style*="margin-top: 24px"] { margin-top: 10px !important; }
+    .slide [style*="margin-top: 28px"] { margin-top: 12px !important; }
+    .slide [style*="margin-top: 32px"] { margin-top: 14px !important; }
+    .slide [style*="margin-top: 36px"] { margin-top: 16px !important; }
+    .slide [style*="margin-top: 56px"] { margin-top: 20px !important; }
+    .slide [style*="margin-bottom: 16px"] { margin-bottom: 8px !important; }
+    .slide [style*="margin-bottom: 18px"] { margin-bottom: 8px !important; }
+    .slide [style*="margin-bottom: 20px"] { margin-bottom: 10px !important; }
+    .slide [style*="gap: 14px"] { gap: 8px !important; }
+    .slide [style*="gap: 16px"] { gap: 8px !important; }
+    .slide [style*="gap: 18px"] { gap: 8px !important; }
+    .slide [style*="padding: 18px"] { padding: 12px !important; }
+    .slide [style*="padding: 20px"] { padding: 12px !important; }
+    .slide [style*="padding: 22px"] { padding: 12px !important; }
+
+    /* Hide spacer divs */
+    .slide [style*="height: 18px"] { height: 6px !important; }
+
+    /* Tighten centered slides */
+    .slide-content.centered { padding-top: 0; }
 
     /* Swipe support hint */
     .slide-counter::after { content: '  ←  swipe  →'; font-size: 10px; color: var(--text-muted); }
@@ -1480,14 +1507,14 @@
         <!-- OpenAI -->
         <div class="card" style="padding: 20px;">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.28 9.37a5.99 5.99 0 0 0-.52-4.93 6.07 6.07 0 0 0-6.52-2.91A6.07 6.07 0 0 0 1.72 4.95a5.99 5.99 0 0 0-1 4.79A6.07 6.07 0 0 0 1.72 19.1a5.99 5.99 0 0 0 .52 4.93 6.07 6.07 0 0 0 6.52 2.91 6.07 6.07 0 0 0 4.55-2.16 5.99 5.99 0 0 0 4 1.58 6.07 6.07 0 0 0 5.97-4.84 5.99 5.99 0 0 0-1-4.79 6.07 6.07 0 0 0 0-7.36z" fill="#93C90E" opacity="0.7"/></svg>
-            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-green);">OpenAI</span>
+            <span style="font-size: 22px; font-weight: 800; color: #10A37F; line-height: 1;">O</span>
+            <span style="font-size: 17px; font-weight: 700; color: #10A37F;">OpenAI</span>
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-5.2</span>
-            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-4.1</span>
-            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-4.1 Mini</span>
-            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-OSS-120B</span>
+            <span class="tag" style="background: rgba(16,163,127,0.1); color: #10A37F; border-color: rgba(16,163,127,0.2);">GPT-5.2</span>
+            <span class="tag" style="background: rgba(16,163,127,0.1); color: #10A37F; border-color: rgba(16,163,127,0.2);">GPT-4.1</span>
+            <span class="tag" style="background: rgba(16,163,127,0.1); color: #10A37F; border-color: rgba(16,163,127,0.2);">GPT-4.1 Mini</span>
+            <span class="tag" style="background: rgba(16,163,127,0.1); color: #10A37F; border-color: rgba(16,163,127,0.2);">GPT-OSS-120B</span>
           </div>
         </div>
         <!-- Google -->
