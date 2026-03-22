@@ -38,11 +38,11 @@
     --elastic-green: #93C90E;
     --dark-bg: #1B2A4A;
     --darker-bg: #142038;
-    --card-bg: #1E3355;
-    --card-border: #2A4470;
-    --text-primary: #F0F4F8;
-    --text-secondary: #A0B4CC;
-    --text-muted: #6B85A5;
+    --card-bg: #1A3058;
+    --card-border: #3A5A8A;
+    --text-primary: #FFFFFF;
+    --text-secondary: #C0D4E8;
+    --text-muted: #8BA3C0;
     --code-bg: #162848;
   }
 
@@ -121,7 +121,7 @@
   /* Cards */
   .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 26px; text-align: left; }
   .card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
-  .card p { font-size: 15px; line-height: 1.55; color: #B0BEC5; }
+  .card p { font-size: 15px; line-height: 1.55; color: #D0DCE8; }
   .card .icon { font-size: 24px; margin-bottom: 10px; display: block; }
 
   /* Code Block */
@@ -134,8 +134,8 @@
 
   /* Comparison Table */
   .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 16px; font-size: 14px; text-align: left; }
-  .comparison-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: #B0BEC5; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--card-border); }
-  .comparison-table td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: #B0BEC5; }
+  .comparison-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: #D0DCE8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--card-border); }
+  .comparison-table td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: #D0DCE8; }
   .comparison-table .elastic-row td { color: var(--elastic-teal); font-weight: 600; background: rgba(0, 191, 179, 0.05); }
   .check { color: var(--elastic-green); font-weight: bold; }
   .partial { color: var(--elastic-yellow); }
@@ -158,7 +158,7 @@
 
   /* Lists */
   .feature-list { list-style: none; margin-top: 10px; }
-  .feature-list li { padding: 5px 0; font-size: 15px; color: #B0BEC5; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+  .feature-list li { padding: 5px 0; font-size: 15px; color: #D0DCE8; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
   .feature-list li::before { content: '→'; color: var(--elastic-teal); font-weight: 700; flex-shrink: 0; }
 
   .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
@@ -176,7 +176,7 @@
 
   /* Benchmark Bar */
   .benchmark-bar-wrapper { margin: 6px 0; }
-  .benchmark-label { font-size: 13px; color: #B0BEC5; margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .benchmark-label { font-size: 13px; color: #D0DCE8; margin-bottom: 3px; display: flex; justify-content: space-between; }
   .benchmark-bar-bg { height: 22px; background: var(--card-bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border); }
   .benchmark-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 10px; font-weight: 600; color: #fff; }
 
@@ -184,7 +184,7 @@
   .connector-box { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; min-width: 110px; }
   .connector-box .logo-text { font-size: 20px; }
   .connector-box .label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-  .connector-box .sub { font-size: 12px; color: #8899AA; }
+  .connector-box .sub { font-size: 12px; color: #A0B8D0; }
   .arch-line { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
   .arch-arrow { color: var(--elastic-teal); font-size: 22px; font-weight: bold; }
 
@@ -201,13 +201,13 @@
   /* References/Footnotes */
   .footnote-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--card-border); font-size: 13px; color: #8899AA; line-height: 1.6; }
   .footnote-section .footnote { margin-bottom: 6px; }
-  .footnote-section .source { color: #B0BEC5; font-weight: 500; }
+  .footnote-section .source { color: #D0DCE8; font-weight: 500; }
 
   /* Search Maturity Timeline */
   .maturity-timeline { display: flex; align-items: center; gap: 0; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
   .maturity-stage { flex: 1; min-width: 180px; text-align: center; padding: 16px 12px; position: relative; }
   .maturity-stage-header { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-  .maturity-stage-methods { font-size: 13px; color: #B0BEC5; line-height: 1.4; margin-bottom: 8px; }
+  .maturity-stage-methods { font-size: 13px; color: #D0DCE8; line-height: 1.4; margin-bottom: 8px; }
   .maturity-stage-layer { padding: 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; }
   .maturity-arrow { flex: 0 0 auto; font-size: 24px; color: var(--elastic-teal); font-weight: bold; margin: 0 4px; }
 
@@ -217,7 +217,7 @@
   .pipeline-phase-num { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
   .pipeline-phase { text-align: left; }
   .pipeline-phase h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
-  .pipeline-method { padding: 8px 14px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; margin-bottom: 6px; font-size: 14px; color: #B0BEC5; font-weight: 500; }
+  .pipeline-method { padding: 8px 14px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; margin-bottom: 6px; font-size: 14px; color: #D0DCE8; font-weight: 500; }
   .pipeline-arrow { display: flex; align-items: center; color: var(--elastic-teal); font-size: 28px; font-weight: bold; flex-shrink: 0; }
 
   /* Presenter Notes */
@@ -774,7 +774,7 @@
     .platform-product:hover { transform: translateY(-3px); }
     .platform-capability {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 10px 8px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.12);
+      padding: 10px 8px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12);
       border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-primary);
       text-align: center; min-width: 80px; transition: transform 0.2s ease, background 0.2s ease;
     }
@@ -850,7 +850,7 @@
           </div>
 
           <!-- Search AI Platform Box -->
-          <div style="background: rgba(0,191,179,0.04); border: 1px solid rgba(0,191,179,0.15); border-radius: 12px; padding: 14px 16px;">
+          <div style="background: rgba(0,191,179,0.10); border: 1px solid rgba(0,191,179,0.15); border-radius: 12px; padding: 14px 16px;">
             <div style="text-align: center; font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px;">Search AI Platform</div>
             <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
               <div class="platform-capability"><span class="cap-icon">⚡</span><span class="cap-label">Ingestion</span></div>
@@ -927,7 +927,7 @@
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 8px;">Stage 1</div>
           <h3 style="font-size: 17px; margin-bottom: 6px;">Keyword Search</h3>
           <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">BM25 / TF-IDF</div>
-          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Exact term matching. Fast and predictable. The foundation of web search for 20+ years.</p>
+          <p style="font-size: 13px; color: #D0DCE8; line-height: 1.5; margin-bottom: 10px;">Exact term matching. Fast and predictable. The foundation of web search for 20+ years.</p>
           <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
             <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">No understanding of meaning. "automobile" won't find "car". Vocabulary mismatch kills recall.</p>
@@ -938,7 +938,7 @@
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-orange); margin-bottom: 8px;">Stage 2</div>
           <h3 style="font-size: 17px; margin-bottom: 6px;">Semantic Search</h3>
           <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">Dense Vectors / kNN</div>
-          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Embedding models encode meaning into vectors. "car" and "automobile" land nearby. Understands intent, not just words.</p>
+          <p style="font-size: 13px; color: #D0DCE8; line-height: 1.5; margin-bottom: 10px;">Embedding models encode meaning into vectors. "car" and "automobile" land nearby. Understands intent, not just words.</p>
           <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
             <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Loses precision on exact terms, names, codes. Struggles with structured or boolean queries.</p>
@@ -949,7 +949,7 @@
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-blue); margin-bottom: 8px;">Stage 3</div>
           <h3 style="font-size: 17px; margin-bottom: 6px;">Hybrid Search</h3>
           <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">BM25 + Vector + ELSER + RRF</div>
-          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Best of both worlds. Fuses keyword precision with semantic recall. ELSER adds learned sparse representations. RRF merges rankings.</p>
+          <p style="font-size: 13px; color: #D0DCE8; line-height: 1.5; margin-bottom: 10px;">Best of both worlds. Fuses keyword precision with semantic recall. ELSER adds learned sparse representations. RRF merges rankings.</p>
           <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
             <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Returns documents, not answers. Users still read and synthesize results manually.</p>
@@ -965,7 +965,7 @@
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-pink); margin-bottom: 8px;">Stage 4</div>
           <h3 style="font-size: 17px; margin-bottom: 6px;">Conversational RAG</h3>
           <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">LLM + Retrieval + Memory</div>
-          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">LLM generates answers grounded in retrieved context. Conversational memory rewrites follow-ups. Users get answers, not links.</p>
+          <p style="font-size: 13px; color: #D0DCE8; line-height: 1.5; margin-bottom: 10px;">LLM generates answers grounded in retrieved context. Conversational memory rewrites follow-ups. Users get answers, not links.</p>
           <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
             <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Read-only. Can answer questions but can't take actions, call APIs, or chain multi-step workflows.</p>
@@ -976,7 +976,7 @@
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-green); margin-bottom: 8px;">Stage 5</div>
           <h3 style="font-size: 17px; margin-bottom: 6px;">Agentic AI</h3>
           <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">Agents + Tools + MCP/A2A</div>
-          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Agents reason, plan, and act. Retrieve context, call tools, delegate to other agents, execute multi-step workflows autonomously.</p>
+          <p style="font-size: 13px; color: #D0DCE8; line-height: 1.5; margin-bottom: 10px;">Agents reason, plan, and act. Retrieve context, call tools, delegate to other agents, execute multi-step workflows autonomously.</p>
           <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
             <p style="font-size: 11px; color: var(--elastic-green); margin: 0; font-weight: 600;">Current frontier</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Requires robust retrieval, tool orchestration, guardrails, and observability. This is where Elastic plays.</p>
@@ -986,7 +986,7 @@
       <!-- Bottom insight bar -->
       <div class="card" style="margin-top: 12px; padding: 12px 24px; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 1300px;">
         <span style="font-size: 22px; flex-shrink: 0;">💡</span>
-        <p style="font-size: 13px; color: #B0BEC5; margin: 0; line-height: 1.5;"><strong style="color: var(--text-primary);">Key insight:</strong> Each stage builds on the previous — you can't skip steps. Agentic AI without solid retrieval is just expensive hallucination. The maturity model is cumulative, not a replacement.</p>
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0; line-height: 1.5;"><strong style="color: var(--text-primary);">Key insight:</strong> Each stage builds on the previous — you can't skip steps. Agentic AI without solid retrieval is just expensive hallucination. The maturity model is cumulative, not a replacement.</p>
       </div>
     </div>
   </div>
@@ -1143,22 +1143,22 @@
       <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 16px 20px;">
         <h3 style="font-size: 15px; margin-bottom: 10px;">🔧 Tool Types — What Your Agent Can Use</h3>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-          <div style="padding: 10px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,191,179,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,191,179,0.06)'">
+          <div style="padding: 10px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,191,179,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,191,179,0.12)'">
             <div style="font-size: 18px; margin-bottom: 4px;">📊</div>
             <div style="font-size: 13px; font-weight: 700; color: var(--elastic-teal);">ES|QL Tools</div>
             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Execute pre-defined ES|QL queries with parameterized inputs for precise, repeatable data retrieval</div>
           </div>
-          <div style="padding: 10px; background: rgba(0,119,204,0.06); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,119,204,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,119,204,0.06)'">
+          <div style="padding: 10px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,119,204,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,119,204,0.12)'">
             <div style="font-size: 18px; margin-bottom: 4px;">🔍</div>
             <div style="font-size: 13px; font-weight: 700; color: var(--elastic-blue);">Index Search Tools</div>
             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Scope searches to specific indices or patterns. The LLM dynamically constructs queries based on user requests</div>
           </div>
-          <div style="padding: 10px; background: rgba(240,78,152,0.06); border: 1px solid rgba(240,78,152,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(240,78,152,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(240,78,152,0.06)'">
+          <div style="padding: 10px; background: rgba(240,78,152,0.12); border: 1px solid rgba(240,78,152,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(240,78,152,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(240,78,152,0.12)'">
             <div style="font-size: 18px; margin-bottom: 4px;">🔗</div>
             <div style="font-size: 13px; font-weight: 700; color: var(--elastic-pink);">MCP Tools</div>
             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Connect to external MCP servers, enabling agents to use remote tools and services</div>
           </div>
-          <div style="padding: 10px; background: rgba(254,197,20,0.06); border: 1px solid rgba(254,197,20,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(254,197,20,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(254,197,20,0.06)'">
+          <div style="padding: 10px; background: rgba(254,197,20,0.12); border: 1px solid rgba(254,197,20,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(254,197,20,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(254,197,20,0.12)'">
             <div style="font-size: 18px; margin-bottom: 4px;">⚡</div>
             <div style="font-size: 13px; font-weight: 700; color: var(--elastic-yellow);">Workflow Tools</div>
             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Call pre-defined Workflows directly from the agent chat for orchestrated multi-step actions</div>
@@ -1168,8 +1168,43 @@
     </div>
   </div>
 
+  <!-- ===== SLIDE: MCP CONNECTOR ===== -->
+  <div class="slide" data-notes="MCP Connector is bidirectional. Import external MCP tools into your agent. Also expose Elastic's own tools via MCP. This is the bridge to the entire MCP ecosystem.">
+    <div class="slide-content">
+      <div class="section-label">MCP Connector — Extend Your Agent's Toolbox</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);"><span class="highlight">Import Any MCP Tool</span> Into Your Agent</h1>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 16px 0; flex-wrap: nowrap; width: 100%; max-width: 1300px;">
+        <div class="connector-box" style="flex: 1; max-width: 280px;"><div class="logo-text">🌐</div><div class="label">Remote MCP Server</div><div class="sub">GitHub, Slack, PagerDuty, Jira...</div></div>
+        <div class="arch-arrow">⟶</div>
+        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-teal);"><div class="logo-text" style="color: var(--elastic-teal);">⚡</div><div class="label" style="color: var(--elastic-teal);">MCP Connector</div><div class="sub">Kibana Stack Management</div></div>
+        <div class="arch-arrow">⟶</div>
+        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-blue);"><div class="logo-text">🤖</div><div class="label">Your Elastic Agent</div><div class="sub">Agent Builder Tool</div></div>
+      </div>
+      <div class="two-col" style="margin-top: 16px;">
+        <div class="card">
+          <h3>How It Works</h3>
+          <ul class="feature-list">
+            <li>Create connector in Stack Management → Connectors</li>
+            <li>Point to any remote MCP server URL + auth</li>
+            <li>Auto-discovers tools via listTools</li>
+            <li>Add discovered MCP tools to your agent</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What This Unlocks</h3>
+          <ul class="feature-list">
+            <li>PagerDuty MCP for incident management in agents</li>
+            <li>GitHub issues, PRs, code search as agent tools</li>
+            <li>Slack, Jira, Confluence — any MCP server</li>
+            <li>Bidirectional: Elastic also serves MCP for others</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SLIDE 8b: ELASTIC WORKFLOWS ===== -->
-  <div class="slide" data-notes="Elastic Workflows — native automation engine for Elasticsearch. Technical Preview. Combines predictable execution with AI reasoning. Triggers: alerts, schedules, manual, webhooks. Steps: conditions, loops, for-each, AI prompts, HTTP. Actions: Slack, Jira, PagerDuty, any API. Defined in YAML. Runs where your data lives.">
+  <div class="slide" data-notes="Elastic Workflows — native automation engine for Elasticsearch. Technical Preview. Combines predictable execution with AI reasoning. Triggers: alerts, schedules, manual, agent builder. Steps: conditions, loops, for-each, AI prompts, HTTP. Actions: Slack, Jira, PagerDuty, any API. Defined in YAML. Runs where your data lives.">
     <div class="slide-content">
       <div class="section-label">Native Automation — Elastic Workflows <span style="background: rgba(254,197,20,0.15); color: var(--elastic-yellow); padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 8px;">TECH PREVIEW</span></div>
       <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Elastic <span class="highlight">Workflows</span></h1>
@@ -1179,12 +1214,11 @@
       <div style="display: flex; align-items: stretch; gap: 0; width: 100%; max-width: 1300px; margin: 0 auto 14px;">
 
         <!-- Triggers column -->
-        <div style="flex: 0 0 180px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="flex: 0 0 180px; display: flex; flex-direction: column; gap: 6px; justify-content: center;">
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 4px; text-align: center;">Triggers</div>
           <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-teal); text-align: left; padding: 8px 12px;">🔔 Elastic Alerts</div>
           <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-blue); text-align: left; padding: 8px 12px;">⏰ Schedule / Cron</div>
           <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-pink); text-align: left; padding: 8px 12px;">▶️ Manual Run</div>
-          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-yellow); text-align: left; padding: 8px 12px;">🔗 Webhooks</div>
           <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-green); text-align: left; padding: 8px 12px;">🤖 Agent Builder</div>
         </div>
 
@@ -1196,21 +1230,21 @@
         <!-- Center: Workflow Engine -->
         <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); text-align: center;">Workflow Engine</div>
-          <div style="background: linear-gradient(135deg, rgba(0,191,179,0.08), rgba(0,119,204,0.06)); border: 2px solid var(--elastic-teal); border-radius: 12px; padding: 14px; box-shadow: 0 0 24px rgba(0,191,179,0.1);">
+          <div style="background: linear-gradient(135deg, rgba(0,191,179,0.14), rgba(0,119,204,0.12)); border: 2px solid var(--elastic-teal); border-radius: 12px; padding: 14px; box-shadow: 0 0 24px rgba(0,191,179,0.1);">
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-              <div style="padding: 8px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+              <div style="padding: 8px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
                 <div style="font-size: 16px; margin-bottom: 2px;">🔀</div>Conditions<div style="font-size: 9px; color: var(--text-secondary);">if / else branching</div>
               </div>
-              <div style="padding: 8px; background: rgba(0,119,204,0.06); border: 1px solid rgba(0,119,204,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+              <div style="padding: 8px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
                 <div style="font-size: 16px; margin-bottom: 2px;">🔄</div>Loops<div style="font-size: 9px; color: var(--text-secondary);">for-each iteration</div>
               </div>
-              <div style="padding: 8px; background: rgba(240,78,152,0.06); border: 1px solid rgba(240,78,152,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+              <div style="padding: 8px; background: rgba(240,78,152,0.12); border: 1px solid rgba(240,78,152,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
                 <div style="font-size: 16px; margin-bottom: 2px;">🧠</div>AI Prompts<div style="font-size: 9px; color: var(--text-secondary);">LLM reasoning steps</div>
               </div>
-              <div style="padding: 8px; background: rgba(254,197,20,0.06); border: 1px solid rgba(254,197,20,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+              <div style="padding: 8px; background: rgba(254,197,20,0.12); border: 1px solid rgba(254,197,20,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
                 <div style="font-size: 16px; margin-bottom: 2px;">🌐</div>HTTP Steps<div style="font-size: 9px; color: var(--text-secondary);">Call any API</div>
               </div>
-              <div style="padding: 8px; background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+              <div style="padding: 8px; background: rgba(147,201,14,0.12); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
                 <div style="font-size: 16px; margin-bottom: 2px;">🔍</div>ES Search<div style="font-size: 9px; color: var(--text-secondary);">Query &amp; index data</div>
               </div>
               <div style="padding: 8px; background: rgba(255,116,0,0.06); border: 1px solid rgba(255,116,0,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
@@ -1241,11 +1275,11 @@
       <div style="display: flex; gap: 12px; max-width: 1300px; margin: 0 auto;">
         <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-green); padding: 14px 18px;">
           <h3 style="font-size: 14px; margin-bottom: 6px;">🤖 Agent + Workflow Integration</h3>
-          <p style="font-size: 12px; color: #B0BEC5; margin: 0;">Add any workflow as a <strong style="color: var(--text-primary);">tool</strong> in Agent Builder. Agents invoke workflows based on user intent — combining AI reasoning with deterministic, repeatable execution. No integration gap between reasoning and action.</p>
+          <p style="font-size: 12px; color: #D0DCE8; margin: 0;">Add any workflow as a <strong style="color: var(--text-primary);">tool</strong> in Agent Builder. Agents invoke workflows based on user intent — combining AI reasoning with deterministic, repeatable execution. No integration gap between reasoning and action.</p>
         </div>
         <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-yellow); padding: 14px 18px;">
           <h3 style="font-size: 14px; margin-bottom: 6px;">💡 Why This Matters</h3>
-          <p style="font-size: 12px; color: #B0BEC5; margin: 0;">Agents reason. Workflows execute. Together: restart a service, update a record, send a notification, triage an alert — all from a single conversation. <strong style="color: var(--text-primary);">Automation where your data lives.</strong></p>
+          <p style="font-size: 12px; color: #D0DCE8; margin: 0;">Agents reason. Workflows execute. Together: restart a service, update a record, send a notification, triage an alert — all from a single conversation. <strong style="color: var(--text-primary);">Automation where your data lives.</strong></p>
         </div>
       </div>
     </div>
@@ -1321,7 +1355,7 @@
     .flow-node.center-hub {
       padding: 20px 28px;
       border: 2px solid var(--elastic-teal);
-      background: linear-gradient(135deg, rgba(0,191,179,0.12), rgba(0,119,204,0.08));
+      background: linear-gradient(135deg, rgba(0,191,179,0.12), rgba(0,119,204,0.14));
       font-size: 16px;
       font-weight: 700;
       box-shadow: 0 0 30px rgba(0,191,179,0.12);
@@ -1450,37 +1484,76 @@
     </div>
   </div>
 
-  <!-- ===== SLIDE 10: MCP CONNECTOR ===== -->
-  <div class="slide" data-notes="MCP Connector is bidirectional. Import external MCP tools into your agent. Also expose Elastic's own tools via MCP. This is the bridge to the entire MCP ecosystem.">
+  <!-- ===== SLIDE 9b: ARCHITECTURE PATTERNS ===== -->
+  <div class="slide" data-notes="Three common architecture patterns developers can build with Elastic Agent Builder. Start simple with RAG, graduate to Agentic RAG with tools, then full Multi-Agent with A2A delegation. Each builds on the previous — the same retrieval stack powers all three.">
     <div class="slide-content">
-      <div class="section-label">MCP Connector — Extend Your Agent's Toolbox</div>
-      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);"><span class="highlight">Import Any MCP Tool</span> Into Your Agent</h1>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 16px 0; flex-wrap: nowrap; width: 100%; max-width: 1300px;">
-        <div class="connector-box" style="flex: 1; max-width: 280px;"><div class="logo-text">🌐</div><div class="label">Remote MCP Server</div><div class="sub">GitHub, Slack, PagerDuty, Jira...</div></div>
-        <div class="arch-arrow">⟶</div>
-        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-teal);"><div class="logo-text" style="color: var(--elastic-teal);">⚡</div><div class="label" style="color: var(--elastic-teal);">MCP Connector</div><div class="sub">Kibana Stack Management</div></div>
-        <div class="arch-arrow">⟶</div>
-        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-blue);"><div class="logo-text">🤖</div><div class="label">Your Elastic Agent</div><div class="sub">Agent Builder Tool</div></div>
+      <div class="section-label">Architecture Patterns — What You Can Build</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Three Patterns. <span class="highlight">One Platform.</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Start simple. Evolve as your use case demands. The same retrieval and inference stack powers all three.</p>
+
+      <div class="three-col" style="margin-top: 12px;">
+        <!-- Pattern 1: Simple RAG -->
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 8px;">Pattern 1</div>
+          <h3 style="font-size: 17px;">Simple RAG</h3>
+          <p style="font-size: 13px; margin-bottom: 12px;">User asks a question → retrieve context → LLM generates grounded answer.</p>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12); border-radius: 6px; font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 600;">User Query</div>
+            <div style="text-align: center; color: var(--elastic-teal); font-size: 14px;">↓</div>
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.1); border: 1px solid rgba(0,191,179,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-teal); text-align: center; font-weight: 600;">Hybrid Search + Rerank</div>
+            <div style="text-align: center; color: var(--elastic-teal); font-size: 14px;">↓</div>
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12); border-radius: 6px; font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 600;">LLM → Answer</div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);"><strong style="color: var(--elastic-teal);">Use:</strong> Docs Q&A, knowledge base, support chatbot</div>
+        </div>
+
+        <!-- Pattern 2: Agentic RAG -->
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-blue); margin-bottom: 8px;">Pattern 2</div>
+          <h3 style="font-size: 17px;">Agentic RAG</h3>
+          <p style="font-size: 13px; margin-bottom: 12px;">Agent reasons about the query → decides which tools to call → retrieves, acts, responds.</p>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="padding: 8px 12px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 6px; font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 600;">User Query</div>
+            <div style="text-align: center; color: var(--elastic-blue); font-size: 14px;">↓</div>
+            <div style="padding: 8px 12px; background: rgba(0,119,204,0.1); border: 1px solid rgba(0,119,204,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-blue); text-align: center; font-weight: 600;">Agent → Reason + Plan</div>
+            <div style="text-align: center; color: var(--elastic-blue); font-size: 14px;">↓</div>
+            <div style="display: flex; gap: 4px;">
+              <div style="flex: 1; padding: 6px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 6px; font-size: 10px; text-align: center; color: var(--text-primary); font-weight: 600;">Search</div>
+              <div style="flex: 1; padding: 6px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 6px; font-size: 10px; text-align: center; color: var(--text-primary); font-weight: 600;">ES|QL</div>
+              <div style="flex: 1; padding: 6px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 6px; font-size: 10px; text-align: center; color: var(--text-primary); font-weight: 600;">MCP</div>
+            </div>
+            <div style="text-align: center; color: var(--elastic-blue); font-size: 14px;">↓</div>
+            <div style="padding: 8px 12px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 6px; font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 600;">Response + Citations</div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);"><strong style="color: var(--elastic-blue);">Use:</strong> IT ops, incident triage, compliance research</div>
+        </div>
+
+        <!-- Pattern 3: Multi-Agent -->
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-pink); margin-bottom: 8px;">Pattern 3</div>
+          <h3 style="font-size: 17px;">Multi-Agent (A2A)</h3>
+          <p style="font-size: 13px; margin-bottom: 12px;">Orchestrator delegates to specialist agents via A2A. Each agent owns a domain.</p>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="padding: 8px 12px; background: rgba(240,78,152,0.12); border: 1px solid rgba(240,78,152,0.12); border-radius: 6px; font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 600;">User Query</div>
+            <div style="text-align: center; color: var(--elastic-pink); font-size: 14px;">↓</div>
+            <div style="padding: 8px 12px; background: rgba(240,78,152,0.1); border: 1px solid rgba(240,78,152,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-pink); text-align: center; font-weight: 600;">Orchestrator Agent</div>
+            <div style="display: flex; gap: 4px; justify-content: center;">
+              <div style="color: var(--elastic-pink); font-size: 14px;">↙</div>
+              <div style="color: var(--elastic-pink); font-size: 14px;">↓</div>
+              <div style="color: var(--elastic-pink); font-size: 14px;">↘</div>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <div style="flex: 1; padding: 6px; background: rgba(0,191,179,0.14); border: 1px solid rgba(0,191,179,0.15); border-radius: 6px; font-size: 10px; text-align: center; color: var(--elastic-teal); font-weight: 600;">Search Agent</div>
+              <div style="flex: 1; padding: 6px; background: rgba(0,119,204,0.14); border: 1px solid rgba(0,119,204,0.15); border-radius: 6px; font-size: 10px; text-align: center; color: var(--elastic-blue); font-weight: 600;">Analytics Agent</div>
+              <div style="flex: 1; padding: 6px; background: rgba(240,78,152,0.14); border: 1px solid rgba(240,78,152,0.15); border-radius: 6px; font-size: 10px; text-align: center; color: var(--elastic-pink); font-weight: 600;">Action Agent</div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);"><strong style="color: var(--elastic-pink);">Use:</strong> Enterprise workflows, cross-domain automation</div>
+        </div>
       </div>
-      <div class="two-col" style="margin-top: 16px;">
-        <div class="card">
-          <h3>How It Works</h3>
-          <ul class="feature-list">
-            <li>Create connector in Stack Management → Connectors</li>
-            <li>Point to any remote MCP server URL + auth</li>
-            <li>Auto-discovers tools via listTools</li>
-            <li>Add discovered MCP tools to your agent</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>What This Unlocks</h3>
-          <ul class="feature-list">
-            <li>PagerDuty MCP for incident management in agents</li>
-            <li>GitHub issues, PRs, code search as agent tools</li>
-            <li>Slack, Jira, Confluence — any MCP server</li>
-            <li>Bidirectional: Elastic also serves MCP for others</li>
-          </ul>
-        </div>
+
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-yellow); padding: 12px 18px; max-width: 1300px;">
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">Progressive complexity:</strong> Start with Pattern 1 in Playground today. Graduate to Pattern 2 with Agent Builder + Tools. Scale to Pattern 3 with A2A. Same platform, same data, same security model throughout.</p>
       </div>
     </div>
   </div>
@@ -1714,7 +1787,7 @@
 
       <!-- Vector DB foundation bar -->
       <div style="margin-top: 12px; max-width: 1300px;">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; padding: 12px 24px; background: linear-gradient(90deg, rgba(0,191,179,0.08), rgba(0,119,204,0.08), rgba(240,78,152,0.08)); border: 2px solid var(--elastic-teal); border-radius: 12px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; padding: 12px 24px; background: linear-gradient(90deg, rgba(0,191,179,0.14), rgba(0,119,204,0.14), rgba(240,78,152,0.14)); border: 2px solid var(--elastic-teal); border-radius: 12px;">
           <span style="font-size: 24px;">💾</span>
           <div>
             <div style="font-size: 15px; font-weight: 700; color: var(--text-primary);">Vector DB — Elasticsearch</div>
@@ -1760,6 +1833,154 @@
     </div>
   </div>
 
+  <!-- ===== SLIDE 14b: ES|QL ===== -->
+  <div class="slide" data-notes="ES|QL is Elastic's piped query language. Simpler than JSON DSL. Familiar to developers from SQL/Splunk. Works natively in Agent Builder tools, alerting, and dashboards. Show before/after comparison.">
+    <div class="slide-content">
+      <div class="section-label">ES|QL — Piped Query Language</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Query Your Data Without the <span class="highlight">JSON Pain</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">ES|QL is Elastic's piped query language — familiar syntax, powerful transforms, and native integration across the entire stack.</p>
+
+      <!-- Before / After comparison -->
+      <div class="two-col" style="margin-top: 12px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <h3 style="font-size: 15px; color: var(--elastic-pink);">Before — JSON Query DSL</h3>
+          <div class="code-block" style="font-size: 11px; margin-top: 8px;">
+            <span class="keyword">POST</span> logs-*/_search<br>
+            {<br>
+            &nbsp;&nbsp;<span class="prop">"query"</span>: {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"bool"</span>: {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"filter"</span>: [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="prop">"term"</span>: { <span class="prop">"status"</span>: <span class="string">"error"</span> }},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="prop">"range"</span>: { <span class="prop">"@timestamp"</span>: {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"gte"</span>: <span class="string">"now-24h"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}}}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            &nbsp;&nbsp;},<br>
+            &nbsp;&nbsp;<span class="prop">"aggs"</span>: { <span class="prop">"by_service"</span>: {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"terms"</span>: { <span class="prop">"field"</span>: <span class="string">"service.name"</span> }<br>
+            &nbsp;&nbsp;}}<br>
+            }
+          </div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <h3 style="font-size: 15px; color: var(--elastic-teal);">After — ES|QL</h3>
+          <div class="code-block" style="font-size: 12px; margin-top: 8px;">
+            <span class="keyword">FROM</span> logs-*<br>
+            | <span class="keyword">WHERE</span> status == <span class="string">"error"</span><br>
+            &nbsp;&nbsp;<span class="keyword">AND</span> @timestamp > now() - 24 hours<br>
+            | <span class="keyword">STATS</span> count = <span class="func">COUNT</span>(*)<br>
+            &nbsp;&nbsp;<span class="keyword">BY</span> service.name<br>
+            | <span class="keyword">SORT</span> count <span class="keyword">DESC</span>
+          </div>
+          <div style="margin-top: 14px; padding: 10px 14px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12); border-radius: 8px;">
+            <p style="font-size: 12px; color: var(--elastic-teal); font-weight: 600; margin: 0;">3 lines vs 18 lines. Same result. Readable by anyone.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Where ES|QL works -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; max-width: 1300px;">
+        <div style="padding: 12px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 18px; margin-bottom: 4px;">🤖</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Agent Builder</div>
+          <div style="font-size: 11px; color: var(--text-secondary);">ES|QL tools for agents</div>
+        </div>
+        <div style="padding: 12px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 18px; margin-bottom: 4px;">🔔</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Alerting</div>
+          <div style="font-size: 11px; color: var(--text-secondary);">Detection rules in ES|QL</div>
+        </div>
+        <div style="padding: 12px; background: rgba(240,78,152,0.12); border: 1px solid rgba(240,78,152,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 18px; margin-bottom: 4px;">📊</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Dashboards</div>
+          <div style="font-size: 11px; color: var(--text-secondary);">Lens + ES|QL panels</div>
+        </div>
+        <div style="padding: 12px; background: rgba(254,197,20,0.12); border: 1px solid rgba(254,197,20,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 18px; margin-bottom: 4px;">⚡</div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Workflows</div>
+          <div style="font-size: 11px; color: var(--text-secondary);">Query steps in automation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 14c: ACCESS CONTROL — TWO LAYERS ===== -->
+  <div class="slide" data-notes="Access control in Elastic works at two layers. Layer 1 (Agent Builder): Tool-based access control — agents only access tools assigned to them. Many-to-many relationship. Admins control who can create tools. Layer 2 (Data): Index, field, and document-level security on Elasticsearch. No direct RBAC on agents yet — control is through tool assignment and data-layer security.">
+    <div class="slide-content">
+      <div class="section-label">Security — Access Control in Agent Builder</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Two Layers of <span class="highlight">Access Control</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Control what agents can do through tool assignment, and what data users can see through Elasticsearch security — two independent layers working together.</p>
+
+      <!-- Two-layer visual -->
+      <div style="display: flex; gap: 20px; align-items: stretch; max-width: 1200px; margin: 0 auto;">
+
+        <!-- Layer 1: Agent Builder — Tool Access -->
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 10px;">Layer 1 — Agent Builder</div>
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Tool-Based Access Control</h3>
+          <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Agents only access the tools assigned to them. No tool = no access to that data or action. Many-to-many relationship.</p>
+
+          <!-- Visual: Agents ↔ Tools mapping -->
+          <div style="display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              <div style="padding: 6px 12px; background: rgba(0,191,179,0.1); border: 1px solid rgba(0,191,179,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-teal); font-weight: 600;">Finance Agent</div>
+              <div style="padding: 6px 12px; background: rgba(0,119,204,0.1); border: 1px solid rgba(0,119,204,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-blue); font-weight: 600;">HR Agent</div>
+              <div style="padding: 6px 12px; background: rgba(240,78,152,0.1); border: 1px solid rgba(240,78,152,0.2); border-radius: 6px; font-size: 11px; color: var(--elastic-pink); font-weight: 600;">IT Ops Agent</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; color: var(--text-muted); font-size: 18px; line-height: 1;">
+              <span>──</span><span>──</span><span>──</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+              <div style="padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; font-size: 11px; color: var(--text-primary); font-weight: 600;">Revenue Search Tool</div>
+              <div style="padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; font-size: 11px; color: var(--text-primary); font-weight: 600;">Employee Data Tool</div>
+              <div style="padding: 6px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; font-size: 11px; color: var(--text-primary); font-weight: 600;">Logs ES|QL Tool</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.10); border: 1px solid rgba(0,191,179,0.1); border-radius: 6px; font-size: 11px; color: var(--text-secondary);">
+              <span class="check">✓</span> <strong style="color: var(--text-primary);">Assign tools per agent</strong> — each agent only sees its assigned tools
+            </div>
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.10); border: 1px solid rgba(0,191,179,0.1); border-radius: 6px; font-size: 11px; color: var(--text-secondary);">
+              <span class="check">✓</span> <strong style="color: var(--text-primary);">Many-to-many</strong> — one tool can serve multiple agents, one agent can use many tools
+            </div>
+            <div style="padding: 8px 12px; background: rgba(0,191,179,0.10); border: 1px solid rgba(0,191,179,0.1); border-radius: 6px; font-size: 11px; color: var(--text-secondary);">
+              <span class="check">✓</span> <strong style="color: var(--text-primary);">Admin controls</strong> — decide which users can create or manage tools
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 2: Data — Elasticsearch Security -->
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-blue); margin-bottom: 10px;">Layer 2 — Data Search</div>
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Index / Field / Document Security</h3>
+          <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">When a tool queries Elasticsearch, the data-layer security kicks in — filtering results based on user roles and permissions.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="padding: 10px 14px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--elastic-teal);">Index-Level</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">Control which indices each role can access — finance_read vs hr_admin see different index sets</div>
+            </div>
+            <div style="padding: 10px 14px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--elastic-blue);">Field-Level</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">Hide sensitive fields (SSN, salary, PII) from specific roles — even within the same index</div>
+            </div>
+            <div style="padding: 10px 14px; background: rgba(0,119,204,0.12); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--elastic-pink);">Document-Level</div>
+              <div style="font-size: 11px; color: var(--text-secondary);">Filter individual documents per user with query-based rules — same search, different results</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom callout -->
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-yellow); padding: 12px 18px; max-width: 1200px;">
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">How they work together:</strong> An agent can only call its assigned tools (Layer 1). When a tool runs a search, Elasticsearch enforces index/field/document-level permissions for that user (Layer 2). Two independent layers — no single point of bypass.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SLIDE 15: AGENT SKILLS ===== -->
   <div class="slide" data-notes="Agent Skills turn AI coding assistants into Elastic experts. 26 skills available. SKILL.md is the open standard from agentskills.io. Show the screenshot from the blog — skills install flow.">
     <div class="slide-content">
@@ -1801,13 +2022,56 @@
     <div class="slide-content">
       <div class="section-label">Vibe Coding — Build With Natural Language</div>
       <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">What You Can Build With <span class="highlight">Vibe Coding + Elastic Skills</span></h1>
-      <div class="three-col">
-        <div class="card" style="border-top: 3px solid var(--elastic-teal);"><span class="icon">🔍</span><h3>"Build me a hybrid search API"</h3><p>Agent creates index mapping, sets up ELSER, configures hybrid search with RRF, writes API endpoint — all following Elastic best practices from the skill.</p></div>
-        <div class="card" style="border-top: 3px solid var(--elastic-blue);"><span class="icon">📊</span><h3>"Create an APM dashboard"</h3><p>Kibana skill builds full observability dashboard — service maps, latency charts, error panels, SLO tracking. Correct APIs, correct JSON.</p></div>
-        <div class="card" style="border-top: 3px solid var(--elastic-pink);"><span class="icon">🛡️</span><h3>"Set up brute force detection"</h3><p>Security skill creates EQL/ES|QL detection rules, configures alert actions, sets severity and risk scoring correctly.</p></div>
-        <div class="card" style="border-top: 3px solid var(--elastic-yellow);"><span class="icon">🤖</span><h3>"Build a RAG agent for our docs"</h3><p>Sets up ingestion, creates vector index, configures inference, builds agent in Agent Builder — end-to-end in one conversation.</p></div>
-        <div class="card" style="border-top: 3px solid var(--elastic-orange);"><span class="icon">🔧</span><h3>"Why is my cluster yellow?"</h3><p>Checks shard allocation, identifies unassigned shards, diagnoses root cause, applies fix — all through correct ES APIs.</p></div>
-        <div class="card" style="border-top: 3px solid var(--elastic-green);"><span class="icon">📡</span><h3>"Ingest my Kafka logs"</h3><p>Fleet skill configures integration, sets up ingest pipelines with grok processors, creates index templates, verifies data flow.</p></div>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Describe what you want in plain English. Elastic Agent Skills handle the rest — correct APIs, correct config, correct best practices.</p>
+      <div class="three-col" style="margin-top: 4px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(0,191,179,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🔍</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-teal);">"Build me a hybrid search API"</h3>
+          </div>
+          <p style="font-size: 12px;">Creates index mapping, sets up ELSER, configures hybrid search with RRF, writes API endpoint — following Elastic best practices.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(0,191,179,0.1); color: var(--elastic-teal); border: 1px solid rgba(0,191,179,0.2);">Search</span></div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(0,119,204,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">📊</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-blue);">"Create an APM dashboard"</h3>
+          </div>
+          <p style="font-size: 12px;">Builds full observability dashboard — service maps, latency charts, error panels, SLO tracking. Correct APIs, correct JSON.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border: 1px solid rgba(0,119,204,0.2);">Observability</span></div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(240,78,152,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🛡️</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-pink);">"Set up brute force detection"</h3>
+          </div>
+          <p style="font-size: 12px;">Creates EQL/ES|QL detection rules, configures alert actions, sets severity and risk scoring correctly.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border: 1px solid rgba(240,78,152,0.2);">Security</span></div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(254,197,20,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🤖</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-yellow);">"Build a RAG agent for our docs"</h3>
+          </div>
+          <p style="font-size: 12px;">Sets up ingestion, creates vector index, configures inference, builds agent in Agent Builder — end-to-end in one conversation.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border: 1px solid rgba(254,197,20,0.2);">Agent Builder</span></div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-orange); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(249,139,43,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🔧</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-orange);">"Why is my cluster yellow?"</h3>
+          </div>
+          <p style="font-size: 12px;">Checks shard allocation, identifies unassigned shards, diagnoses root cause, applies fix — all through correct ES APIs.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(249,139,43,0.1); color: var(--elastic-orange); border: 1px solid rgba(249,139,43,0.2);">Ops</span></div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-green); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(147,201,14,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">📡</div>
+            <h3 style="font-size: 14px; margin: 0; color: var(--elastic-green);">"Ingest my Kafka logs"</h3>
+          </div>
+          <p style="font-size: 12px;">Configures Fleet integration, sets up ingest pipelines with grok processors, creates index templates, verifies data flow.</p>
+          <div style="margin-top: 8px;"><span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border: 1px solid rgba(147,201,14,0.2);">Ingestion</span></div>
+        </div>
       </div>
       <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">github.com/elastic/agent-skills — Open source. Apache 2.0. Contribute your own.</p>
     </div>
@@ -1818,34 +2082,56 @@
     <div class="slide-content">
       <div class="section-label">Industry Use Cases — Regulated &amp; High-Compliance</div>
       <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Agents for <span class="highlight">Regulated Industries</span></h1>
-      <div class="three-col">
-        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏦</span><h3 style="margin: 0;">BFSI</h3></div>
-          <ul class="feature-list">
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Where compliance is non-negotiable. Elastic gives you data sovereignty, audit trails, and granular access control out of the box.</p>
+      <div class="three-col" style="margin-top: 4px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(0,191,179,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🏦</div>
+            <h3 style="margin: 0; font-size: 17px;">BFSI</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>Fraud investigation — transaction patterns + compliance rules via hybrid search</li>
-            <li>KYC document retrieval — scanned docs to minutes, not days</li>
+            <li>KYC document retrieval — scanned docs in minutes, not days</li>
             <li>Compliance Q&A with citations and audit trails</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(0,191,179,0.1); color: var(--elastic-teal); border: 1px solid rgba(0,191,179,0.2);">Hybrid Search</span>
+            <span class="tag" style="background: rgba(0,191,179,0.1); color: var(--elastic-teal); border: 1px solid rgba(0,191,179,0.2);">Audit Trail</span>
+          </div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏛️</span><h3 style="margin: 0;">Public Sector</h3></div>
-          <ul class="feature-list">
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(0,119,204,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🏛️</div>
+            <h3 style="margin: 0; font-size: 17px;">Public Sector</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>Citizen services — navigate permits, benefits in plain language</li>
             <li>Policy research — legislation via hybrid search, not keyword</li>
             <li>On-prem, air-gapped, FedRAMP-ready deployment</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border: 1px solid rgba(0,119,204,0.2);">On-Prem</span>
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border: 1px solid rgba(0,119,204,0.2);">Air-Gapped</span>
+          </div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏥</span><h3 style="margin: 0;">Healthcare</h3></div>
-          <ul class="feature-list">
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(240,78,152,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🏥</div>
+            <h3 style="margin: 0; font-size: 17px;">Healthcare</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>Clinical decision support — indexed medical literature with citations</li>
             <li>Document-level security for HIPAA compliance</li>
             <li>Risk assessment with ES|QL aggregations</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border: 1px solid rgba(240,78,152,0.2);">HIPAA</span>
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border: 1px solid rgba(240,78,152,0.2);">DLS</span>
+          </div>
         </div>
       </div>
-      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-yellow);">
-        <p style="font-size: 15px; color: #B0BEC5; margin: 0;"><strong style="color: var(--text-primary);">Key differentiator:</strong> Document-level security, on-prem deployment, auditable retrieval trails. Your data stays where compliance requires.</p>
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-yellow); padding: 12px 18px;">
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">Key differentiator:</strong> Data-layer security (index/field/document level), on-prem deployment, auditable retrieval trails. Your data stays where compliance requires.</p>
       </div>
     </div>
   </div>
@@ -1855,34 +2141,131 @@
     <div class="slide-content">
       <div class="section-label">Industry Use Cases — Commercial &amp; Digital</div>
       <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Agents for <span class="highlight">Every Business</span></h1>
-      <div class="three-col">
-        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏢</span><h3 style="margin: 0;">Mid-Market</h3></div>
-          <ul class="feature-list">
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">From IT help desks to shopping assistants — the same platform scales across every commercial use case.</p>
+      <div class="three-col" style="margin-top: 4px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(0,191,179,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🏢</div>
+            <h3 style="margin: 0; font-size: 17px;">Mid-Market</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>IT support — resolves L1/L2 from runbooks + past resolutions</li>
             <li>HR policy assistant — multi-language via Jina v5</li>
             <li>Incident response — correlates logs, metrics, traces automatically</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(0,191,179,0.1); color: var(--elastic-teal); border: 1px solid rgba(0,191,179,0.2);">IT Ops</span>
+            <span class="tag" style="background: rgba(0,191,179,0.1); color: var(--elastic-teal); border: 1px solid rgba(0,191,179,0.2);">HR</span>
+          </div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🚀</span><h3 style="margin: 0;">Digital Natives</h3></div>
-          <ul class="feature-list">
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(0,119,204,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🚀</div>
+            <h3 style="margin: 0; font-size: 17px;">Digital Natives</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>Developer docs agent — search by intent, get right code snippet</li>
             <li>In-product search — users self-serve via REST API or MCP</li>
             <li>Log analysis — "why did deploy-42 fail?" with ES|QL</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border: 1px solid rgba(0,119,204,0.2);">DevEx</span>
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border: 1px solid rgba(0,119,204,0.2);">MCP</span>
+          </div>
         </div>
-        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🛒</span><h3 style="margin: 0;">E-Commerce</h3></div>
-          <ul class="feature-list">
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(240,78,152,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">🛒</div>
+            <h3 style="margin: 0; font-size: 17px;">E-Commerce</h3>
+          </div>
+          <ul class="feature-list" style="font-size: 13px;">
             <li>Shopping assistant — semantic intent + price filters in one query</li>
             <li>Personalization — behavioral signals + product vectors</li>
             <li>Returns &amp; support — multi-language, MCP-connected logistics</li>
           </ul>
+          <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border: 1px solid rgba(240,78,152,0.2);">Semantic</span>
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border: 1px solid rgba(240,78,152,0.2);">Vectors</span>
+          </div>
         </div>
       </div>
-      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-green);">
-        <p style="font-size: 15px; color: #B0BEC5; margin: 0;"><strong style="color: var(--text-primary);">200+ connectors</strong> — Confluence, SharePoint, Google Drive, ServiceNow, Salesforce. Federate all your data through one agent.</p>
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-green); padding: 12px 18px;">
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">200+ connectors</strong> — Confluence, SharePoint, Google Drive, ServiceNow, Salesforce. Federate all your data through one agent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 18b: LLM OBSERVABILITY ===== -->
+  <div class="slide" data-notes="LLM Observability is a native Elastic feature. Monitor your agents in production: token usage, latency, cost, trace spans, hallucination detection. No third-party APM needed — it's the same platform. Massive differentiator.">
+    <div class="slide-content">
+      <div class="section-label">Observability — Monitor Your Agents in Production</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">LLM <span class="highlight">Observability</span> — Built In, Not Bolted On</h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Your agents are only as good as your ability to monitor them. Elastic gives you full-stack observability for every agent interaction.</p>
+
+      <div class="three-col" style="margin-top: 12px;">
+        <!-- Trace & Debug -->
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <span class="icon">🔍</span>
+          <h3 style="font-size: 16px;">Trace Every Interaction</h3>
+          <ul class="feature-list" style="font-size: 12px;">
+            <li>End-to-end trace spans for each agent turn</li>
+            <li>Tool invocations, retrieval calls, LLM requests</li>
+            <li>Latency breakdown per step</li>
+            <li>Error propagation and root cause analysis</li>
+          </ul>
+        </div>
+
+        <!-- Cost & Token Tracking -->
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 18px;">
+          <span class="icon">💰</span>
+          <h3 style="font-size: 16px;">Cost &amp; Token Tracking</h3>
+          <ul class="feature-list" style="font-size: 12px;">
+            <li>Input/output tokens per request</li>
+            <li>Cost per conversation and per user</li>
+            <li>Model comparison (cost vs. quality)</li>
+            <li>Budget alerts and anomaly detection</li>
+          </ul>
+        </div>
+
+        <!-- Quality & Safety -->
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <span class="icon">🛡️</span>
+          <h3 style="font-size: 16px;">Quality &amp; Safety</h3>
+          <ul class="feature-list" style="font-size: 12px;">
+            <li>Retrieval relevance scoring</li>
+            <li>Hallucination detection signals</li>
+            <li>User feedback loops (thumbs up/down)</li>
+            <li>Guardrail trigger monitoring</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- What you can monitor — metric types (no fake numbers) -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; max-width: 1300px;">
+        <div style="padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 24px; margin-bottom: 4px;">&#9201;</div>
+          <div style="font-size: 14px; font-weight: 800; color: var(--elastic-teal);">Latency</div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Per-step &amp; end-to-end response time</div>
+        </div>
+        <div style="padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 24px; margin-bottom: 4px;">&#128176;</div>
+          <div style="font-size: 14px; font-weight: 800; color: var(--elastic-blue);">Cost</div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Token usage &amp; spend per conversation</div>
+        </div>
+        <div style="padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 24px; margin-bottom: 4px;">&#127919;</div>
+          <div style="font-size: 14px; font-weight: 800; color: var(--elastic-green);">Relevance</div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Retrieval quality &amp; reranking scores</div>
+        </div>
+        <div style="padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+          <div style="font-size: 24px; margin-bottom: 4px;">&#128737;</div>
+          <div style="font-size: 14px; font-weight: 800; color: var(--elastic-pink);">Safety</div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Guardrail triggers &amp; hallucination signals</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 12px; border-left: 3px solid var(--elastic-yellow); padding: 12px 18px; max-width: 1300px;">
+        <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">Why this matters:</strong> Most agent platforms require third-party tools for monitoring. With Elastic, your agents run on the same platform you already use for logs, metrics, traces, and APM — zero integration gap.</p>
       </div>
     </div>
   </div>
