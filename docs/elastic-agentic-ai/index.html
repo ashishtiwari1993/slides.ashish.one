@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elastic Agent Builder for Enterprise Use Cases</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: { preflight: false },
+    theme: {
+      extend: {
+        colors: {
+          'elastic-teal': '#00BFB3',
+          'elastic-blue': '#0077CC',
+          'elastic-pink': '#F04E98',
+          'elastic-yellow': '#FEC514',
+          'elastic-orange': '#F98B2B',
+          'elastic-green': '#93C90E',
+          'dark-bg': '#0B1117',
+          'darker-bg': '#060A0F',
+          'card-bg': '#131B24',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --elastic-teal: #00BFB3;
+    --elastic-blue: #0077CC;
+    --elastic-pink: #F04E98;
+    --elastic-yellow: #FEC514;
+    --elastic-orange: #F98B2B;
+    --elastic-green: #93C90E;
+    --dark-bg: #1B2A4A;
+    --darker-bg: #142038;
+    --card-bg: #1E3355;
+    --card-border: #2A4470;
+    --text-primary: #F0F4F8;
+    --text-secondary: #A0B4CC;
+    --text-muted: #6B85A5;
+    --code-bg: #162848;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--darker-bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck { width: 100%; height: 100%; position: relative; }
+
+  .slide {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 48px 36px 36px 36px;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--dark-bg);
+    overflow-y: auto;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    transform: translateX(60px);
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slide.exit-left { opacity: 0; transform: translateX(-60px); }
+  .slide.exit-right { opacity: 0; transform: translateX(60px); }
+
+  /* Header */
+  .slide-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 40px;
+    background: rgba(6, 10, 15, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 32px;
+    z-index: 150;
+  }
+  .elastic-logo-header { display: flex; align-items: center; gap: 10px; }
+  .elastic-logo-header svg { height: 22px; }
+  .header-title {
+    margin-left: 20px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+  }
+
+  /* Progress */
+  .progress-bar { position: fixed; top: 40px; left: 0; height: 2px; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue)); transition: width 0.4s ease; z-index: 100; }
+  .slide-counter { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 500; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; z-index: 100; }
+  .nav-hint { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; color: var(--text-muted); z-index: 100; opacity: 0.5; display: none; }
+  .nav-hint kbd { background: var(--card-bg); border: 1px solid var(--card-border); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  /* Typography */
+  .slide-title { font-size: clamp(32px, 3.5vw, 54px); font-weight: 800; line-height: 1.15; margin-bottom: 16px; letter-spacing: -1px; }
+  .slide-subtitle { font-size: clamp(16px, 1.8vw, 22px); font-weight: 400; color: var(--text-secondary); line-height: 1.5; max-width: 900px; margin-left: auto; margin-right: auto; }
+  .section-label { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; color: var(--elastic-teal); margin-bottom: 12px; }
+  .feature-label { font-size: 12px; font-weight: 500; color: var(--elastic-yellow); letter-spacing: 1px; margin-bottom: 4px; }
+  .highlight { color: var(--elastic-teal); }
+  .highlight-pink { color: var(--elastic-pink); }
+  .highlight-yellow { color: var(--elastic-yellow); }
+  .highlight-blue { color: var(--elastic-blue); }
+
+  /* Layout */
+  .slide-content { width: 100%; max-width: 1300px; text-align: center; }
+  .slide-content.centered { text-align: center; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; width: 100%; max-width: 1300px; margin-left: auto; margin-right: auto; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 20px; width: 100%; max-width: 1300px; margin-left: auto; margin-right: auto; }
+
+  /* Cards */
+  .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 26px; text-align: left; }
+  .card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+  .card p { font-size: 15px; line-height: 1.55; color: #B0BEC5; }
+  .card .icon { font-size: 24px; margin-bottom: 10px; display: block; }
+
+  /* Code Block */
+  .code-block { background: var(--code-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; margin-top: 16px; color: var(--text-secondary); text-align: left; }
+  .code-block .keyword { color: var(--elastic-pink); }
+  .code-block .string { color: var(--elastic-green); }
+  .code-block .comment { color: var(--text-muted); font-style: italic; }
+  .code-block .func { color: var(--elastic-teal); }
+  .code-block .prop { color: var(--elastic-yellow); }
+
+  /* Comparison Table */
+  .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 16px; font-size: 14px; text-align: left; }
+  .comparison-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: #B0BEC5; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--card-border); }
+  .comparison-table td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: #B0BEC5; }
+  .comparison-table .elastic-row td { color: var(--elastic-teal); font-weight: 600; background: rgba(0, 191, 179, 0.05); }
+  .check { color: var(--elastic-green); font-weight: bold; }
+  .partial { color: var(--elastic-yellow); }
+  .cross { color: var(--elastic-pink); }
+
+  /* Stack */
+  .stack { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; width: 100%; max-width: 750px; }
+  .stack-layer { padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 13px; text-align: center; }
+  .stack-layer .layer-detail { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.7); margin-top: 3px; }
+  .stack-layer.l1 { background: linear-gradient(135deg, #00BFB3, #009E94); color: #fff; }
+  .stack-layer.l2 { background: linear-gradient(135deg, #0077CC, #005FA3); color: #fff; }
+  .stack-layer.l3 { background: linear-gradient(135deg, #F04E98, #D43A7F); color: #fff; }
+  .stack-layer.l4 { background: linear-gradient(135deg, #FEC514, #E0AD00); color: #1a1a1a; }
+  .stack-layer.l5 { background: linear-gradient(135deg, #F98B2B, #E07515); color: #fff; }
+  .stack-layer.l6 { background: linear-gradient(135deg, #93C90E, #7AB00A); color: #1a1a1a; }
+
+  .flow { display: flex; align-items: center; gap: 6px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+  .flow-step { padding: 10px 16px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .flow-arrow { color: var(--text-muted); font-size: 16px; }
+
+  /* Lists */
+  .feature-list { list-style: none; margin-top: 10px; }
+  .feature-list li { padding: 5px 0; font-size: 15px; color: #B0BEC5; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+  .feature-list li::before { content: '→'; color: var(--elastic-teal); font-weight: 700; flex-shrink: 0; }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; background: rgba(0, 191, 179, 0.1); color: var(--elastic-teal); border: 1px solid rgba(0, 191, 179, 0.2); }
+
+  /* Screenshot */
+  .screenshot-placeholder { background: var(--card-bg); border: 2px dashed var(--card-border); border-radius: 12px; padding: 28px; text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 16px; }
+  .screenshot-img { border-radius: 10px; border: 1px solid var(--card-border); max-width: 100%; margin-top: 16px; }
+
+  /* Protocol Badge */
+  .protocol-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+  .protocol-badge.mcp { background: rgba(0, 191, 179, 0.15); color: var(--elastic-teal); border: 1px solid rgba(0, 191, 179, 0.3); }
+  .protocol-badge.a2a { background: rgba(0, 119, 204, 0.15); color: var(--elastic-blue); border: 1px solid rgba(0, 119, 204, 0.3); }
+  .protocol-badge.api { background: rgba(240, 78, 152, 0.15); color: var(--elastic-pink); border: 1px solid rgba(240, 78, 152, 0.3); }
+
+  /* Benchmark Bar */
+  .benchmark-bar-wrapper { margin: 6px 0; }
+  .benchmark-label { font-size: 13px; color: #B0BEC5; margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .benchmark-bar-bg { height: 22px; background: var(--card-bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border); }
+  .benchmark-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 10px; font-weight: 600; color: #fff; }
+
+  /* Connector diagram */
+  .connector-box { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; text-align: center; min-width: 110px; }
+  .connector-box .logo-text { font-size: 20px; }
+  .connector-box .label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .connector-box .sub { font-size: 12px; color: #8899AA; }
+  .arch-line { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+  .arch-arrow { color: var(--elastic-teal); font-size: 22px; font-weight: bold; }
+
+  /* Model Grid */
+  .model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 16px; }
+  .model-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; }
+  .model-card .model-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+  .model-card .model-type { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .model-card .model-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+
+  /* Industry icon */
+  .industry-icon { font-size: 48px; margin-bottom: 12px; display: block; text-align: center; }
+
+  /* References/Footnotes */
+  .footnote-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--card-border); font-size: 13px; color: #8899AA; line-height: 1.6; }
+  .footnote-section .footnote { margin-bottom: 6px; }
+  .footnote-section .source { color: #B0BEC5; font-weight: 500; }
+
+  /* Search Maturity Timeline */
+  .maturity-timeline { display: flex; align-items: center; gap: 0; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
+  .maturity-stage { flex: 1; min-width: 180px; text-align: center; padding: 16px 12px; position: relative; }
+  .maturity-stage-header { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .maturity-stage-methods { font-size: 13px; color: #B0BEC5; line-height: 1.4; margin-bottom: 8px; }
+  .maturity-stage-layer { padding: 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; }
+  .maturity-arrow { flex: 0 0 auto; font-size: 24px; color: var(--elastic-teal); font-weight: bold; margin: 0 4px; }
+
+  /* Retrieval Pipeline */
+  .pipeline { display: flex; gap: 16px; margin-top: 20px; width: 100%; max-width: 1300px; align-items: stretch; margin-left: auto; margin-right: auto; }
+  .pipeline-phase { flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 22px; position: relative; }
+  .pipeline-phase-num { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .pipeline-phase { text-align: left; }
+  .pipeline-phase h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+  .pipeline-method { padding: 8px 14px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; margin-bottom: 6px; font-size: 14px; color: #B0BEC5; font-weight: 500; }
+  .pipeline-arrow { display: flex; align-items: center; color: var(--elastic-teal); font-size: 28px; font-weight: bold; flex-shrink: 0; }
+
+  /* Presenter Notes */
+  .presenter-notes { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(6, 10, 15, 0.97); border-top: 1px solid var(--card-border); padding: 16px 32px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 180px; overflow-y: auto; }
+  .presenter-notes.visible { transform: translateY(0); }
+  .presenter-notes .notes-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 6px; }
+
+  /* ========== MOTION / ANIMATIONS ========== */
+
+  /* Entrance keyframes */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes blurIn {
+    from { opacity: 0; filter: blur(8px); transform: translateY(16px); }
+    to   { opacity: 1; filter: blur(0); transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 191, 179, 0); }
+    50%      { box-shadow: 0 0 20px 4px rgba(0, 191, 179, 0.15); }
+  }
+  @keyframes typewriter {
+    from { width: 0; }
+    to   { width: 100%; }
+  }
+  @keyframes slideArrowBounce {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50%      { transform: translate(-50%, -50%) translateX(6px); }
+  }
+
+  /* Animatable elements — hidden by default, revealed by JS */
+  .slide.active .anim-item {
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .anim-item { opacity: 0; }
+  .slide.active .anim-fade-up    { animation-name: fadeInUp; }
+  .slide.active .anim-fade-down  { animation-name: fadeInDown; }
+  .slide.active .anim-fade-left  { animation-name: fadeInLeft; }
+  .slide.active .anim-fade-right { animation-name: fadeInRight; }
+  .slide.active .anim-scale      { animation-name: scaleIn; }
+  .slide.active .anim-blur       { animation-name: blurIn; }
+
+  /* Duration variants */
+  .anim-fast   { animation-duration: 0.4s; }
+  .anim-normal { animation-duration: 0.6s; }
+  .anim-slow   { animation-duration: 0.85s; }
+
+  /* Stagger delay classes (set by JS, but CSS fallback) */
+  .anim-d0  { animation-delay: 0ms; }
+  .anim-d1  { animation-delay: 80ms; }
+  .anim-d2  { animation-delay: 160ms; }
+  .anim-d3  { animation-delay: 240ms; }
+  .anim-d4  { animation-delay: 320ms; }
+  .anim-d5  { animation-delay: 400ms; }
+  .anim-d6  { animation-delay: 480ms; }
+  .anim-d7  { animation-delay: 560ms; }
+  .anim-d8  { animation-delay: 640ms; }
+  .anim-d9  { animation-delay: 720ms; }
+  .anim-d10 { animation-delay: 800ms; }
+
+  /* Card hover — lift + glow */
+  .card {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 191, 179, 0.12);
+    border-color: rgba(0, 191, 179, 0.25);
+  }
+
+  /* Tag hover */
+  .tag {
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 191, 179, 0.2);
+  }
+
+  /* Protocol badge pulse on hover */
+  .protocol-badge {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .protocol-badge:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 16px rgba(0, 191, 179, 0.2);
+  }
+
+  /* Pipeline phase hover */
+  .pipeline-phase {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+  }
+  .pipeline-phase:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Pipeline method hover */
+  .pipeline-method {
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .pipeline-method:hover {
+    transform: translateX(4px);
+    background: rgba(0, 191, 179, 0.12);
+  }
+
+  /* Benchmark bar animated fill */
+  .benchmark-bar-fill {
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Connector box hover */
+  .connector-box {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .connector-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border-color: var(--elastic-teal);
+  }
+
+  /* Comparison table row hover */
+  .comparison-table tbody tr {
+    transition: background 0.2s ease;
+  }
+  .comparison-table tbody tr:hover {
+    background: rgba(0, 191, 179, 0.04);
+  }
+
+  /* Progress bar shimmer */
+  .progress-bar {
+    background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue), var(--elastic-teal));
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  /* Slide title highlight text shimmer */
+  .highlight {
+    background: linear-gradient(90deg, var(--elastic-teal), #00E5D6, var(--elastic-teal));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  /* Subtle floating animation for icons */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+  }
+  .card .icon {
+    transition: transform 0.3s ease;
+  }
+  .card:hover .icon {
+    animation: float 1.5s ease-in-out infinite;
+  }
+
+  /* ===== ENHANCED INTERACTIVITY ===== */
+
+  /* Animated particle canvas on title slide */
+  #particleCanvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+  .slide .slide-content { position: relative; z-index: 1; }
+
+  /* Typewriter effect for code blocks on active slide */
+  @keyframes typeCursor {
+    0%, 100% { border-right-color: var(--elastic-teal); }
+    50%      { border-right-color: transparent; }
+  }
+  .code-block.typing-active {
+    border-right: 2px solid var(--elastic-teal);
+    animation: typeCursor 0.8s step-end infinite;
+    overflow: hidden;
+  }
+
+  /* Glow ring for protocol badges on flow slide */
+  @keyframes glowRing {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 191, 179, 0.3); }
+    50%      { box-shadow: 0 0 0 8px rgba(0, 191, 179, 0); }
+  }
+  .protocol-badge.mcp:hover { animation: glowRing 1.5s ease-in-out infinite; }
+  .protocol-badge.a2a:hover { animation: glowRing 1.5s ease-in-out infinite; }
+  .protocol-badge.api:hover { animation: glowRing 1.5s ease-in-out infinite; }
+
+  /* Pipeline phase — static border, glow on hover only */
+
+  /* Comparison table staggered row reveal */
+  .slide.active .comparison-table tbody tr {
+    animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .slide.active .comparison-table tbody tr:nth-child(1) { animation-delay: 0.15s; }
+  .slide.active .comparison-table tbody tr:nth-child(2) { animation-delay: 0.22s; }
+  .slide.active .comparison-table tbody tr:nth-child(3) { animation-delay: 0.29s; }
+  .slide.active .comparison-table tbody tr:nth-child(4) { animation-delay: 0.36s; }
+  .slide.active .comparison-table tbody tr:nth-child(5) { animation-delay: 0.43s; }
+  .slide.active .comparison-table tbody tr:nth-child(6) { animation-delay: 0.5s; }
+  .slide.active .comparison-table tbody tr:nth-child(7) { animation-delay: 0.57s; }
+  .slide.active .comparison-table tbody tr:nth-child(8) { animation-delay: 0.64s; }
+  .slide.active .comparison-table tbody tr:nth-child(9) { animation-delay: 0.71s; }
+
+  /* Maturity stage cards cascade */
+  .slide.active .card { animation: fadeInUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+  /* Feature list items stagger */
+  .slide.active .feature-list li {
+    animation: fadeInLeft 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .slide.active .feature-list li:nth-child(1) { animation-delay: 0.1s; }
+  .slide.active .feature-list li:nth-child(2) { animation-delay: 0.18s; }
+  .slide.active .feature-list li:nth-child(3) { animation-delay: 0.26s; }
+  .slide.active .feature-list li:nth-child(4) { animation-delay: 0.34s; }
+  .slide.active .feature-list li:nth-child(5) { animation-delay: 0.42s; }
+
+  /* Tag list items pop in */
+  @keyframes tagPop {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .slide.active .tag-list .tag {
+    animation: tagPop 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .slide.active .tag-list .tag:nth-child(1) { animation-delay: 0.3s; }
+  .slide.active .tag-list .tag:nth-child(2) { animation-delay: 0.38s; }
+  .slide.active .tag-list .tag:nth-child(3) { animation-delay: 0.46s; }
+  .slide.active .tag-list .tag:nth-child(4) { animation-delay: 0.54s; }
+  .slide.active .tag-list .tag:nth-child(5) { animation-delay: 0.62s; }
+  .slide.active .tag-list .tag:nth-child(6) { animation-delay: 0.7s; }
+  .slide.active .tag-list .tag:nth-child(7) { animation-delay: 0.78s; }
+
+  /* Stack layer slide-in */
+  .slide.active .stack-layer {
+    animation: fadeInLeft 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  /* Section label typewriter-ish */
+  @keyframes labelReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+  .slide.active .section-label {
+    animation: labelReveal 0.6s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 32px 24px; }
+    .two-col, .three-col { grid-template-columns: 1fr; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Fixed Header with Official Elastic Logo -->
+<div class="slide-header">
+  <img src="logo-elastic-horizontal-color-reverse.png" alt="Elastic" style="height: 28px;">
+</div>
+
+<div class="deck" id="deck">
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="slide-counter" id="slideCounter"></div>
+  <div class="nav-hint"><kbd>←</kbd> <kbd>→</kbd> navigate &nbsp; <kbd>N</kbd> notes &nbsp; <kbd>F</kbd> fullscreen</div>
+  <button id="fullscreenBtn" onclick="toggleFullscreen()" style="position: fixed; bottom: 24px; right: 24px; z-index: 200; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary); font-size: 16px; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease; opacity: 0.5;" onmouseenter="this.style.opacity='1';this.style.transform='scale(1.1)'" onmouseleave="this.style.opacity='0.5';this.style.transform='scale(1)'" title="Toggle Fullscreen (F)">⛶</button>
+
+  <!-- ===== SLIDE 1: TITLE ===== -->
+  <div class="slide" data-notes="Open strong. Set the tone — infrastructure, not hype. Audience: SAs, devs, customers. They've heard every AI claim. Show them what's real.">
+    <canvas id="particleCanvas"></canvas>
+    <div class="slide-content centered">
+      <img src="logo-elastic-horizontal-color-reverse.png" alt="Elastic" style="height: 52px; margin-bottom: 24px;">
+      <div class="section-label">Elastic Agent Builder for Enterprise Use Cases</div>
+      <h1 class="slide-title">Elastic Agent Builder<br><span class="highlight">for Enterprise Use Cases</span></h1>
+      <p class="slide-subtitle">Build, deploy, and scale production-grade AI agents — from retrieval to orchestration — powered by the Elastic AI Search platform trusted at enterprise scale.</p>
+      <div class="tag-list" style="justify-content: center; margin-top: 24px;">
+        <span class="tag">Agent Builder</span>
+        <span class="tag">MCP / A2A</span>
+        <span class="tag">Agent Skills</span>
+        <span class="tag">Hybrid Search</span>
+        <span class="tag">Model Catalog</span>
+        <span class="tag">Jina v5</span>
+        <span class="tag">Open Source</span>
+      </div>
+      <div style="margin-top: 56px; font-size: 15px; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); font-size: 17px;">Ashish Tiwari</strong><br>
+        <span style="color: var(--elastic-teal); font-weight: 600;">Principal Solutions Architect</span> — Search Specialist
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 2: ELASTIC PLATFORM ===== -->
+  <style>
+    @keyframes platformPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 191, 179, 0); }
+      50% { box-shadow: 0 0 16px 3px rgba(0, 191, 179, 0.15); }
+    }
+    @keyframes dataFlowLeft {
+      0% { opacity: 0; transform: translateX(-30px); }
+      50% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(30px); }
+    }
+    @keyframes dataFlowRight {
+      0% { opacity: 0; transform: translateX(-30px); }
+      50% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(30px); }
+    }
+    .platform-node {
+      padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      text-align: center; border: 1px solid var(--card-border); background: var(--card-bg);
+      color: var(--text-primary); transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .platform-node:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .platform-product {
+      padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700;
+      text-align: center; border: 2px solid; transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .platform-product:hover { transform: translateY(-3px); }
+    .platform-capability {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 10px 8px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.12);
+      border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-primary);
+      text-align: center; min-width: 80px; transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .platform-capability:hover { transform: translateY(-2px); background: rgba(0,191,179,0.12); }
+    .platform-capability .cap-icon { font-size: 18px; }
+    .platform-capability .cap-label { font-size: 10px; color: var(--text-secondary); }
+    .deploy-option {
+      padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600;
+      color: var(--text-primary); transition: transform 0.2s ease;
+    }
+    .deploy-option:hover { transform: translateY(-2px); }
+    .deploy-option .deploy-sub { font-size: 9px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
+    .flow-dot {
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+      animation: platformPulse 2s ease-in-out infinite;
+    }
+    .data-flow-line {
+      height: 2px; flex: 1; min-width: 20px; border-radius: 1px;
+      background: linear-gradient(90deg, transparent, var(--elastic-teal), transparent);
+      background-size: 200% 100%; animation: flowPulse 2s linear infinite;
+    }
+    .data-flow-line-v {
+      width: 2px; height: 16px; margin: 0 auto; border-radius: 1px;
+      background: linear-gradient(180deg, transparent, var(--elastic-teal), transparent);
+      background-size: 100% 200%; animation: flowPulseV 2s linear infinite;
+    }
+  </style>
+  <div class="slide" data-notes="Elastic platform overview. Three products: Elasticsearch (build your own), Observability, Security. All powered by the Search AI Platform with Ingestion, Processing, Storage, Search, AI & ML, Visualization, Automation. Available self-managed, cloud, or serverless.">
+    <div class="slide-content">
+      <div class="section-label">Platform Overview</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 3vw, 42px);">The Elastic <span class="highlight">Search AI Platform</span></h1>
+      <p class="slide-subtitle" style="font-size: 16px; margin-bottom: 4px;"><span class="highlight-yellow">All Your Data</span>, Real-Time, At Scale</p>
+      <p class="slide-subtitle" style="font-size: 14px; margin-bottom: 16px;">Accelerate mission outcomes by finding insights from any data source</p>
+
+      <!-- Main platform diagram -->
+      <div style="display: flex; align-items: stretch; gap: 0; width: 100%; max-width: 1300px; margin: 0 auto;">
+
+        <!-- LEFT: Any Data Source -->
+        <div style="flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 6px;">Any Data Source</div>
+          <div class="platform-node" style="width: 130px;">Endpoints</div>
+          <div class="platform-node" style="width: 130px;">Applications</div>
+          <div class="platform-node" style="width: 130px;">Infrastructure</div>
+          <div class="platform-node" style="width: 130px;">Services</div>
+          <div class="platform-node" style="width: 130px;">Network/Security</div>
+        </div>
+
+        <!-- Animated flow dots -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 8px;">
+          <div class="flow-dot" style="background: var(--elastic-blue);"></div>
+          <div class="data-flow-line" style="width: 2px; height: 80px; background: linear-gradient(180deg, transparent, var(--elastic-teal), transparent); background-size: 100% 200%; animation: flowPulseV 2s linear infinite;"></div>
+          <div class="flow-dot" style="background: var(--elastic-teal);"></div>
+        </div>
+
+        <!-- CENTER: Platform -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+
+          <!-- Three Products Row -->
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <div class="platform-product" style="border-color: var(--elastic-yellow); color: var(--elastic-yellow); flex: 1;">
+              <div style="font-size: 10px; font-weight: 500; opacity: 0.7; margin-bottom: 2px;">Build Your Own</div>
+              Elasticsearch
+            </div>
+            <div class="platform-product" style="border-color: var(--elastic-teal); color: var(--elastic-teal); flex: 1;">
+              <div style="font-size: 10px; font-weight: 500; opacity: 0.7; margin-bottom: 2px;">Out-of-the-Box</div>
+              Observability
+            </div>
+            <div class="platform-product" style="border-color: var(--elastic-blue); color: var(--elastic-blue); flex: 1;">
+              <div style="font-size: 10px; font-weight: 500; opacity: 0.7; margin-bottom: 2px;">Out-of-the-Box</div>
+              Security
+            </div>
+          </div>
+
+          <!-- Search AI Platform Box -->
+          <div style="background: rgba(0,191,179,0.04); border: 1px solid rgba(0,191,179,0.15); border-radius: 12px; padding: 14px 16px;">
+            <div style="text-align: center; font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px;">Search AI Platform</div>
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+              <div class="platform-capability"><span class="cap-icon">⚡</span><span class="cap-label">Ingestion</span></div>
+              <div class="platform-capability"><span class="cap-icon">⚙️</span><span class="cap-label">Processing</span></div>
+              <div class="platform-capability" style="background: rgba(0,119,204,0.1); border-color: rgba(0,119,204,0.2);"><span class="cap-icon">💾</span><span class="cap-label">Storage</span></div>
+              <div class="platform-capability" style="background: rgba(0,119,204,0.1); border-color: rgba(0,119,204,0.2);"><span class="cap-icon">🔍</span><span class="cap-label">Search</span></div>
+              <div class="platform-capability" style="background: rgba(254,197,20,0.08); border-color: rgba(254,197,20,0.15);"><span class="cap-icon">🧠</span><span class="cap-label">AI &amp; ML</span></div>
+              <div class="platform-capability"><span class="cap-icon">📊</span><span class="cap-label">Visualization</span></div>
+              <div class="platform-capability"><span class="cap-icon">🔄</span><span class="cap-label">Automation</span></div>
+            </div>
+            <!-- Search AI Lake -->
+            <div style="margin-top: 10px; text-align: center;">
+              <div style="display: inline-block; padding: 6px 28px; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue)); border-radius: 20px; font-size: 12px; font-weight: 700; color: #fff;">Search AI Lake</div>
+            </div>
+          </div>
+
+          <!-- Deployment options -->
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <div class="flow-dot" style="background: var(--elastic-pink); align-self: center;"></div>
+            <div class="deploy-option"><div>Self-Managed</div><div class="deploy-sub">Full control on your infrastructure</div></div>
+            <div class="deploy-option"><div>Elastic Cloud</div><div class="deploy-sub">Managed service on AWS, GCP, Azure</div></div>
+            <div class="deploy-option"><div>Serverless</div><div class="deploy-sub">Zero ops, automatic scaling</div></div>
+          </div>
+        </div>
+
+        <!-- Animated flow dots -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 8px;">
+          <div class="flow-dot" style="background: var(--elastic-teal);"></div>
+          <div class="data-flow-line" style="width: 2px; height: 80px; background: linear-gradient(180deg, transparent, var(--elastic-blue), transparent); background-size: 100% 200%; animation: flowPulseV 2s linear infinite;"></div>
+          <div class="flow-dot" style="background: var(--elastic-pink);"></div>
+        </div>
+
+        <!-- RIGHT: Outcomes -->
+        <div style="flex: 0 0 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 6px;">Outcomes</div>
+          <div class="platform-node" style="width: 140px; border-left: 3px solid var(--elastic-teal);">📊 Dashboards</div>
+          <div class="platform-node" style="width: 140px; border-left: 3px solid var(--elastic-pink);">🔗 Integrations</div>
+          <div class="platform-node" style="width: 140px; border-left: 3px solid var(--elastic-green);">⚙️ Orchestration</div>
+          <div class="platform-node" style="width: 140px; border-left: 3px solid var(--elastic-yellow);">⚡ Workflows</div>
+        </div>
+      </div>
+
+      <!-- Bottom summary -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 14px; max-width: 1300px;">
+        <div class="card" style="padding: 14px 18px;">
+          <div class="flow-dot" style="background: var(--elastic-blue); margin-bottom: 6px;"></div>
+          <h3 style="font-size: 15px;">One Platform</h3>
+          <p style="font-size: 12px;">Search, Observability, and Security unified on a single data layer</p>
+        </div>
+        <div class="card" style="padding: 14px 18px;">
+          <div class="flow-dot" style="background: var(--elastic-green); margin-bottom: 6px;"></div>
+          <h3 style="font-size: 15px;">Any Deployment</h3>
+          <p style="font-size: 12px;">Self-managed, cloud-hosted, or fully serverless — your choice</p>
+        </div>
+        <div class="card" style="padding: 14px 18px;">
+          <div class="flow-dot" style="background: var(--elastic-pink); margin-bottom: 6px;"></div>
+          <h3 style="font-size: 15px;">Real-Time Insights</h3>
+          <p style="font-size: 12px;">From ingestion to action in milliseconds, at petabyte scale</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 3: SEARCH MATURITY MODEL ===== -->
+  <div class="slide" data-notes="The search maturity model. Evolution from keyword to hybrid to RAG to agentic. Each stage builds on the previous. This is the story of how search evolved — and why each leap matters.">
+    <div class="slide-content">
+      <div class="section-label">Search Maturity — From Keywords to Agents</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">The <span class="highlight">Search Maturity Model</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Search didn't jump from keywords to AI. It evolved in five distinct stages — each solving the limitations of the last.</p>
+      <!-- Row 1: Stages 1-3 -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; max-width: 1300px; margin: 0 auto;">
+        <!-- Stage 1 -->
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 8px;">Stage 1</div>
+          <h3 style="font-size: 17px; margin-bottom: 6px;">Keyword Search</h3>
+          <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">BM25 / TF-IDF</div>
+          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Exact term matching. Fast and predictable. The foundation of web search for 20+ years.</p>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
+            <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">No understanding of meaning. "automobile" won't find "car". Vocabulary mismatch kills recall.</p>
+          </div>
+        </div>
+        <!-- Stage 2: Semantic Search -->
+        <div class="card" style="border-top: 3px solid var(--elastic-orange); padding: 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-orange); margin-bottom: 8px;">Stage 2</div>
+          <h3 style="font-size: 17px; margin-bottom: 6px;">Semantic Search</h3>
+          <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">Dense Vectors / kNN</div>
+          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Embedding models encode meaning into vectors. "car" and "automobile" land nearby. Understands intent, not just words.</p>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
+            <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Loses precision on exact terms, names, codes. Struggles with structured or boolean queries.</p>
+          </div>
+        </div>
+        <!-- Stage 3: Hybrid Search -->
+        <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-blue); margin-bottom: 8px;">Stage 3</div>
+          <h3 style="font-size: 17px; margin-bottom: 6px;">Hybrid Search</h3>
+          <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">BM25 + Vector + ELSER + RRF</div>
+          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Best of both worlds. Fuses keyword precision with semantic recall. ELSER adds learned sparse representations. RRF merges rankings.</p>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
+            <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Returns documents, not answers. Users still read and synthesize results manually.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Arrow between rows -->
+      <div style="text-align: center; margin: 8px 0; color: var(--elastic-teal); font-size: 24px; font-weight: bold;">↓</div>
+      <!-- Row 2: Stages 4-5 -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 880px; margin: 0 auto;">
+        <!-- Stage 4: Conversational RAG -->
+        <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-pink); margin-bottom: 8px;">Stage 4</div>
+          <h3 style="font-size: 17px; margin-bottom: 6px;">Conversational RAG</h3>
+          <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">LLM + Retrieval + Memory</div>
+          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">LLM generates answers grounded in retrieved context. Conversational memory rewrites follow-ups. Users get answers, not links.</p>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
+            <p style="font-size: 11px; color: var(--elastic-pink); margin: 0; font-weight: 600;">Limitation</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Read-only. Can answer questions but can't take actions, call APIs, or chain multi-step workflows.</p>
+          </div>
+        </div>
+        <!-- Stage 5: Agentic AI -->
+        <div class="card" style="border-top: 3px solid var(--elastic-green); padding: 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-green); margin-bottom: 8px;">Stage 5</div>
+          <h3 style="font-size: 17px; margin-bottom: 6px;">Agentic AI</h3>
+          <div style="font-size: 12px; color: var(--elastic-yellow); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">Agents + Tools + MCP/A2A</div>
+          <p style="font-size: 13px; color: #B0BEC5; line-height: 1.5; margin-bottom: 10px;">Agents reason, plan, and act. Retrieve context, call tools, delegate to other agents, execute multi-step workflows autonomously.</p>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 8px; margin-top: auto;">
+            <p style="font-size: 11px; color: var(--elastic-green); margin: 0; font-weight: 600;">Current frontier</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin: 2px 0 0;">Requires robust retrieval, tool orchestration, guardrails, and observability. This is where Elastic plays.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom insight bar -->
+      <div class="card" style="margin-top: 12px; padding: 12px 24px; display: flex; align-items: center; gap: 16px; width: 100%; max-width: 1300px;">
+        <span style="font-size: 22px; flex-shrink: 0;">💡</span>
+        <p style="font-size: 13px; color: #B0BEC5; margin: 0; line-height: 1.5;"><strong style="color: var(--text-primary);">Key insight:</strong> Each stage builds on the previous — you can't skip steps. Agentic AI without solid retrieval is just expensive hallucination. The maturity model is cumulative, not a replacement.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 4: PLAYGROUND ===== -->
+  <div class="slide" data-notes="Elastic Playground is the UI for prototyping RAG applications. Show the core features: Chat and Query modes, LLM flexibility, query inspection, Python export, conversational memory, A/B testing, and requirements.">
+    <div class="slide-content">
+      <div class="section-label">Playground — No-Code RAG Prototyping</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Elastic <span class="highlight">Playground</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 14px;">UI for building and testing RAG applications without writing code.</p>
+      <!-- Screenshot left + 4 cards right in 2x2 grid -->
+      <div style="display: flex; gap: 18px; align-items: stretch; width: 100%; max-width: 1300px; margin: 0 auto;">
+        <!-- Screenshot -->
+        <div style="flex: 1.1; display: flex; align-items: center; justify-content: center; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; min-height: 300px;">
+          <img src="playground.png" alt="Elastic Playground" style="width: 100%; height: 100%; object-fit: contain; border-radius: 11px; padding: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-size: 12px;">Drop <strong>playground.png</strong> in the same folder</div>
+        </div>
+        <!-- 4 feature cards in 2x2 grid -->
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 16px;">
+            <h3 style="font-size: 15px;">Core Modes</h3>
+            <ul class="feature-list" style="font-size: 12px;">
+              <li>Chat mode — conversations with context retrieval</li>
+              <li>Query mode — test and refine ES queries</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--elastic-blue); padding: 16px;">
+            <h3 style="font-size: 15px;">LLM Flexibility</h3>
+            <ul class="feature-list" style="font-size: 12px;">
+              <li>Elastic Managed inference</li>
+              <li>OpenAI, Bedrock, Azure, local</li>
+              <li>Swap models per iteration</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 16px;">
+            <h3 style="font-size: 15px;">Advanced Features</h3>
+            <ul class="feature-list" style="font-size: 12px;">
+              <li>View & modify ES queries in real-time</li>
+              <li>Export Python code for your app</li>
+              <li>A/B test models & retrieval strategies</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 16px;">
+            <h3 style="font-size: 15px;">Memory & Context</h3>
+            <ul class="feature-list" style="font-size: 12px;">
+              <li>Conversational memory rewrites follow-ups</li>
+              <li>Session state across turns</li>
+              <li>No manual prompt engineering</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Requirements bar at bottom -->
+      <div class="card" style="margin-top: 12px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; width: 100%; max-width: 1300px;">
+        <h3 style="font-size: 14px; margin: 0; white-space: nowrap;">Requirements</h3>
+        <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Elasticsearch v8.14+, one index with data, LLM provider credentials (Elastic, OpenAI, Bedrock, Azure, or local)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 5: THE PROBLEM ===== -->
+  <div class="slide" data-notes="Ground the audience. Most agents are demos. The bottleneck is never the model — it's always the context. This frames the entire talk.">
+    <div class="slide-content">
+      <div class="section-label">The Problem — Why Agents Fail</div>
+      <h1 class="slide-title">Most Agents Break After <span class="highlight-pink">Three Turns</span></h1>
+      <p class="slide-subtitle" style="font-size: 16px; margin-bottom: 20px;">The bottleneck is never the model. It's always the context.</p>
+      <div class="two-col">
+        <div class="card" style="text-align: left;">
+          <ul class="feature-list" style="margin-top: 0;">
+            <li>LLMs can reason. They can't remember.</li>
+            <li>Stuffing 200k tokens into a prompt isn't a strategy</li>
+            <li>Agents need the <em>right</em> context at the <em>right</em> time</li>
+            <li>Retrieval isn't a feature — it's the foundation</li>
+            <li>Without search, your agent is expensive autocomplete</li>
+          </ul>
+          <div class="footnote-section">
+            <div class="footnote"><span class="source">Multi-agent LLM systems fail at 41-86.7% rates in production</span> — orq.ai</div>
+            <div class="footnote"><span class="source">Context rot: accuracy decreases as context length increases</span> — inkeep.com</div>
+            <div class="footnote"><span class="source">Cascading failures where single root-cause error propagates</span> — atla-ai.com</div>
+          </div>
+        </div>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="code-block" style="margin: 0; border: none; border-radius: 12px; height: 100%; display: flex; align-items: center;">
+            <div>
+              <span class="comment">// what most "agents" look like today</span><br><br>
+              <span class="keyword">while</span> (<span class="prop">true</span>) {<br>
+              &nbsp;&nbsp;<span class="keyword">const</span> response = <span class="keyword">await</span> <span class="func">llm</span>(<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">`${entire_knowledge_base}`</span> +<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">`${all_chat_history}`</span> +<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">`${user_message}`</span><br>
+              &nbsp;&nbsp;)<br>
+              &nbsp;&nbsp;<span class="comment">// $4.20 per turn</span><br>
+              &nbsp;&nbsp;<span class="comment">// 12 second latency</span><br>
+              &nbsp;&nbsp;<span class="comment">// still hallucinates</span><br>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 6: BUILD ONCE CONNECT EVERYWHERE ===== -->
+  <div class="slide" data-notes="Show the official architecture diagram. Chat Integrations (Claude, Cursor) connect via MCP to Tools. Custom Agents (LangChain, Google, OpenAI) connect via API/A2A to Agents. Chat Experience connects directly. All sits on Elasticsearch Platform with 200+ connectors.">
+    <div class="slide-content">
+      <div class="section-label">Architecture — How It All Connects</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Elastic Agent Builder: Build Once. <span class="highlight">Connect Everywhere.</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Chat Integrations via MCP → Tools. Custom Agents via API/A2A → Agents. Native Chat Experience → Elastic UI. All on the Elasticsearch Platform.</p>
+      <div style="margin-top: 8px; text-align: center;">
+        <img src="agent-builder-arch.png" alt="Elastic Agent Builder Architecture" style="max-width: 100%; max-height: 440px; border-radius: 12px; border: 1px solid var(--card-border);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="screenshot-placeholder" style="display: none; min-height: 300px; align-items: center; justify-content: center; width: 100%;">Drop <strong>agent-builder-arch.png</strong> in the same folder as this HTML file</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8: THREE BUILDING BLOCKS ===== -->
+  <div class="slide" data-notes="Three core components. Chat for testing, Agents for behavior+tools, Tools for actions. Each is independently configurable. Built-in tools include Index Search, ES|QL, Semantic Reranker, and MCP tools.">
+    <div class="slide-content">
+      <div class="section-label">Agent Builder — Core Components</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Chat + Agents + <span class="highlight">Tools</span></h1>
+      <div class="three-col" style="margin-bottom: 14px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
+          <span class="icon">💬</span>
+          <h3>Chat</h3>
+          <p style="font-size: 14px;">Interactive playground to test and iterate. Connect an index, pick a model, test retrieval — all in the browser.</p>
+          <div class="tag-list" style="margin-top: 8px;">
+            <span class="tag" style="font-size: 11px;">Chat Mode</span>
+            <span class="tag" style="font-size: 11px;">Query Mode</span>
+            <span class="tag" style="font-size: 11px;">Session Memory</span>
+          </div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
+          <span class="icon">🤖</span>
+          <h3>Agents</h3>
+          <p style="font-size: 14px;">Custom LLM instructions paired with toolsets. Define behavior, assign tools, set guardrails. Purpose-built for any use case.</p>
+          <div class="tag-list" style="margin-top: 8px;">
+            <span class="tag" style="font-size: 11px; background: rgba(0,119,204,0.1); color: var(--elastic-blue); border-color: rgba(0,119,204,0.2);">System Prompt</span>
+            <span class="tag" style="font-size: 11px; background: rgba(0,119,204,0.1); color: var(--elastic-blue); border-color: rgba(0,119,204,0.2);">Tool Bindings</span>
+            <span class="tag" style="font-size: 11px; background: rgba(0,119,204,0.1); color: var(--elastic-blue); border-color: rgba(0,119,204,0.2);">Guardrails</span>
+          </div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
+          <span class="icon">🔧</span>
+          <h3>Tools</h3>
+          <p style="font-size: 14px;">The actions your agent can take. Built-in Elastic tools, custom tools, or import any external MCP tool.</p>
+          <div class="tag-list" style="margin-top: 8px;">
+            <span class="tag" style="font-size: 11px; background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">Built-in</span>
+            <span class="tag" style="font-size: 11px; background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">Custom</span>
+            <span class="tag" style="font-size: 11px; background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">MCP Import</span>
+          </div>
+        </div>
+      </div>
+      <!-- Custom Tool Types -->
+      <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 16px 20px;">
+        <h3 style="font-size: 15px; margin-bottom: 10px;">🔧 Tool Types — What Your Agent Can Use</h3>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+          <div style="padding: 10px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,191,179,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,191,179,0.06)'">
+            <div style="font-size: 18px; margin-bottom: 4px;">📊</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--elastic-teal);">ES|QL Tools</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Execute pre-defined ES|QL queries with parameterized inputs for precise, repeatable data retrieval</div>
+          </div>
+          <div style="padding: 10px; background: rgba(0,119,204,0.06); border: 1px solid rgba(0,119,204,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(0,119,204,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(0,119,204,0.06)'">
+            <div style="font-size: 18px; margin-bottom: 4px;">🔍</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--elastic-blue);">Index Search Tools</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Scope searches to specific indices or patterns. The LLM dynamically constructs queries based on user requests</div>
+          </div>
+          <div style="padding: 10px; background: rgba(240,78,152,0.06); border: 1px solid rgba(240,78,152,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(240,78,152,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(240,78,152,0.06)'">
+            <div style="font-size: 18px; margin-bottom: 4px;">🔗</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--elastic-pink);">MCP Tools</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Connect to external MCP servers, enabling agents to use remote tools and services</div>
+          </div>
+          <div style="padding: 10px; background: rgba(254,197,20,0.06); border: 1px solid rgba(254,197,20,0.12); border-radius: 8px; text-align: center; transition: transform 0.2s ease, background 0.2s ease;" onmouseenter="this.style.transform='translateY(-3px)';this.style.background='rgba(254,197,20,0.12)'" onmouseleave="this.style.transform='';this.style.background='rgba(254,197,20,0.06)'">
+            <div style="font-size: 18px; margin-bottom: 4px;">⚡</div>
+            <div style="font-size: 13px; font-weight: 700; color: var(--elastic-yellow);">Workflow Tools</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Call pre-defined Workflows directly from the agent chat for orchestrated multi-step actions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8b: ELASTIC WORKFLOWS ===== -->
+  <div class="slide" data-notes="Elastic Workflows — native automation engine for Elasticsearch. Technical Preview. Combines predictable execution with AI reasoning. Triggers: alerts, schedules, manual, webhooks. Steps: conditions, loops, for-each, AI prompts, HTTP. Actions: Slack, Jira, PagerDuty, any API. Defined in YAML. Runs where your data lives.">
+    <div class="slide-content">
+      <div class="section-label">Native Automation — Elastic Workflows <span style="background: rgba(254,197,20,0.15); color: var(--elastic-yellow); padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 8px;">TECH PREVIEW</span></div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Elastic <span class="highlight">Workflows</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 14px;">Native automation engine that combines <strong style="color: var(--text-primary);">predictable execution</strong> with <strong style="color: var(--text-primary);">AI agent reasoning</strong> — directly where your data lives.</p>
+
+      <!-- Trigger → Workflow → Actions flow -->
+      <div style="display: flex; align-items: stretch; gap: 0; width: 100%; max-width: 1300px; margin: 0 auto 14px;">
+
+        <!-- Triggers column -->
+        <div style="flex: 0 0 180px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); margin-bottom: 4px; text-align: center;">Triggers</div>
+          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-teal); text-align: left; padding: 8px 12px;">🔔 Elastic Alerts</div>
+          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-blue); text-align: left; padding: 8px 12px;">⏰ Schedule / Cron</div>
+          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-pink); text-align: left; padding: 8px 12px;">▶️ Manual Run</div>
+          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-yellow); text-align: left; padding: 8px 12px;">🔗 Webhooks</div>
+          <div class="platform-node" style="width: 170px; border-left: 3px solid var(--elastic-green); text-align: left; padding: 8px 12px;">🤖 Agent Builder</div>
+        </div>
+
+        <!-- Flow arrow -->
+        <div style="display: flex; align-items: center; padding: 0 10px;">
+          <div class="flow-line-h" style="min-width: 30px; width: 30px; height: 3px; background: linear-gradient(90deg, transparent, var(--elastic-teal), transparent); background-size: 200% 100%; animation: flowPulse 2s linear infinite;"></div>
+        </div>
+
+        <!-- Center: Workflow Engine -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-teal); text-align: center;">Workflow Engine</div>
+          <div style="background: linear-gradient(135deg, rgba(0,191,179,0.08), rgba(0,119,204,0.06)); border: 2px solid var(--elastic-teal); border-radius: 12px; padding: 14px; box-shadow: 0 0 24px rgba(0,191,179,0.1);">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <div style="padding: 8px; background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">🔀</div>Conditions<div style="font-size: 9px; color: var(--text-secondary);">if / else branching</div>
+              </div>
+              <div style="padding: 8px; background: rgba(0,119,204,0.06); border: 1px solid rgba(0,119,204,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">🔄</div>Loops<div style="font-size: 9px; color: var(--text-secondary);">for-each iteration</div>
+              </div>
+              <div style="padding: 8px; background: rgba(240,78,152,0.06); border: 1px solid rgba(240,78,152,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">🧠</div>AI Prompts<div style="font-size: 9px; color: var(--text-secondary);">LLM reasoning steps</div>
+              </div>
+              <div style="padding: 8px; background: rgba(254,197,20,0.06); border: 1px solid rgba(254,197,20,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">🌐</div>HTTP Steps<div style="font-size: 9px; color: var(--text-secondary);">Call any API</div>
+              </div>
+              <div style="padding: 8px; background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">🔍</div>ES Search<div style="font-size: 9px; color: var(--text-secondary);">Query &amp; index data</div>
+              </div>
+              <div style="padding: 8px; background: rgba(255,116,0,0.06); border: 1px solid rgba(255,116,0,0.15); border-radius: 8px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-primary); transition: transform 0.2s ease;" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''">
+                <div style="font-size: 16px; margin-bottom: 2px;">📋</div>Cases<div style="font-size: 9px; color: var(--text-secondary);">Case management</div>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 8px; font-size: 10px; color: var(--text-secondary); font-style: italic;">Defined in YAML — platform handles execution</div>
+          </div>
+        </div>
+
+        <!-- Flow arrow -->
+        <div style="display: flex; align-items: center; padding: 0 10px;">
+          <div class="flow-line-h" style="min-width: 30px; width: 30px; height: 3px; background: linear-gradient(90deg, transparent, var(--elastic-blue), transparent); background-size: 200% 100%; animation: flowPulse 2s linear infinite;"></div>
+        </div>
+
+        <!-- Actions column -->
+        <div style="flex: 0 0 180px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--elastic-pink); margin-bottom: 4px; text-align: center;">Actions</div>
+          <div class="platform-node" style="width: 170px; border-right: 3px solid var(--elastic-pink); text-align: left; padding: 8px 12px;">💬 Slack Messages</div>
+          <div class="platform-node" style="width: 170px; border-right: 3px solid var(--elastic-blue); text-align: left; padding: 8px 12px;">🎫 Jira Tickets</div>
+          <div class="platform-node" style="width: 170px; border-right: 3px solid var(--elastic-orange); text-align: left; padding: 8px 12px;">🚨 PagerDuty</div>
+          <div class="platform-node" style="width: 170px; border-right: 3px solid var(--elastic-teal); text-align: left; padding: 8px 12px;">📧 Email / Notify</div>
+          <div class="platform-node" style="width: 170px; border-right: 3px solid var(--elastic-yellow); text-align: left; padding: 8px 12px;">⚙️ Any API / Service</div>
+        </div>
+      </div>
+
+      <!-- Bottom: Agent + Workflow integration -->
+      <div style="display: flex; gap: 12px; max-width: 1300px; margin: 0 auto;">
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-green); padding: 14px 18px;">
+          <h3 style="font-size: 14px; margin-bottom: 6px;">🤖 Agent + Workflow Integration</h3>
+          <p style="font-size: 12px; color: #B0BEC5; margin: 0;">Add any workflow as a <strong style="color: var(--text-primary);">tool</strong> in Agent Builder. Agents invoke workflows based on user intent — combining AI reasoning with deterministic, repeatable execution. No integration gap between reasoning and action.</p>
+        </div>
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-yellow); padding: 14px 18px;">
+          <h3 style="font-size: 14px; margin-bottom: 6px;">💡 Why This Matters</h3>
+          <p style="font-size: 12px; color: #B0BEC5; margin: 0;">Agents reason. Workflows execute. Together: restart a service, update a record, send a notification, triage an alert — all from a single conversation. <strong style="color: var(--text-primary);">Automation where your data lives.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 9: EXPOSE — MCP, A2A, API ===== -->
+  <style>
+    /* Animated flow lines */
+    @keyframes flowPulse {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+    @keyframes flowPulseV {
+      0%   { background-position: 0 100%; }
+      100% { background-position: 0 -100%; }
+    }
+    @keyframes nodeAppear {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes arrowSlideRight {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes arrowSlideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .flow-line-h {
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--elastic-teal) 30%, var(--elastic-blue) 70%, transparent 100%);
+      background-size: 200% 100%;
+      animation: flowPulse 2s linear infinite;
+      border-radius: 2px;
+      flex: 1;
+      min-width: 40px;
+    }
+    .flow-line-h.pink {
+      background: linear-gradient(90deg, transparent 0%, var(--elastic-pink) 30%, var(--elastic-pink) 70%, transparent 100%);
+      background-size: 200% 100%;
+      animation: flowPulse 2s linear infinite;
+    }
+    .flow-line-h.blue {
+      background: linear-gradient(90deg, transparent 0%, var(--elastic-blue) 30%, var(--elastic-blue) 70%, transparent 100%);
+      background-size: 200% 100%;
+      animation: flowPulse 2s linear infinite;
+    }
+    .flow-line-v {
+      width: 3px;
+      background: linear-gradient(180deg, transparent 0%, var(--elastic-teal) 30%, var(--elastic-teal) 70%, transparent 100%);
+      background-size: 100% 200%;
+      animation: flowPulseV 2s linear infinite;
+      border-radius: 2px;
+      height: 32px;
+      margin: 0 auto;
+    }
+    .flow-node {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      white-space: nowrap;
+    }
+    .flow-node:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .flow-node.center-hub {
+      padding: 20px 28px;
+      border: 2px solid var(--elastic-teal);
+      background: linear-gradient(135deg, rgba(0,191,179,0.12), rgba(0,119,204,0.08));
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 0 30px rgba(0,191,179,0.12);
+    }
+    .flow-node.center-hub:hover {
+      box-shadow: 0 0 40px rgba(0,191,179,0.25);
+    }
+    .flow-endpoint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .flow-endpoint-icon {
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+    .flow-endpoint-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .flow-arrow-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 2px 0;
+    }
+    /* Stagger node animations */
+    .slide.active .flow-anim-1 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+    .slide.active .flow-anim-2 { animation: arrowSlideRight 0.4s ease 0.45s both; }
+    .slide.active .flow-anim-3 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 0.55s both; }
+    .slide.active .flow-anim-4 { animation: arrowSlideRight 0.4s ease 0.7s both; }
+    .slide.active .flow-anim-5 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 0.8s both; }
+    .slide.active .flow-anim-hub { animation: nodeAppear 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+    .slide.active .flow-anim-down { animation: arrowSlideDown 0.4s ease 0.35s both; }
+    .slide.active .flow-anim-6 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 0.5s both; }
+    .slide.active .flow-anim-7 { animation: arrowSlideRight 0.4s ease 0.65s both; }
+    .slide.active .flow-anim-8 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 0.75s both; }
+    .slide.active .flow-anim-9 { animation: arrowSlideRight 0.4s ease 0.9s both; }
+    .slide.active .flow-anim-10 { animation: nodeAppear 0.5s cubic-bezier(0.22,1,0.36,1) 1.0s both; }
+  </style>
+  <div class="slide" data-notes="Build once, expose three ways. MCP for dev tools, A2A for agent-to-agent, REST API for custom apps. No lock-in. This is the interop story.">
+    <div class="slide-content">
+      <div class="section-label">Interoperability — MCP, A2A &amp; REST API</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Build Once. <span class="highlight">Expose Everywhere.</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 20px;">Your Elastic Agent connects to the world through three protocols — each optimized for a different integration pattern.</p>
+
+      <!-- === FLOW DIAGRAM === -->
+      <div style="width: 100%; max-width: 1200px; margin: 0 auto;">
+
+        <!-- ROW 1: MCP Flow -->
+        <div style="display: flex; align-items: center; gap: 0; margin-bottom: 16px;">
+          <!-- Protocol label -->
+          <div style="width: 80px; text-align: center; flex-shrink: 0;">
+            <span class="protocol-badge mcp flow-anim-1" style="font-size: 13px; padding: 8px 16px;">MCP</span>
+          </div>
+          <!-- Animated line -->
+          <div class="flow-line-h flow-anim-2" style="margin: 0 8px;"></div>
+          <!-- Center hub (Elastic Agent) -->
+          <div class="flow-node center-hub flow-anim-hub" style="flex-shrink: 0;">
+            <div style="font-size: 11px; color: var(--elastic-teal); letter-spacing: 1px; margin-bottom: 4px;">ELASTIC</div>
+            🤖 Agent Builder
+          </div>
+          <!-- Animated line -->
+          <div class="flow-line-h flow-anim-4" style="margin: 0 8px;"></div>
+          <!-- MCP Targets -->
+          <div style="display: flex; gap: 10px; flex-shrink: 0;" class="flow-anim-5">
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-teal); padding: 10px 14px;"><span class="flow-endpoint-icon">💬</span><br>Claude</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-teal); padding: 10px 14px;"><span class="flow-endpoint-icon">⌨️</span><br>Cursor</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-teal); padding: 10px 14px;"><span class="flow-endpoint-icon">🔧</span><br>VS Code</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-teal); padding: 10px 14px;"><span class="flow-endpoint-icon">🔗</span><br>LangChain</div></div>
+          </div>
+        </div>
+        <div class="flow-arrow-label" style="color: var(--elastic-teal);">Dev Tools &amp; AI Assistants — tools available where developers already work</div>
+
+        <!-- Spacer -->
+        <div style="height: 18px;"></div>
+
+        <!-- ROW 2: A2A Flow -->
+        <div style="display: flex; align-items: center; gap: 0; margin-bottom: 16px;">
+          <div style="width: 80px; text-align: center; flex-shrink: 0;">
+            <span class="protocol-badge a2a flow-anim-6" style="font-size: 13px; padding: 8px 16px;">A2A</span>
+          </div>
+          <div class="flow-line-h blue flow-anim-7" style="margin: 0 8px;"></div>
+          <div class="flow-node center-hub flow-anim-hub" style="flex-shrink: 0;">
+            <div style="font-size: 11px; color: var(--elastic-teal); letter-spacing: 1px; margin-bottom: 4px;">ELASTIC</div>
+            🤖 Agent Builder
+          </div>
+          <div class="flow-line-h blue flow-anim-9" style="margin: 0 8px;"></div>
+          <div style="display: flex; gap: 10px; flex-shrink: 0;" class="flow-anim-10">
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-blue); padding: 10px 14px;"><span class="flow-endpoint-icon">🌐</span><br>Gemini</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-blue); padding: 10px 14px;"><span class="flow-endpoint-icon">☁️</span><br>Strands</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-blue); padding: 10px 14px;"><span class="flow-endpoint-icon">🏢</span><br>MS Foundry</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-blue); padding: 10px 14px;"><span class="flow-endpoint-icon">🤝</span><br>Any Agent</div></div>
+          </div>
+        </div>
+        <div class="flow-arrow-label" style="color: var(--elastic-blue);">Agent-to-Agent — peer collaboration, delegation, not just tool calls</div>
+
+        <!-- Spacer -->
+        <div style="height: 18px;"></div>
+
+        <!-- ROW 3: REST API Flow -->
+        <div style="display: flex; align-items: center; gap: 0; margin-bottom: 16px;">
+          <div style="width: 80px; text-align: center; flex-shrink: 0;">
+            <span class="protocol-badge api flow-anim-6" style="font-size: 13px; padding: 8px 16px;">REST</span>
+          </div>
+          <div class="flow-line-h pink flow-anim-7" style="margin: 0 8px;"></div>
+          <div class="flow-node center-hub flow-anim-hub" style="flex-shrink: 0;">
+            <div style="font-size: 11px; color: var(--elastic-teal); letter-spacing: 1px; margin-bottom: 4px;">ELASTIC</div>
+            🤖 Agent Builder
+          </div>
+          <div class="flow-line-h pink flow-anim-9" style="margin: 0 8px;"></div>
+          <div style="display: flex; gap: 10px; flex-shrink: 0;" class="flow-anim-10">
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-pink); padding: 10px 14px;"><span class="flow-endpoint-icon">📱</span><br>Apps</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-pink); padding: 10px 14px;"><span class="flow-endpoint-icon">⚙️</span><br>Backend</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-pink); padding: 10px 14px;"><span class="flow-endpoint-icon">🔄</span><br>CI/CD</div></div>
+            <div class="flow-endpoint"><div class="flow-node" style="border-color: var(--elastic-pink); padding: 10px 14px;"><span class="flow-endpoint-icon">📊</span><br>Workflows</div></div>
+          </div>
+        </div>
+        <div class="flow-arrow-label" style="color: var(--elastic-pink);">Custom Integrations — embed in any app, workflow, or pipeline</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 10: MCP CONNECTOR ===== -->
+  <div class="slide" data-notes="MCP Connector is bidirectional. Import external MCP tools into your agent. Also expose Elastic's own tools via MCP. This is the bridge to the entire MCP ecosystem.">
+    <div class="slide-content">
+      <div class="section-label">MCP Connector — Extend Your Agent's Toolbox</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);"><span class="highlight">Import Any MCP Tool</span> Into Your Agent</h1>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 16px 0; flex-wrap: nowrap; width: 100%; max-width: 1300px;">
+        <div class="connector-box" style="flex: 1; max-width: 280px;"><div class="logo-text">🌐</div><div class="label">Remote MCP Server</div><div class="sub">GitHub, Slack, PagerDuty, Jira...</div></div>
+        <div class="arch-arrow">⟶</div>
+        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-teal);"><div class="logo-text" style="color: var(--elastic-teal);">⚡</div><div class="label" style="color: var(--elastic-teal);">MCP Connector</div><div class="sub">Kibana Stack Management</div></div>
+        <div class="arch-arrow">⟶</div>
+        <div class="connector-box" style="flex: 1; max-width: 280px; border-color: var(--elastic-blue);"><div class="logo-text">🤖</div><div class="label">Your Elastic Agent</div><div class="sub">Agent Builder Tool</div></div>
+      </div>
+      <div class="two-col" style="margin-top: 16px;">
+        <div class="card">
+          <h3>How It Works</h3>
+          <ul class="feature-list">
+            <li>Create connector in Stack Management → Connectors</li>
+            <li>Point to any remote MCP server URL + auth</li>
+            <li>Auto-discovers tools via listTools</li>
+            <li>Add discovered MCP tools to your agent</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What This Unlocks</h3>
+          <ul class="feature-list">
+            <li>PagerDuty MCP for incident management in agents</li>
+            <li>GitHub issues, PRs, code search as agent tools</li>
+            <li>Slack, Jira, Confluence — any MCP server</li>
+            <li>Bidirectional: Elastic also serves MCP for others</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 11: MODEL CATALOG ===== -->
+  <div class="slide" data-notes="Full model catalog grouped by provider. EIS manages everything — GPU, scaling, inference. Swap models per step, API stays the same. Show bigger cards with provider icons and code example.">
+    <div class="slide-content">
+      <div class="section-label">Model Catalog — Elastic Inference Service (/_inference)</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">One API. <span class="highlight">Every Model You Need</span> <span style="color: var(--elastic-yellow); font-family: 'JetBrains Mono', monospace; font-size: 0.6em;">(/_inference)</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 12px;">Fully managed, GPU-accelerated. Swap models per step. Unified inference API across all providers.</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; max-width: 1300px;">
+        <!-- Anthropic -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13.83 2L20 22h-3.98l-1.33-4.37H9.31L7.98 22H4L10.17 2h3.66zm.71 12.63L12 5.78l-2.54 8.85h5.08z" fill="#F04E98"/></svg>
+            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-pink);">Anthropic</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">Claude Opus 4.6</span>
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">Claude Opus 4.5</span>
+            <span class="tag" style="background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.2);">Claude Sonnet 4.6</span>
+          </div>
+        </div>
+        <!-- OpenAI -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.28 9.37a5.99 5.99 0 0 0-.52-4.93 6.07 6.07 0 0 0-6.52-2.91A6.07 6.07 0 0 0 1.72 4.95a5.99 5.99 0 0 0-1 4.79A6.07 6.07 0 0 0 1.72 19.1a5.99 5.99 0 0 0 .52 4.93 6.07 6.07 0 0 0 6.52 2.91 6.07 6.07 0 0 0 4.55-2.16 5.99 5.99 0 0 0 4 1.58 6.07 6.07 0 0 0 5.97-4.84 5.99 5.99 0 0 0-1-4.79 6.07 6.07 0 0 0 0-7.36z" fill="#93C90E" opacity="0.7"/></svg>
+            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-green);">OpenAI</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-5.2</span>
+            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-4.1</span>
+            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-4.1 Mini</span>
+            <span class="tag" style="background: rgba(147,201,14,0.1); color: var(--elastic-green); border-color: rgba(147,201,14,0.2);">GPT-OSS-120B</span>
+          </div>
+        </div>
+        <!-- Google -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.94 10.94 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-blue);">Google</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border-color: rgba(0,119,204,0.2);">Gemini 2.5 Pro</span>
+            <span class="tag" style="background: rgba(0,119,204,0.1); color: var(--elastic-blue); border-color: rgba(0,119,204,0.2);">Gemini 2.5 Flash</span>
+          </div>
+        </div>
+        <!-- Jina AI -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FEC514" opacity="0.2"/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="bold" fill="#FEC514">J</text></svg>
+            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-yellow);">Jina AI</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border-color: rgba(254,197,20,0.2);">Jina v5 small</span>
+            <span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border-color: rgba(254,197,20,0.2);">Jina v5 nano</span>
+            <span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border-color: rgba(254,197,20,0.2);">Jina v3</span>
+            <span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border-color: rgba(254,197,20,0.2);">Reranker v3</span>
+            <span class="tag" style="background: rgba(254,197,20,0.1); color: var(--elastic-yellow); border-color: rgba(254,197,20,0.2);">Reranker v2</span>
+          </div>
+        </div>
+        <!-- Elastic Native -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <img src="logo-elastic-horizontal-color-reverse.png" alt="Elastic" style="height: 20px;">
+            <span style="font-size: 17px; font-weight: 700; color: var(--elastic-teal);">Native</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag">ELSER (Sparse)</span>
+            <span class="tag">E5 Multilingual</span>
+          </div>
+        </div>
+        <!-- BYO / Third-Party -->
+        <div class="card" style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#8899AA" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="#8899AA" stroke-width="2" stroke-linecap="round"/></svg>
+            <span style="font-size: 17px; font-weight: 700; color: var(--text-secondary);">Third-Party &amp; BYO</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag" style="background: rgba(136,153,170,0.1); color: var(--text-secondary); border-color: rgba(136,153,170,0.2);">Microsoft</span>
+            <span class="tag" style="background: rgba(136,153,170,0.1); color: var(--text-secondary); border-color: rgba(136,153,170,0.2);">Alibaba</span>
+            <span class="tag" style="background: rgba(136,153,170,0.1); color: var(--text-secondary); border-color: rgba(136,153,170,0.2);">ONNX / PyTorch</span>
+            <span class="tag" style="background: rgba(136,153,170,0.1); color: var(--text-secondary); border-color: rgba(136,153,170,0.2);">Custom Models</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 14px; border-top: 3px solid var(--elastic-teal);">
+        <h3>Register & Use Any Model</h3>
+        <div class="code-block">
+          <span class="keyword">PUT</span> _inference/chat_completion/my-openai-endpoint<br>{<br>&nbsp;&nbsp;<span class="prop">"service"</span>: <span class="string">"elastic"</span>,<br>&nbsp;&nbsp;<span class="prop">"service_settings"</span>: {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"model_id"</span>: <span class="string">"openai-gpt-4.1"</span><br>&nbsp;&nbsp;}<br>}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 12: JINA V5 ===== -->
+  <div class="slide" data-notes="Jina v5 is a big deal. Elastic welcomed Jina with native EIS support. v5-small matches 4B param models at 5.6x smaller size. Benchmarks speak for themselves.">
+    <div class="slide-content">
+      <div class="section-label">Embeddings — Jina v5 on Elastic Inference</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Jina SOTA Multilingual Embeddings. <span class="highlight">Native on Elastic.</span></h1>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom: 12px; border-left: 3px solid var(--elastic-teal);">
+            <h3>v5-text-small — 677M params</h3>
+            <p style="margin-bottom: 8px;">Highest scoring multilingual model under 1B parameters. Matches jina-v4 (3.8B) at <strong style="color: var(--text-primary);">5.6x smaller</strong>.</p>
+            <div class="benchmark-bar-wrapper"><div class="benchmark-label"><span>MTEB English v2</span><span style="color: var(--elastic-teal);">71.7</span></div><div class="benchmark-bar-bg"><div class="benchmark-bar-fill" style="width: 71.7%; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue));">71.7</div></div></div>
+            <div class="benchmark-bar-wrapper"><div class="benchmark-label"><span>MMTEB Multilingual</span><span style="color: var(--elastic-teal);">67.7</span></div><div class="benchmark-bar-bg"><div class="benchmark-bar-fill" style="width: 67.7%; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue));">67.7</div></div></div>
+            <div class="benchmark-bar-wrapper"><div class="benchmark-label"><span>Retrieval Avg (5 benchmarks)</span><span style="color: var(--elastic-teal);">63.28</span></div><div class="benchmark-bar-bg"><div class="benchmark-bar-fill" style="width: 63.28%; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue));">63.28</div></div></div>
+          </div>
+          <div class="card" style="border-left: 3px solid var(--elastic-yellow);">
+            <h3>v5-text-nano — 239M params</h3>
+            <p style="margin-bottom: 8px;">Matches all sub-500M models including KaLM-mini-v2.5 (494M).</p>
+            <div class="benchmark-bar-wrapper"><div class="benchmark-label"><span>MTEB English v2</span><span style="color: var(--elastic-yellow);">71.0</span></div><div class="benchmark-bar-bg"><div class="benchmark-bar-fill" style="width: 71%; background: linear-gradient(90deg, var(--elastic-yellow), var(--elastic-orange));">71.0</div></div></div>
+            <div class="benchmark-bar-wrapper"><div class="benchmark-label"><span>MMTEB Multilingual</span><span style="color: var(--elastic-yellow);">65.5</span></div><div class="benchmark-bar-bg"><div class="benchmark-bar-fill" style="width: 65.5%; background: linear-gradient(90deg, var(--elastic-yellow), var(--elastic-orange));">65.5</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="border-top: 3px solid var(--elastic-green); margin-bottom: 12px;">
+            <h3>Why This Matters</h3>
+            <ul class="feature-list">
+              <li>5.6x smaller than v4 — same quality</li>
+              <li>Native on EIS — zero infra setup</li>
+              <li>GPU-accelerated, fully managed, auto-scaling</li>
+              <li>Multilingual out of the box</li>
+              <li>Works with vector search and hybrid search</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Setup — 4 Lines</h3>
+            <div class="code-block" style="margin-top: 6px; font-size: 11px;">
+              <span class="keyword">PUT</span> _inference/text_embedding/jina-v5<br>{<br>&nbsp;&nbsp;<span class="prop">"service"</span>: <span class="string">"elastic"</span>,<br>&nbsp;&nbsp;<span class="prop">"service_settings"</span>: {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="prop">"model_id"</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"jina-embeddings-v5-text-small"</span><br>&nbsp;&nbsp;}<br>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 12b: AGENT WITHOUT CONTEXT ===== -->
+  <div class="slide" data-notes="Transition slide. Ground the audience before showing the full context engineering stack. The bottleneck is never the model — it's always the context. This frames why Elastic's search capabilities are the hero.">
+    <div class="slide-content centered">
+      <div class="section-label">The Missing Piece — Why Context Is Everything</div>
+      <h1 class="slide-title" style="font-size: clamp(28px, 3.5vw, 52px);">An Agent Without Context<br>Is Just <span class="highlight-pink">Expensive Guesswork</span></h1>
+      <p class="slide-subtitle" style="margin: 16px auto 0; max-width: 800px;">Every use case we just covered depends on one thing: getting the <strong style="color: var(--text-primary);">right information</strong> to the agent at the <strong style="color: var(--text-primary);">right time</strong>. That's not a model problem. That's a <span style="color: var(--elastic-teal); font-weight: 700;">search problem</span>.</p>
+      <div style="display: flex; gap: 16px; justify-content: center; margin: 28px auto 0; max-width: 900px; width: 100%;">
+        <div class="card" style="flex: 1; text-align: center; border-top: 3px solid var(--elastic-pink); padding: 18px;">
+          <span class="icon" style="font-size: 28px;">💸</span>
+          <h3 style="font-size: 16px;">Without Context</h3>
+          <p style="font-size: 13px;">Stuffing 200k tokens. $4+ per turn. 12s latency. Still hallucinates.</p>
+        </div>
+        <div class="card" style="flex: 1; text-align: center; border-top: 3px solid var(--elastic-teal); padding: 18px;">
+          <span class="icon" style="font-size: 28px;">🎯</span>
+          <h3 style="font-size: 16px;">With Context Engineering</h3>
+          <p style="font-size: 13px;">Right docs, right time. Sub-second retrieval. Grounded answers with citations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 13: CONTEXT ENGINEERING (REPRISE) ===== -->
+  <div class="slide" data-notes="Elastic provides everything you need for context engineering. Four pillars: Data Prep & Inference, Retrieval, Agentic AI, Evaluation & Monitoring. All backed by Vector DB. This is the full stack.">
+    <div class="slide-content">
+      <div class="section-label">Context Engineering — Elastic Provides Everything You Need</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Elastic Provides <span class="highlight">Everything You Need</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 6px;"><span class="highlight-yellow">Context Engineering</span> — from data prep to retrieval to agentic AI to evaluation</p>
+
+      <!-- Four pillars layout with Vector DB in center-bottom -->
+      <div style="display: flex; gap: 12px; width: 100%; max-width: 1300px; margin: 12px auto 0; align-items: flex-start;">
+
+        <!-- Pillar 1: Data Prep & Inference -->
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-teal); padding: 16px;">
+          <h3 style="font-size: 15px; color: var(--elastic-teal); margin-bottom: 10px;">Data Prep &amp; Inference</h3>
+          <ul class="feature-list" style="font-size: 12px; margin-top: 0;">
+            <li style="padding: 3px 0;">Sparse &amp; dense vector encoding models</li>
+            <li style="padding: 3px 0;">Multi-lingual embedding models</li>
+            <li style="padding: 3px 0;">Multi-modal embedding models</li>
+            <li style="padding: 3px 0;">GPU-based inference service</li>
+            <li style="padding: 3px 0;">Automatic chunking</li>
+            <li style="padding: 3px 0;">200+ connectors</li>
+            <li style="padding: 3px 0;">Web crawlers</li>
+            <li style="padding: 3px 0;">Automated parsing</li>
+            <li style="padding: 3px 0;">Quantization</li>
+          </ul>
+        </div>
+
+        <!-- Pillar 2: Retrieval -->
+        <div class="card" style="flex: 1; border-top: 3px solid var(--elastic-blue); padding: 16px;">
+          <h3 style="font-size: 15px; color: var(--elastic-blue); margin-bottom: 10px;">Retrieval</h3>
+          <ul class="feature-list" style="font-size: 12px; margin-top: 0;">
+            <li style="padding: 3px 0;">Vector search</li>
+            <li style="padding: 3px 0;">Lexical search</li>
+            <li style="padding: 3px 0;">Hybrid search</li>
+            <li style="padding: 3px 0;">Geospatial search</li>
+            <li style="padding: 3px 0;">Filtering &amp; faceting</li>
+            <li style="padding: 3px 0;">Reranking models</li>
+            <li style="padding: 3px 0;">Learning to rank (LTR)</li>
+            <li style="padding: 3px 0;">Query rules &amp; rescoring</li>
+            <li style="padding: 3px 0;">Query understanding models</li>
+            <li style="padding: 3px 0;">RAG Workflows</li>
+            <li style="padding: 3px 0;">LLM integration</li>
+          </ul>
+        </div>
+
+        <!-- Right side: Agentic AI + Evaluation stacked -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+          <!-- Pillar 3: Agentic AI -->
+          <div class="card" style="border-top: 3px solid var(--elastic-pink); padding: 16px;">
+            <h3 style="font-size: 15px; color: var(--elastic-pink); margin-bottom: 10px;">Agentic AI</h3>
+            <ul class="feature-list" style="font-size: 12px; margin-top: 0;">
+              <li style="padding: 3px 0;">Tool building</li>
+              <li style="padding: 3px 0;">Agentic workflows</li>
+              <li style="padding: 3px 0;">Tool selection</li>
+              <li style="padding: 3px 0;">Memory systems</li>
+              <li style="padding: 3px 0;">Prompt management</li>
+              <li style="padding: 3px 0;">MCP/Agent interfaces</li>
+            </ul>
+          </div>
+          <!-- Pillar 4: Evaluation & Monitoring -->
+          <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 16px;">
+            <h3 style="font-size: 15px; color: var(--elastic-yellow); margin-bottom: 10px;">Evaluation &amp; Monitoring</h3>
+            <ul class="feature-list" style="font-size: 12px; margin-top: 0;">
+              <li style="padding: 3px 0;">Relevance benchmarking</li>
+              <li style="padding: 3px 0;">A/B testing</li>
+              <li style="padding: 3px 0;">Behavioral analytics</li>
+              <li style="padding: 3px 0;">Cost &amp; token tracking</li>
+              <li style="padding: 3px 0;">Query logging, metrics, tracing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vector DB foundation bar -->
+      <div style="margin-top: 12px; max-width: 1300px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; padding: 12px 24px; background: linear-gradient(90deg, rgba(0,191,179,0.08), rgba(0,119,204,0.08), rgba(240,78,152,0.08)); border: 2px solid var(--elastic-teal); border-radius: 12px;">
+          <span style="font-size: 24px;">💾</span>
+          <div>
+            <div style="font-size: 15px; font-weight: 700; color: var(--text-primary);">Vector DB — Elasticsearch</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">The foundation powering all four pillars — storing vectors, documents, and metadata at petabyte scale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 14: 3-PHASE RETRIEVAL PIPELINE ===== -->
+  <div class="slide" data-notes="This is the technical differentiator. Three-phase retrieval pipeline. Phase 1: multi-method search (BM25, semantic, hybrid RRF, weighted RRF). Phase 2: rescoring with popularity and LTR. Phase 3: semantic reranking with reranking models like Jina Reranker.">
+    <div class="slide-content">
+      <div class="section-label">Hybrid Search — 3-Phase Retrieval Pipeline</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Three Search Methods. <span class="highlight">One API (<span style="font-family: 'JetBrains Mono', monospace;">_search</span>)</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Elastic's retrieval pipeline goes beyond vector search — three phases that progressively refine results for maximum relevance.</p>
+      <div class="pipeline">
+        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-teal);">
+          <div class="pipeline-phase-num" style="color: var(--elastic-teal);">Phase 1 — Retrieval</div>
+          <h3>Multi-Method Search</h3>
+          <div class="pipeline-method">BM25 — Exact keyword matching</div>
+          <div class="pipeline-method">Semantic Search — Dense vector similarity</div>
+          <div class="pipeline-method" style="background: rgba(0,191,179,0.1); border-color: rgba(0,191,179,0.3);"><strong style="color: var(--elastic-teal);">Hybrid Search + RRF</strong> — BM25 + Vector + ELSER fused via Reciprocal Rank Fusion</div>
+          <div class="pipeline-method">Weighted RRF — Custom weights per retriever</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-blue);">
+          <div class="pipeline-phase-num" style="color: var(--elastic-blue);">Phase 2 — Rescoring</div>
+          <h3>Business Logic Layer</h3>
+          <div class="pipeline-method">Popularity Rescoring — Boost by clicks, views, sales</div>
+          <div class="pipeline-method">Function Score — Custom decay, geo, field values</div>
+          <div class="pipeline-method" style="background: rgba(0,119,204,0.1); border-color: rgba(0,119,204,0.3);"><strong style="color: var(--elastic-blue);">Learning to Rank (LTR)</strong> — ML-trained ranking models</div>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-pink);">
+          <div class="pipeline-phase-num" style="color: var(--elastic-pink);">Phase 3 — Reranking</div>
+          <h3>Semantic Precision</h3>
+          <div class="pipeline-method" style="background: rgba(240,78,152,0.1); border-color: rgba(240,78,152,0.3);"><strong style="color: var(--elastic-pink);">Semantic Rerank</strong> — Cross-encoder reranking models</div>
+          <div class="pipeline-method">Jina Reranker v3 — Native on EIS</div>
+          <div class="pipeline-method">Cohere Rerank — Supported via inference API</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 15: AGENT SKILLS ===== -->
+  <div class="slide" data-notes="Agent Skills turn AI coding assistants into Elastic experts. 26 skills available. SKILL.md is the open standard from agentskills.io. Show the screenshot from the blog — skills install flow.">
+    <div class="slide-content">
+      <div class="section-label">Agent Skills — SKILL.md Open Standard</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Turn AI Agents Into <span class="highlight">Elastic Experts</span></h1>
+      <div class="two-col">
+        <div>
+          <div class="card" style="border-top: 3px solid var(--elastic-teal); margin-bottom: 12px;">
+            <h3>What is SKILL.md?</h3>
+            <p>The open <strong style="color: var(--text-primary);">agentskills.io</strong> standard. Each skill is a folder with a SKILL.md file — structured metadata + instructions. When an AI agent reads it, it learns how to perform Elastic tasks correctly — right APIs, right patterns, right guardrails.</p>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--elastic-blue);">
+            <h3>26 Skills Available</h3>
+            <ul class="feature-list" style="font-size: 12px;">
+              <li><strong>Elasticsearch</strong> — Search, indexing, ES|QL, auth, audit, file-ingest, troubleshooting</li>
+              <li><strong>Kibana</strong> — Agent-builder, alerting, audit, connectors, dashboards, streams, vega</li>
+              <li><strong>Observability</strong> — LLM-obs, logs-search, SLOs, service-health</li>
+              <li><strong>Security</strong> — Alert triage, case mgmt, detection rules, sample data</li>
+              <li><strong>Cloud</strong> — Access mgmt, create/manage projects, network security, setup</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--elastic-yellow);">
+            <h3>Works With</h3>
+            <div class="tag-list"><span class="tag">Claude Code</span><span class="tag">Cursor</span><span class="tag">Copilot</span><span class="tag">Windsurf</span><span class="tag">Gemini CLI</span><span class="tag">Cline</span><span class="tag">Codex</span></div>
+          </div>
+        </div>
+        <div>
+          <!-- DROP YOUR IMAGE: Save the agent skills screenshot as "agent-skills-screenshot.png" in the same folder as this HTML file -->
+          <div style="text-align: center;">
+            <img src="agent-skills-screenshot.png" alt="Elastic Agent Skills — CLI install flow showing 26 skills and GitHub repo" style="max-width: 100%; max-height: 460px; border-radius: 10px; border: 1px solid var(--card-border);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="screenshot-placeholder" style="display: none; min-height: 250px; align-items: center; justify-content: center;">Drop <strong>agent-skills-screenshot.png</strong> in the same folder as this HTML file</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 16: VIBE CODING USE CASES ===== -->
+  <div class="slide" data-notes="Practical use cases. Mix of developer, ops, and security scenarios. These are things the audience can try TODAY with Claude Code + Elastic skills.">
+    <div class="slide-content">
+      <div class="section-label">Vibe Coding — Build With Natural Language</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">What You Can Build With <span class="highlight">Vibe Coding + Elastic Skills</span></h1>
+      <div class="three-col">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal);"><span class="icon">🔍</span><h3>"Build me a hybrid search API"</h3><p>Agent creates index mapping, sets up ELSER, configures hybrid search with RRF, writes API endpoint — all following Elastic best practices from the skill.</p></div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue);"><span class="icon">📊</span><h3>"Create an APM dashboard"</h3><p>Kibana skill builds full observability dashboard — service maps, latency charts, error panels, SLO tracking. Correct APIs, correct JSON.</p></div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink);"><span class="icon">🛡️</span><h3>"Set up brute force detection"</h3><p>Security skill creates EQL/ES|QL detection rules, configures alert actions, sets severity and risk scoring correctly.</p></div>
+        <div class="card" style="border-top: 3px solid var(--elastic-yellow);"><span class="icon">🤖</span><h3>"Build a RAG agent for our docs"</h3><p>Sets up ingestion, creates vector index, configures inference, builds agent in Agent Builder — end-to-end in one conversation.</p></div>
+        <div class="card" style="border-top: 3px solid var(--elastic-orange);"><span class="icon">🔧</span><h3>"Why is my cluster yellow?"</h3><p>Checks shard allocation, identifies unassigned shards, diagnoses root cause, applies fix — all through correct ES APIs.</p></div>
+        <div class="card" style="border-top: 3px solid var(--elastic-green);"><span class="icon">📡</span><h3>"Ingest my Kafka logs"</h3><p>Fleet skill configures integration, sets up ingest pipelines with grok processors, creates index templates, verifies data flow.</p></div>
+      </div>
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">github.com/elastic/agent-skills — Open source. Apache 2.0. Contribute your own.</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 17: INDUSTRY USE CASES — REGULATED ===== -->
+  <div class="slide" data-notes="Regulated industries: BFSI, Public Sector, Healthcare. High compliance, document-level security, on-prem deployment. These are the enterprise differentiators.">
+    <div class="slide-content">
+      <div class="section-label">Industry Use Cases — Regulated &amp; High-Compliance</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Agents for <span class="highlight">Regulated Industries</span></h1>
+      <div class="three-col">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏦</span><h3 style="margin: 0;">BFSI</h3></div>
+          <ul class="feature-list">
+            <li>Fraud investigation — transaction patterns + compliance rules via hybrid search</li>
+            <li>KYC document retrieval — scanned docs to minutes, not days</li>
+            <li>Compliance Q&A with citations and audit trails</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏛️</span><h3 style="margin: 0;">Public Sector</h3></div>
+          <ul class="feature-list">
+            <li>Citizen services — navigate permits, benefits in plain language</li>
+            <li>Policy research — legislation via hybrid search, not keyword</li>
+            <li>On-prem, air-gapped, FedRAMP-ready deployment</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏥</span><h3 style="margin: 0;">Healthcare</h3></div>
+          <ul class="feature-list">
+            <li>Clinical decision support — indexed medical literature with citations</li>
+            <li>Document-level security for HIPAA compliance</li>
+            <li>Risk assessment with ES|QL aggregations</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-yellow);">
+        <p style="font-size: 15px; color: #B0BEC5; margin: 0;"><strong style="color: var(--text-primary);">Key differentiator:</strong> Document-level security, on-prem deployment, auditable retrieval trails. Your data stays where compliance requires.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 18: INDUSTRY USE CASES — COMMERCIAL ===== -->
+  <div class="slide" data-notes="Commercial industries: Mid-Market, Digital Natives, E-Commerce. IT support, developer experience, shopping assistants. Show the breadth.">
+    <div class="slide-content">
+      <div class="section-label">Industry Use Cases — Commercial &amp; Digital</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Agents for <span class="highlight">Every Business</span></h1>
+      <div class="three-col">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🏢</span><h3 style="margin: 0;">Mid-Market</h3></div>
+          <ul class="feature-list">
+            <li>IT support — resolves L1/L2 from runbooks + past resolutions</li>
+            <li>HR policy assistant — multi-language via Jina v5</li>
+            <li>Incident response — correlates logs, metrics, traces automatically</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🚀</span><h3 style="margin: 0;">Digital Natives</h3></div>
+          <ul class="feature-list">
+            <li>Developer docs agent — search by intent, get right code snippet</li>
+            <li>In-product search — users self-serve via REST API or MCP</li>
+            <li>Log analysis — "why did deploy-42 fail?" with ES|QL</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;"><span style="font-size: 28px;">🛒</span><h3 style="margin: 0;">E-Commerce</h3></div>
+          <ul class="feature-list">
+            <li>Shopping assistant — semantic intent + price filters in one query</li>
+            <li>Personalization — behavioral signals + product vectors</li>
+            <li>Returns &amp; support — multi-language, MCP-connected logistics</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 14px; border-left: 3px solid var(--elastic-green);">
+        <p style="font-size: 15px; color: #B0BEC5; margin: 0;"><strong style="color: var(--text-primary);">200+ connectors</strong> — Confluence, SharePoint, Google Drive, ServiceNow, Salesforce. Federate all your data through one agent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 19: COMPETITIVE LANDSCAPE ===== -->
+  <div class="slide" data-notes="Be factual. Let feature gaps speak. Key differentiator: only platform with search + observability + security + agent builder + MCP/A2A.">
+    <div class="slide-content">
+      <div class="section-label">Competitive Analysis — How Elastic Compares</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Competitive <span class="highlight">Landscape</span></h1>
+      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Elastic is the only platform combining search, observability, security, and agent builder with native MCP/A2A support.</p>
+      <div style="overflow-x: auto;">
+        <table class="comparison-table" style="font-size: 15px;">
+          <thead><tr><th style="padding: 12px 16px;">Capability</th><th style="color: var(--elastic-teal); padding: 12px 16px;">Elastic</th><th style="padding: 12px 16px;">Pinecone / Weaviate</th><th style="padding: 12px 16px;">MongoDB Atlas</th><th style="padding: 12px 16px;">OpenSearch</th></tr></thead>
+          <tbody>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Hybrid Search (BM25+Vector+Sparse)</td><td style="padding: 11px 16px;"><span class="check">Native</span></td><td style="padding: 11px 16px;"><span class="partial">~ Limited</span></td><td style="padding: 11px 16px;"><span class="partial">~ Basic</span></td><td style="padding: 11px 16px;"><span class="partial">~ Partial</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Learned Sparse (ELSER)</td><td style="padding: 11px 16px;"><span class="check">Built-in</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Agent Builder + Playground</td><td style="padding: 11px 16px;"><span class="check">GA</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">MCP + A2A Support</td><td style="padding: 11px 16px;"><span class="check">Native</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Agent Skills (Open Standard)</td><td style="padding: 11px 16px;"><span class="check">26 skills</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Managed Model Catalog (EIS)</td><td style="padding: 11px 16px;"><span class="check">Full</span></td><td style="padding: 11px 16px;"><span class="partial">~ Limited</span></td><td style="padding: 11px 16px;"><span class="partial">~ Some</span></td><td style="padding: 11px 16px;"><span class="partial">~ Basic</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">200+ Data Connectors</td><td style="padding: 11px 16px;"><span class="check">Yes</span></td><td style="padding: 11px 16px;"><span class="cross">Few</span></td><td style="padding: 11px 16px;"><span class="partial">~ Some</span></td><td style="padding: 11px 16px;"><span class="partial">~ Fork lag</span></td></tr>
+            <tr class="elastic-row"><td style="padding: 11px 16px;">Observability + Security</td><td style="padding: 11px 16px;"><span class="check">Unified</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="cross">No</span></td><td style="padding: 11px 16px;"><span class="partial">~ Limited</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 20: THREE SUPERPOWERS + GET STARTED ===== -->
+  <div class="slide" data-notes="One platform, three superpowers. Call to action — three paths to get started today.">
+    <div class="slide-content centered">
+      <div class="section-label">Why Elastic — One Platform, Three Superpowers</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 42px);">One Platform. <span class="highlight">Three Superpowers.</span></h1>
+      <div class="three-col" style="max-width: 1000px; margin: 16px auto 20px;">
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-teal); padding: 18px;"><span class="icon">🔎</span><h3 style="font-size: 18px;">Search</h3><p style="font-size: 13px;">Hybrid retrieval, model catalog, Jina v5, ELSER. Your agent's knowledge layer.</p></div>
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-blue); padding: 18px;"><span class="icon">📊</span><h3 style="font-size: 18px;">Observe</h3><p style="font-size: 13px;">Logs, metrics, traces, APM. Monitor agents in production.</p></div>
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-pink); padding: 18px;"><span class="icon">🛡️</span><h3 style="font-size: 18px;">Protect</h3><p style="font-size: 13px;">SIEM, endpoint, SOAR. Document-level security. Compliance built in.</p></div>
+      </div>
+      <div style="text-align: center; margin-bottom: 16px; font-size: 14px; color: var(--text-secondary);">Build Something <span style="color: var(--elastic-teal); font-weight: 700;">Today</span></div>
+      <div class="three-col" style="max-width: 1000px; margin: 0 auto;">
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-teal); padding: 16px;"><span class="icon">☁️</span><h3>Elastic Cloud</h3><p style="font-size: 13px;">14-day free trial. Agent Builder included. Playground for no-code prototyping.</p></div>
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-blue); padding: 16px;"><span class="icon">🧠</span><h3>Agent Skills</h3><p style="font-size: 13px;">Install 26 Elastic skills in Claude Code, Cursor, or any agent.</p><div class="code-block" style="font-size: 10px; margin-top: 6px; text-align: left;"><span class="func">npx</span> @anthropic/skills install elastic</div></div>
+        <div class="card" style="text-align: center; border-top: 3px solid var(--elastic-pink); padding: 16px;"><span class="icon">📖</span><h3>Docs & Community</h3><p style="font-size: 13px;">Quick-start guides, GitHub repos, Elastic Community Slack, Search Labs.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 22: CLOSING ===== -->
+  <div class="slide" data-notes="End strong. One idea: the best agent is the one users trust. That trust = right context + right time + platform you control. Leave links on screen.">
+    <div class="slide-content centered">
+      <img src="logo-elastic-horizontal-color-reverse.png" alt="Elastic" style="height: 52px; margin-bottom: 24px;">
+      <h1 class="slide-title" style="font-size: clamp(28px, 4vw, 54px);">The best agent is the one<br>your users <span class="highlight">actually trust</span>.</h1>
+      <p class="slide-subtitle" style="margin: 16px auto 0;">That starts with the right context, at the right time, from a platform you can inspect, control, and extend.</p>
+      <div style="margin-top: 36px;">
+        <div class="section-label" style="color: var(--text-muted); letter-spacing: 2px; font-size: 11px;">
+          elastic.co/elasticsearch/agent-builder &middot; github.com/elastic/agent-skills &middot; elastic.co/search-labs
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+<!-- Presenter Notes -->
+<div class="presenter-notes" id="presenterNotes">
+  <div class="notes-label">Speaker Notes</div>
+  <div id="notesContent"></div>
+</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const progressBar = document.getElementById('progressBar');
+  const slideCounter = document.getElementById('slideCounter');
+  const presenterNotes = document.getElementById('presenterNotes');
+  const notesContent = document.getElementById('notesContent');
+  let current = 0;
+  let notesVisible = false;
+  let transitioning = false;
+
+  // ── Auto-tag animatable elements inside each slide ──
+  const ANIM_MAP = [
+    { sel: '.section-label',       cls: 'anim-item anim-fade-down anim-fast' },
+    { sel: '.slide-title',         cls: 'anim-item anim-blur anim-normal' },
+    { sel: '.slide-subtitle',      cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.card',                cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.pipeline-phase',      cls: 'anim-item anim-scale anim-normal' },
+    { sel: '.pipeline-arrow',      cls: 'anim-item anim-fade-up anim-fast' },
+    { sel: '.connector-box',       cls: 'anim-item anim-scale anim-normal' },
+    { sel: '.arch-arrow',          cls: 'anim-item anim-fade-up anim-fast' },
+    { sel: '.code-block',          cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.tag-list',            cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.maturity-timeline',   cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.screenshot-img',      cls: 'anim-item anim-scale anim-slow' },
+    { sel: 'img[src*="playground"]', cls: 'anim-item anim-scale anim-slow' },
+    { sel: 'img[src*="agent-builder-arch"]', cls: 'anim-item anim-scale anim-slow' },
+    { sel: 'img[src*="agent-skills"]', cls: 'anim-item anim-scale anim-slow' },
+    { sel: '.comparison-table',    cls: 'anim-item anim-fade-up anim-normal' },
+    { sel: '.footnote-section',    cls: 'anim-item anim-fade-up anim-normal' },
+  ];
+
+  slides.forEach(slide => {
+    let delay = 0;
+    ANIM_MAP.forEach(({ sel, cls }) => {
+      slide.querySelectorAll(sel).forEach(el => {
+        // Don't double-tag
+        if (el.classList.contains('anim-item')) return;
+        cls.split(' ').forEach(c => el.classList.add(c));
+        el.classList.add('anim-d' + Math.min(delay, 10));
+        delay++;
+      });
+    });
+  });
+
+  // ── Reset animations when entering a slide ──
+  function resetAnimations(slide) {
+    const items = slide.querySelectorAll('.anim-item');
+    items.forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight; // force reflow
+      el.style.animation = '';
+    });
+  }
+
+  // ── Animate benchmark bars (fill from 0) ──
+  function animateBars(slide) {
+    const bars = slide.querySelectorAll('.benchmark-bar-fill');
+    bars.forEach(bar => {
+      const targetWidth = bar.style.width;
+      bar.style.width = '0%';
+      bar.style.transition = 'none';
+      bar.offsetHeight;
+      bar.style.transition = '';
+      setTimeout(() => { bar.style.width = targetWidth; }, 300);
+    });
+  }
+
+  function goTo(index) {
+    if (index < 0 || index >= slides.length || transitioning || index === current) return;
+    transitioning = true;
+    const dir = index > current ? 'left' : 'right';
+    const prev = current;
+
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add(dir === 'left' ? 'exit-left' : 'exit-right');
+
+    current = index;
+    slides[current].style.transition = 'none';
+    slides[current].classList.remove('exit-left', 'exit-right');
+    slides[current].style.transform = dir === 'left' ? 'translateX(60px)' : 'translateX(-60px)';
+    slides[current].style.opacity = '0';
+    slides[current].offsetHeight;
+    slides[current].style.transition = '';
+    slides[current].classList.add('active');
+    slides[current].style.transform = '';
+    slides[current].style.opacity = '';
+
+    // Trigger staggered entrance animations
+    resetAnimations(slides[current]);
+    animateBars(slides[current]);
+
+    setTimeout(() => { slides[prev].classList.remove('exit-left', 'exit-right'); transitioning = false; }, 500);
+
+    progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
+    slideCounter.textContent = (current + 1) + ' / ' + slides.length;
+    notesContent.textContent = slides[current].getAttribute('data-notes') || 'No notes.';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'n' || e.key === 'N') { notesVisible = !notesVisible; presenterNotes.classList.toggle('visible', notesVisible); }
+    if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen(); }
+    if (e.key === 'Escape' && document.fullscreenElement) { /* browser handles exit */ }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  let touchX = 0;
+  document.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e) { const d = touchX - e.changedTouches[0].clientX; if (Math.abs(d) > 50) { d > 0 ? goTo(current + 1) : goTo(current - 1); } });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.tab, .tabs, a, button')) return;
+    (e.clientX / window.innerWidth > 0.5) ? goTo(current + 1) : goTo(current - 1);
+  });
+
+  // Init first slide
+  slides[0].classList.add('active');
+  resetAnimations(slides[0]);
+  animateBars(slides[0]);
+  progressBar.style.width = (1 / slides.length * 100) + '%';
+  slideCounter.textContent = '1 / ' + slides.length;
+  notesContent.textContent = slides[0].getAttribute('data-notes') || '';
+})();
+
+// ── Fullscreen Toggle ──
+function toggleFullscreen() {
+  const btn = document.getElementById('fullscreenBtn');
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => {
+      if (btn) btn.textContent = '⛶';
+    }).catch(() => {});
+  } else {
+    document.exitFullscreen().then(() => {
+      if (btn) btn.textContent = '⛶';
+    }).catch(() => {});
+  }
+}
+document.addEventListener('fullscreenchange', function() {
+  const btn = document.getElementById('fullscreenBtn');
+  if (btn) btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+});
+
+// ── Particle System for Title Slide ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const colors = ['#00BFB3', '#0077CC', '#F04E98', '#FEC514', '#93C90E'];
+  let particles = [];
+  let w, h;
+
+  function resize() {
+    const slide = canvas.parentElement;
+    w = canvas.width = slide.offsetWidth;
+    h = canvas.height = slide.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r = Math.random() * 2 + 0.5;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = Math.random() * 0.5 + 0.1;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > w) this.vx *= -1;
+      if (this.y < 0 || this.y > h) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.alpha;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = particles[i].color;
+          ctx.globalAlpha = (1 - dist / 120) * 0.12;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalAlpha = 1;
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
