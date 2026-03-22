@@ -5,3 +5,4 @@
 * [Elastic Universal Profiling](https://slides.ashish.one/universal-profiling)
 * [Advanced RAG: Chunking, Retrieval & Re-Ranking](https://slides.ashish.one/advance-rag)
 * [OpenSource journey with Elastic](https://slides.ashish.one/elastic-opensource-journey)
+* [Elastic Agentic AI](https://slides.ashish.one/elastic-agentic-ai)
