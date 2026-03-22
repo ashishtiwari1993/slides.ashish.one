@@ -1,0 +1,292 @@
+# Prompt: Elastic Agent Builder — Interactive HTML Presentation
+
+> **Save this prompt.** Use it to regenerate the full presentation from scratch with any AI coding assistant.
+
+---
+
+## Instructions
+
+Create a single-file interactive HTML presentation about **Elastic Agent Builder for Enterprise Use Cases**. The output must be one `.html` file — all CSS, HTML slides, and JavaScript in a single file. No frameworks. Use **Tailwind CSS via CDN** for utility classes and **custom CSS** for everything else.
+
+### Speaker
+- **Ashish Tiwari**, Principal Solutions Architect — Search Specialist (Elastic)
+
+### Image Assets (place in same folder as HTML)
+- `logo-elastic-horizontal-color-reverse.png` — Elastic logo (reverse/white)
+- `playground.png` — Elastic Playground screenshot
+- `agent-builder-arch.png` — Agent Builder architecture diagram
+- `agent-skills-screenshot.png` — Agent Skills CLI install screenshot
+
+---
+
+## Design System
+
+### Brand Colors (CSS Variables)
+```
+--elastic-teal: #00BFB3     (primary accent)
+--elastic-blue: #0077CC
+--elastic-pink: #F04E98
+--elastic-yellow: #FEC514
+--elastic-orange: #F98B2B
+--elastic-green: #93C90E
+```
+
+### Background & Surface Colors (Projector-Safe — high contrast)
+```
+--dark-bg: #1B2A4A          (slide background)
+--darker-bg: #142038        (body/outer background)
+--card-bg: #1A3058          (card surfaces — brighter than bg for contrast)
+--card-border: #3A5A8A      (visible borders, even on washed-out projectors)
+--code-bg: #162848           (code block backgrounds)
+```
+
+### Text Colors (Projector-Safe)
+```
+--text-primary: #FFFFFF      (pure white for headings)
+--text-secondary: #C0D4E8    (body text, subtitles)
+--text-muted: #8BA3C0        (labels, footnotes)
+Body text in cards/callouts: #D0DCE8
+```
+
+### Fonts
+- **Inter** (300–900) — all UI text
+- **JetBrains Mono** (400–600) — code blocks, monospace labels
+
+### Accent Background Opacity Rules (for projector visibility)
+- Subtle tinted backgrounds: use `0.10`–`0.14` opacity (NOT `0.04`–`0.08` — those disappear on projectors)
+- Border accents on tinted backgrounds: use `0.12`–`0.20` opacity
+
+---
+
+## Presentation Mechanics
+
+### Slide System
+- Each slide is a `<div class="slide">` inside a `.deck` container
+- Slides are absolutely positioned, full viewport, with `opacity: 0` and `transform: translateX(60px)` by default
+- Active slide gets `.active` class → `opacity: 1; transform: translateX(0)`
+- Exiting slides get `.exit-left` or `.exit-right` classes for directional transitions
+- Slides have `overflow-y: auto` for internal scrolling when content exceeds viewport
+
+### Navigation
+- **Keyboard**: Arrow keys, Space, PageDown/PageUp, Home/End
+- **Click**: Left half = previous, right half = next (exclude interactive elements)
+- **Touch/Swipe**: Horizontal swipe detection (dx > dy && dx > 40px threshold)
+- **Fullscreen**: F key or button in bottom-right corner
+
+### Fixed UI Elements
+- **Header**: Fixed top bar (40px) with Elastic logo, semi-transparent dark background with backdrop-filter blur
+- **Progress bar**: 2px gradient bar (teal→blue) below header, animates with shimmer effect
+- **Slide counter**: Bottom center, JetBrains Mono, shows "X / Y"
+- **Presenter notes**: Hidden panel at bottom, toggled with N key, reads `data-notes` attribute from each slide
+
+### Animation System
+- Auto-tagging JS system (ANIM_MAP) — scans each slide for elements matching CSS selectors and assigns animation classes
+- Animation types: `fadeInUp`, `fadeInDown`, `fadeInLeft`, `fadeInRight`, `scaleIn`, `blurIn`
+- Duration variants: `anim-fast` (0.4s), `anim-normal` (0.6s), `anim-slow` (0.85s)
+- Stagger delays: `anim-d0` through `anim-d10` (80ms increments)
+- Animations reset on each slide entry via JS `resetAnimations()` function
+- Card hover: lift + glow (translateY(-4px) + box-shadow)
+- Highlight text: shimmer gradient animation on `.highlight` class (teal gradient, background-clip text)
+- Title slide: Canvas-based particle system with Elastic brand colors and connecting lines
+
+### Responsive Design (3 breakpoints)
+- **1024px**: Stack two-col to single, pipeline goes vertical
+- **768px**: Full mobile layout — single columns, tighter padding (12–16px), smaller fonts, swipe hint on counter. Use CSS attribute selectors `[style*="..."]` with `!important` to override inline styles that don't stack
+- **480px**: Extra tight — smallest font sizes, compressed spacing
+
+---
+
+## Slide Order & Content (26 slides)
+
+### Slide 1: Title
+- Elastic logo, presentation title "Elastic Agent Builder for Enterprise Use Cases"
+- Subtitle about building production-grade AI agents
+- Tag pills: Agent Builder, MCP/A2A, Agent Skills, Hybrid Search, Model Catalog, Jina v5, Open Source
+- Speaker info at bottom with gap: **Ashish Tiwari** — Principal Solutions Architect — Search Specialist
+- Background: particle canvas animation (60 particles, brand colors, connecting lines within 120px)
+
+### Slide 2: Elastic Platform Overview
+- Title: "The Elastic Search AI Platform"
+- Three-column flow diagram: Any Data Source → Search AI Platform → Outcomes
+- Center: Three product boxes (Elasticsearch, Observability, Security) + Search AI Platform with 7 capabilities (Ingestion, Processing, Storage, Search, AI & ML, Visualization, Automation) + Search AI Lake pill + deployment options (Self-Managed, Cloud, Serverless)
+- Animated flow dots and data flow lines between columns
+- Bottom: 3 summary cards (One Platform, Any Deployment, Real-Time Insights)
+
+### Slide 3: Search Maturity Model
+- Title: "The Search Maturity Model"
+- 5 stages in card layout — Row 1: 3 cards, arrow, Row 2: 2 cards
+  1. **Keyword Search** (BM25/TF-IDF) — teal border
+  2. **Semantic Search** (Dense Vectors/kNN) — orange border
+  3. **Hybrid Search** (BM25+Vector+ELSER+RRF) — blue border
+  4. **Conversational RAG** (LLM+Retrieval+Memory) — pink border
+  5. **Agentic AI** (Agents+Tools+MCP/A2A) — green border
+- Each card: Stage label, title, tech stack in mono font, description, "Limitation" section at bottom (or "Current frontier" for stage 5)
+- Bottom insight bar: "Each stage builds on the previous — you can't skip steps."
+
+### Slide 4: Playground
+- Title: "Elastic Playground"
+- Left: playground.png screenshot in card frame
+- Right: 2×2 grid of feature cards (Core Modes, LLM Flexibility, Advanced Features, Memory & Context)
+- Bottom: Requirements bar (ES v8.14+, data, LLM credentials)
+
+### Slide 5: The Problem
+- Title: "Most Agents Break After Three Turns"
+- Subtitle: "The bottleneck is never the model. It's always the context."
+- Left card: 5-item feature list about why agents fail, + footnote section with sources
+- Right card: Code block showing naive agent pattern (`while(true) { llm(entire_knowledge_base + all_chat_history + user_message) }`) with cost/latency/hallucination comments
+
+### Slide 6: Build Once Connect Everywhere
+- Title: "Elastic Agent Builder: Build Once. Connect Everywhere."
+- Architecture diagram image (agent-builder-arch.png)
+- Subtitle explaining MCP → Tools, API/A2A → Agents, Chat → Elastic UI
+
+### Slide 7: Chat + Agents + Tools
+- Title: "Chat + Agents + Tools"
+- Three cards: Chat (playground features), Agents (system prompt + tool bindings + guardrails), Tools (built-in + custom + MCP import)
+- Each card has colored tag pills
+- Bottom section: "Tool Types" card with 4-column grid: ES|QL Tools, Index Search Tools, MCP Tools, Workflow Tools — each with emoji icon, description, and hover effect
+
+### Slide 8: MCP Connector
+- Title: "Import Any MCP Tool Into Your Agent"
+- 3-node flow: Remote MCP Server → MCP Connector (Kibana Stack Management) → Your Elastic Agent
+- Two-column cards: "How It Works" (4 steps) and "What This Unlocks" (PagerDuty, GitHub, Slack, bidirectional)
+
+### Slide 9: Elastic Workflows (Tech Preview badge)
+- Title: "Elastic Workflows"
+- Three-panel flow diagram: Triggers → Workflow Engine → Actions
+- **Triggers** (4 items, vertically centered): Elastic Alerts, Schedule/Cron, Manual Run, Agent Builder
+- **Workflow Engine**: 3×2 grid of step types (Conditions, Loops, AI Prompts, HTTP Steps, ES Search, Cases) inside a glowing bordered box. Note: "Defined in YAML — platform handles execution"
+- **Actions** (5 items): Slack Messages, Jira Tickets, PagerDuty, Email/Notify, Any API/Service
+- Animated flow lines between columns
+- Bottom: 2 cards — "Agent + Workflow Integration" and "Why This Matters"
+
+### Slide 10: Expose — MCP, A2A & REST API
+- Title: "Build Once. Expose Everywhere."
+- Three animated flow rows, each showing: Protocol Badge → Animated Line → Elastic Agent Builder hub → Animated Line → Target endpoints
+  1. **MCP** (teal): Claude, Cursor, VS Code, LangChain
+  2. **A2A** (blue): Gemini, Strands, MS Foundry, Any Agent
+  3. **REST** (pink): Apps, Backend, CI/CD, Workflows
+- Each row has a descriptive label below
+- Custom CSS animations: `flowPulse`, `nodeAppear`, `arrowSlideRight` with staggered delays
+
+### Slide 11: Architecture Patterns
+- Title: "Three Patterns. One Platform."
+- Three cards with visual flow diagrams inside:
+  1. **Simple RAG** (teal): User Query → Hybrid Search + Rerank → LLM → Answer
+  2. **Agentic RAG** (blue): User Query → Agent Reason+Plan → Search/ES|QL/MCP tools → Response+Citations
+  3. **Multi-Agent A2A** (pink): User Query → Orchestrator Agent → Search Agent / Analytics Agent / Action Agent
+- Bottom callout: "Progressive complexity" — start with Pattern 1, graduate to 2, scale to 3
+
+### Slide 12: Model Catalog
+- Title: "One API. Every Model You Need (/_inference)"
+- 2×3 grid of provider cards: Anthropic (Claude models), OpenAI (GPT models, logo is just bold "O" in #10A37F), Google (Gemini), Jina AI, Elastic Native (ELSER, E5), Third-Party & BYO
+- Each card has provider icon/logo, name, and tag pills for available models
+- Bottom: code block showing `PUT _inference/chat_completion/my-openai-endpoint` API example
+
+### Slide 13: Jina v5
+- Title: "Jina SOTA Multilingual Embeddings. Native on Elastic."
+- Left column: Two cards with benchmark bars (animated fill) for v5-text-small (677M params) and v5-text-nano (239M params)
+- Right column: "Why This Matters" card (5-item feature list) + "Setup — 4 Lines" card with code block
+
+### Slide 14: Agent Without Context (transition slide)
+- Centered layout, larger title: "An Agent Without Context Is Just Expensive Guesswork"
+- Subtitle about right information at right time = search problem
+- Two side-by-side cards: "Without Context" (pink, costs/latency/hallucination) vs "With Context Engineering" (teal, grounded answers)
+
+### Slide 15: Context Engineering
+- Title: "Elastic Provides Everything You Need"
+- Three-column layout (left two full-height, right stacked):
+  - **Data Prep & Inference** (teal): 9 items (sparse/dense vectors, multilingual, GPU inference, chunking, 200+ connectors, web crawlers, parsing, quantization)
+  - **Retrieval** (blue): 11 items (vector, lexical, hybrid, geospatial, filtering, reranking, LTR, query rules, query understanding, RAG workflows, LLM integration)
+  - **Agentic AI** (pink, stacked top): 6 items (tool building, workflows, tool selection, memory, prompt management, MCP/Agent interfaces)
+  - **Evaluation & Monitoring** (yellow, stacked bottom): 5 items (relevance benchmarking, A/B testing, behavioral analytics, cost tracking, query logging)
+- Bottom: Vector DB foundation bar — gradient background with Elasticsearch label
+
+### Slide 16: 3-Phase Retrieval Pipeline
+- Title: "Three Search Methods. One API (_search)"
+- Three horizontal pipeline phases with arrows between them:
+  1. **Retrieval** (teal): BM25, Semantic Search, Hybrid+RRF (highlighted), Weighted RRF
+  2. **Rescoring** (blue): Popularity, Function Score, LTR (highlighted)
+  3. **Reranking** (pink): Semantic Rerank (highlighted), Jina Reranker v3, Cohere Rerank
+- Pipeline methods are pill-shaped with hover slide effect
+
+### Slide 17: ES|QL
+- Title: "Query Your Data Without the JSON Pain"
+- Two-column before/after comparison: JSON Query DSL (18 lines, pink border) vs ES|QL (3 lines, teal border)
+- Callout: "3 lines vs 18 lines. Same result."
+- Bottom: 4-card grid showing where ES|QL works: Agent Builder, Alerting, Dashboards, Workflows
+
+### Slide 18: Access Control — Two Layers
+- Title: "Two Layers of Access Control"
+- **Important**: No direct RBAC on agents yet. Access control works through:
+  - **Layer 1 — Agent Builder**: Tool-based access control. Agents only access assigned tools. Many-to-many relationship. Visual showing Finance Agent / HR Agent / IT Ops Agent mapped to Revenue Search Tool / Employee Data Tool / Logs ES|QL Tool. 3 checkmark items: assign tools per agent, many-to-many, admin controls for tool creation.
+  - **Layer 2 — Data Search**: Index/Field/Document-level security on Elasticsearch. 3 stacked cards explaining each level.
+- Bottom callout: "How they work together" — two independent layers, no single bypass point
+
+### Slide 19: Agent Skills
+- Title: "Turn AI Agents Into Elastic Experts"
+- Left column: 3 stacked cards — "What is SKILL.md?" (agentskills.io open standard), "26 Skills Available" (ES, Kibana, Observability, Security, Cloud), "Works With" (tag pills: Claude Code, Cursor, Copilot, Windsurf, Gemini CLI, Cline, Codex)
+- Right column: agent-skills-screenshot.png
+
+### Slide 20: Vibe Coding Use Cases
+- Title: "What You Can Build With Vibe Coding + Elastic Skills"
+- 3×2 grid of cards, each with: icon badge (colored rounded square), prompt title in quotes, description, category tag pill
+  1. "Build me a hybrid search API" — Search (teal)
+  2. "Create an APM dashboard" — Observability (blue)
+  3. "Set up brute force detection" — Security (pink)
+  4. "Build a RAG agent for our docs" — Agent Builder (yellow)
+  5. "Why is my cluster yellow?" — Ops (orange)
+  6. "Ingest my Kafka logs" — Ingestion (green)
+- Footer: github.com/elastic/agent-skills link
+
+### Slide 21: Industry — Regulated
+- Title: "Agents for Regulated Industries"
+- 3 cards with icon badges: BFSI (🏦), Public Sector (🏛️), Healthcare (🏥)
+- Each has 3 bullet points + 2 colored tag pills (e.g., Hybrid Search, Audit Trail)
+- Bottom callout: Data-layer security, on-prem, audit trails
+
+### Slide 22: Industry — Commercial
+- Title: "Agents for Every Business"
+- 3 cards: Mid-Market (🏢), Digital Natives (🚀), E-Commerce (🛒)
+- Each has 3 bullet points + 2 colored tag pills
+- Bottom callout: 200+ connectors
+
+### Slide 23: LLM Observability
+- Title: "LLM Observability — Built In, Not Bolted On"
+- 3 feature cards: Trace Every Interaction, Cost & Token Tracking, Quality & Safety
+- Bottom: 4-card metric type grid (NO fake numbers — just category labels with icons): Latency, Cost, Relevance, Safety — each with a brief description of what's measured
+- Bottom callout: Same platform for logs, metrics, traces, APM — zero integration gap
+
+### Slide 24: Competitive Landscape
+- Title: "Competitive Landscape"
+- Comparison table: Elastic vs Pinecone/Weaviate vs MongoDB Atlas vs OpenSearch
+- 8 capability rows: Hybrid Search, ELSER, Agent Builder, MCP+A2A, Agent Skills, Model Catalog, 200+ Connectors, Observability+Security
+- Elastic rows highlighted with teal. Others show check/partial/cross marks
+- Staggered row entrance animations
+
+### Slide 25: Three Superpowers + Get Started
+- Merged slide — top: three superpowers, bottom: three ways to get started
+- Three action cards with code/install commands (Playground, Agent Builder with Agent Skills, Elastic Cloud)
+
+### Slide 26: Closing / Thank You
+- Elastic logo
+- Quote: "The best agent is the one your users actually trust."
+- Subtitle about right context, right time, platform you control
+- Resources list (centered, inline-block, with margin-top: 64px):
+  - elastic.co/elasticsearch/agent-builder
+  - elastic.co/search-labs
+  - github.com/elastic/elasticsearch-labs
+  - github.com/elastic/agent-skills
+  - elastic.co/docs/explore-analyze/workflows
+- Each resource is a hover-colored link with → prefix
+- NO speaker name on closing slide
+
+---
+
+## Key Technical Notes
+
+1. **OpenAI logo**: Do NOT use SVG. Simply use `<span style="font-size: 22px; font-weight: 800; color: #10A37F;">O</span>`
+2. **Workflows triggers**: Elastic Alerts, Schedule/Cron, Manual Run, Agent Builder. NO webhooks.
+3. **LLM Observability metrics**: Show metric CATEGORIES (Latency, Cost, Relevance, Safety) — no fake numbers.
+4. **Mobile**: Slides stay `position: absolute` on mobile. Use `overflow-y: auto` for internal scroll. Hide particle canvas. Add swipe hint to counter.
+5. **Projector-safe contrast**: Card borders at `#3A5A8A`, text at `#FFFFFF` / `#C0D4E8` / `#D0DCE8`, accent backgrounds at `0.10`–`0.14` opacity minimum.
