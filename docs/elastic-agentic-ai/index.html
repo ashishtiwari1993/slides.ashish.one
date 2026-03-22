@@ -488,9 +488,196 @@
     animation: labelReveal 0.6s cubic-bezier(0.22,1,0.36,1) 0.05s both;
   }
 
-  @media (max-width: 900px) {
-    .slide { padding: 32px 24px; }
-    .two-col, .three-col { grid-template-columns: 1fr; gap: 12px; }
+  /* ========== RESPONSIVE / MOBILE ========== */
+
+  @media (max-width: 1024px) {
+    .slide { padding: 44px 20px 28px; overflow-y: auto; justify-content: flex-start; }
+    .slide-content { max-width: 100%; }
+    .two-col { grid-template-columns: 1fr; gap: 12px; }
+    .three-col { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pipeline { flex-direction: column; gap: 10px; }
+    .pipeline-arrow { transform: rotate(90deg); text-align: center; }
+    .comparison-table { font-size: 12px; }
+    .comparison-table th, .comparison-table td { padding: 8px 8px; }
+  }
+
+  @media (max-width: 768px) {
+    html, body { overflow: auto; }
+    .slide {
+      position: relative; top: auto; left: auto;
+      min-height: 100vh; height: auto;
+      padding: 52px 16px 24px;
+      justify-content: flex-start;
+      overflow-y: auto;
+    }
+    .slide-header { padding: 0 16px; }
+    .slide-header img { height: 22px; }
+
+    .slide-title { font-size: clamp(22px, 5vw, 32px) !important; letter-spacing: -0.5px; margin-bottom: 10px; }
+    .slide-subtitle { font-size: 14px !important; }
+    .section-label { font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+
+    .two-col, .three-col { grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+    .card { padding: 16px; border-radius: 10px; }
+    .card h3 { font-size: 16px; }
+    .card p { font-size: 13px; }
+    .card .icon { font-size: 20px; margin-bottom: 6px; }
+
+    .feature-list li { font-size: 13px; padding: 3px 0; }
+    .tag { font-size: 11px; padding: 4px 10px; }
+    .tag-list { gap: 4px; }
+
+    .code-block { font-size: 10px; padding: 12px; }
+
+    .pipeline { flex-direction: column; gap: 8px; }
+    .pipeline-phase { padding: 14px; }
+    .pipeline-phase h3 { font-size: 15px; }
+    .pipeline-method { font-size: 12px; padding: 6px 10px; }
+    .pipeline-arrow { transform: rotate(90deg); font-size: 22px; }
+
+    .comparison-table { font-size: 11px; display: block; overflow-x: auto; white-space: nowrap; }
+    .comparison-table th, .comparison-table td { padding: 7px 8px; font-size: 11px; }
+
+    .connector-box { min-width: 80px; padding: 10px; }
+    .connector-box .label { font-size: 11px; }
+    .connector-box .sub { font-size: 10px; }
+    .arch-arrow { font-size: 18px; }
+
+    .protocol-badge { font-size: 11px; padding: 5px 10px; }
+
+    .benchmark-bar-wrapper { margin: 4px 0; }
+    .benchmark-label { font-size: 11px; }
+    .benchmark-bar-bg { height: 18px; }
+
+    .slide-counter { font-size: 11px; bottom: 16px; }
+    .nav-hint { display: none !important; }
+
+    #fullscreenBtn { display: none !important; }
+
+    /* Platform diagram: stack vertically */
+    .platform-node { width: 100% !important; padding: 6px 10px !important; font-size: 11px !important; }
+    .platform-product { padding: 10px 16px !important; font-size: 13px !important; }
+    .platform-capability { min-width: 60px !important; padding: 8px 6px !important; font-size: 10px !important; }
+    .platform-capability .cap-icon { font-size: 14px !important; }
+    .deploy-option { padding: 6px 10px !important; font-size: 11px !important; }
+
+    /* Flow diagrams: stack vertically */
+    .flow-node { padding: 8px 12px !important; font-size: 11px !important; }
+    .flow-node.center-hub { padding: 12px 16px !important; font-size: 14px !important; }
+    .flow-endpoint-icon { font-size: 16px !important; }
+    .flow-arrow-label { font-size: 9px !important; }
+
+    /* Maturity model */
+    .maturity-stage { min-width: 100% !important; padding: 10px !important; }
+
+    /* Speaker info on title */
+    .slide-content .slide-subtitle + .tag-list + div { margin-top: 24px !important; }
+  }
+
+  @media (max-width: 480px) {
+    .slide { padding: 48px 12px 20px; }
+    .slide-title { font-size: clamp(18px, 5vw, 26px) !important; }
+    .slide-subtitle { font-size: 13px !important; }
+    .section-label { font-size: 10px; }
+    .card { padding: 12px; }
+    .card h3 { font-size: 14px; }
+    .card p { font-size: 12px; }
+    .feature-list li { font-size: 12px; }
+    .tag { font-size: 10px; padding: 3px 8px; }
+    .code-block { font-size: 9px; padding: 10px; }
+    .comparison-table th, .comparison-table td { padding: 5px 6px; font-size: 10px; }
+    .pipeline-method { font-size: 11px; }
+    .protocol-badge { font-size: 10px; padding: 4px 8px; }
+
+    /* Workflow slide: stack trigger/action columns */
+    .flow-line-h { min-width: 20px !important; width: 20px !important; }
+  }
+
+  /* Mobile: override inline flex layouts that don't stack */
+  @media (max-width: 768px) {
+    /* Platform diagram — stack columns */
+    .slide [style*="display: flex"][style*="align-items: stretch"][style*="gap: 0"] {
+      flex-direction: column !important; gap: 12px !important;
+    }
+    .slide [style*="flex: 0 0 150px"],
+    .slide [style*="flex: 0 0 160px"],
+    .slide [style*="flex: 0 0 180px"] {
+      flex: 1 1 auto !important; width: 100% !important;
+    }
+    .slide [style*="flex: 0 0 150px"] .platform-node,
+    .slide [style*="flex: 0 0 160px"] .platform-node,
+    .slide [style*="flex: 0 0 180px"] .platform-node {
+      width: 100% !important;
+    }
+    /* Hide flow dot columns on mobile */
+    .slide .flow-dot + .data-flow-line { display: none !important; }
+
+    /* Expose slide flow rows — stack */
+    .slide [style*="display: flex"][style*="align-items: center"][style*="gap: 0"][style*="margin-bottom: 16px"] {
+      flex-wrap: wrap !important; gap: 8px !important; justify-content: center !important;
+    }
+    .slide [style*="width: 80px"] { width: auto !important; }
+    .slide .flow-node.center-hub { padding: 10px 16px !important; font-size: 13px !important; }
+    .slide [style*="display: flex"][style*="gap: 10px"][style*="flex-shrink: 0"] {
+      flex-wrap: wrap !important; justify-content: center !important; gap: 6px !important;
+    }
+    .slide .flow-node { white-space: normal !important; }
+
+    /* Workflow slide — stack trigger/engine/actions */
+    .slide [style*="display: flex"][style*="align-items: stretch"][style*="max-width: 1300px"] {
+      flex-direction: column !important; gap: 12px !important;
+    }
+
+    /* Search maturity model grids */
+    .slide [style*="grid-template-columns: repeat(3, 1fr)"] {
+      grid-template-columns: 1fr !important;
+    }
+    .slide [style*="grid-template-columns: 1fr 1fr"][style*="max-width: 880px"] {
+      grid-template-columns: 1fr !important;
+    }
+    .slide [style*="grid-template-columns: repeat(4, 1fr)"] {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .slide [style*="grid-template-columns: 1fr 1fr"][style*="gap: 14px"][style*="max-width: 1300px"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Model catalog 2-col grid */
+    .slide [style*="display: grid"][style*="grid-template-columns: 1fr 1fr"][style*="gap: 14px"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* MCP connector row */
+    .slide [style*="display: flex"][style*="align-items: center"][style*="flex-wrap: nowrap"] {
+      flex-wrap: wrap !important; justify-content: center !important; gap: 8px !important;
+    }
+
+    /* Context engineering 3-column layout */
+    .slide [style*="display: flex"][style*="gap: 12px"][style*="max-width: 1300px"][style*="align-items: flex-start"] {
+      flex-direction: column !important;
+    }
+
+    /* Playground — stack image and cards */
+    .slide [style*="display: flex"][style*="gap: 18px"][style*="align-items: stretch"] {
+      flex-direction: column !important;
+    }
+    .slide [style*="flex: 1.1"] { flex: 1 1 auto !important; min-height: 200px !important; }
+
+    /* Bottom summary grids */
+    .slide [style*="display: grid"][style*="grid-template-columns: 1fr 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Superpowers + Get Started page */
+    .slide [style*="display: flex"][style*="gap: 12px"][style*="max-width: 1300px"] {
+      flex-direction: column !important;
+    }
+
+    /* Title slide particle canvas */
+    #particleCanvas { display: none !important; }
+
+    /* Swipe support hint */
+    .slide-counter::after { content: '  ←  swipe  →'; font-size: 10px; color: var(--text-muted); }
   }
 </style>
 </head>
@@ -1825,6 +2012,10 @@
     slides[current].style.transform = '';
     slides[current].style.opacity = '';
 
+    // Scroll to top on mobile
+    slides[current].scrollTop = 0;
+    window.scrollTo(0, 0);
+
     // Trigger staggered entrance animations
     resetAnimations(slides[current]);
     animateBars(slides[current]);
@@ -1846,9 +2037,15 @@
     if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
   });
 
-  let touchX = 0;
-  document.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; });
-  document.addEventListener('touchend', function(e) { const d = touchX - e.changedTouches[0].clientX; if (Math.abs(d) > 50) { d > 0 ? goTo(current + 1) : goTo(current - 1); } });
+  let touchX = 0, touchY = 0;
+  document.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; });
+  document.addEventListener('touchend', function(e) {
+    const dx = touchX - e.changedTouches[0].clientX;
+    const dy = touchY - e.changedTouches[0].clientY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      dx > 0 ? goTo(current + 1) : goTo(current - 1);
+    }
+  });
 
   document.addEventListener('click', function(e) {
     if (e.target.closest('.tab, .tabs, a, button')) return;
