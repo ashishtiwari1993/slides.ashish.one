@@ -203,6 +203,258 @@
   .pipeline-method { padding: 8px 14px; background: rgba(0,191,179,0.12); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; margin-bottom: 6px; font-size: 14px; color: #D0DCE8; font-weight: 500; }
   .pipeline-arrow { display: flex; align-items: center; color: var(--elastic-teal); font-size: 28px; font-weight: bold; flex-shrink: 0; }
 
+  /* ========== SLIDE CONTROL PANEL ========== */
+  .control-panel-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(11, 21, 48, 0.92); backdrop-filter: blur(16px);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .control-panel-overlay.visible { display: flex; opacity: 1; }
+  .control-panel {
+    width: 92%; max-width: 860px; max-height: 88vh;
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  }
+  .cp-header {
+    padding: 18px 24px; border-bottom: 1px solid var(--card-border);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .cp-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0; }
+  .cp-header .cp-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .cp-close {
+    width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--card-border);
+    background: transparent; color: var(--text-muted); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .cp-close:hover { background: rgba(240,78,152,0.1); color: var(--elastic-pink); border-color: rgba(240,78,152,0.3); }
+
+  /* Search bar */
+  .cp-search-bar {
+    padding: 10px 24px; border-bottom: 1px solid var(--card-border); flex-shrink: 0;
+  }
+  .cp-search {
+    width: 100%; padding: 8px 14px 8px 36px; border-radius: 8px;
+    border: 1px solid var(--card-border); background: var(--code-bg);
+    color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .cp-search:focus { border-color: var(--elastic-teal); }
+  .cp-search::placeholder { color: var(--text-muted); }
+  .cp-search-wrap { position: relative; }
+  .cp-search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px; pointer-events: none;
+  }
+
+  /* Actions bar */
+  .cp-actions {
+    padding: 10px 24px; border-bottom: 1px solid var(--card-border);
+    display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; align-items: center;
+  }
+  .cp-action-btn {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--card-border);
+    background: transparent; color: var(--text-secondary); font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .cp-action-btn:hover { background: rgba(0,191,179,0.1); border-color: rgba(0,191,179,0.3); color: var(--elastic-teal); }
+  .cp-action-btn.active { background: rgba(0,191,179,0.15); border-color: rgba(0,191,179,0.4); color: var(--elastic-teal); }
+  .cp-action-btn.preset-active { background: rgba(254,197,20,0.12); border-color: rgba(254,197,20,0.35); color: var(--elastic-yellow); }
+  .cp-action-sep { width: 1px; height: 20px; background: var(--card-border); margin: 0 4px; flex-shrink: 0; }
+  .cp-stats {
+    margin-left: auto; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .cp-stats .active-count { color: var(--elastic-teal); font-weight: 700; }
+  .cp-stats .skipped-count { color: var(--elastic-pink); font-weight: 700; }
+
+  /* Presets bar */
+  .cp-presets-bar {
+    padding: 8px 24px; border-bottom: 1px solid var(--card-border);
+    display: none; flex-shrink: 0; gap: 6px; align-items: center; flex-wrap: wrap;
+  }
+  .cp-presets-bar.visible { display: flex; }
+  .cp-presets-label {
+    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--elastic-yellow);
+    margin-right: 4px; flex-shrink: 0;
+  }
+  .cp-preset-chip {
+    padding: 4px 12px; border-radius: 20px; border: 1px solid var(--card-border);
+    background: transparent; color: var(--text-secondary); font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .cp-preset-chip:hover { border-color: var(--elastic-yellow); color: var(--elastic-yellow); background: rgba(254,197,20,0.06); }
+  .cp-preset-chip.loaded { background: rgba(254,197,20,0.12); border-color: rgba(254,197,20,0.35); color: var(--elastic-yellow); }
+  .cp-preset-chip .preset-count {
+    font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
+    background: rgba(254,197,20,0.15); padding: 1px 5px; border-radius: 8px;
+  }
+  .cp-preset-chip .preset-delete {
+    margin-left: 2px; font-size: 12px; opacity: 0.5; transition: opacity 0.15s;
+  }
+  .cp-preset-chip:hover .preset-delete { opacity: 1; }
+  .cp-preset-save {
+    padding: 4px 12px; border-radius: 20px; border: 1px dashed var(--card-border);
+    background: transparent; color: var(--text-muted); font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .cp-preset-save:hover { border-color: var(--elastic-teal); color: var(--elastic-teal); background: rgba(0,191,179,0.06); }
+
+  /* Slide list */
+  .cp-list { overflow-y: auto; flex: 1; padding: 4px 0; }
+
+  /* Section divider */
+  .cp-section {
+    padding: 8px 24px 4px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+  }
+  .cp-section-label {
+    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--elastic-teal);
+    white-space: nowrap;
+  }
+  .cp-section-line { flex: 1; height: 1px; background: var(--card-border); }
+  .cp-section-toggle {
+    font-size: 10px; color: var(--text-muted); font-family: 'Inter', sans-serif;
+    font-weight: 600; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--card-border);
+    background: transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .cp-section-toggle:hover { border-color: var(--elastic-teal); color: var(--elastic-teal); background: rgba(0,191,179,0.06); }
+
+  /* Slide item */
+  .cp-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 24px; transition: background 0.15s;
+    border-bottom: 1px solid rgba(46, 74, 122, 0.2);
+  }
+  .cp-item:hover { background: rgba(0,191,179,0.04); }
+  .cp-item.current { background: rgba(0,191,179,0.08); }
+  .cp-item.skipped { opacity: 0.4; }
+  .cp-item.skipped .cp-title { text-decoration: line-through; }
+  .cp-item.filtered-out { display: none; }
+
+  /* Drag handle */
+  .cp-drag {
+    cursor: grab; color: var(--text-muted); font-size: 14px; flex-shrink: 0;
+    opacity: 0.4; transition: opacity 0.15s; padding: 2px;
+  }
+  .cp-drag:hover { opacity: 1; color: var(--elastic-teal); }
+  .cp-item.dragging { opacity: 0.5; background: rgba(0,191,179,0.08); }
+  .cp-item.drag-over-top { box-shadow: inset 0 2px 0 0 var(--elastic-teal); }
+  .cp-item.drag-over-bottom { box-shadow: inset 0 -2px 0 0 var(--elastic-teal); }
+
+  .cp-num {
+    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+    color: var(--text-muted); width: 24px; text-align: right; flex-shrink: 0;
+  }
+  .cp-item.current .cp-num { color: var(--elastic-teal); }
+  .cp-title {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text-primary); flex: 1; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; min-width: 0;
+  }
+  .cp-item.skipped .cp-title { color: var(--text-muted); }
+  .cp-badge {
+    font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 8px; border-radius: 4px; flex-shrink: 0;
+  }
+  .cp-badge.on { background: rgba(0,191,179,0.12); color: var(--elastic-teal); }
+  .cp-badge.off { background: rgba(240,78,152,0.12); color: var(--elastic-pink); }
+  .cp-toggle {
+    position: relative; width: 36px; height: 20px; border-radius: 10px;
+    background: rgba(240,78,152,0.2); border: 1px solid rgba(240,78,152,0.3);
+    cursor: pointer; flex-shrink: 0; transition: all 0.25s;
+  }
+  .cp-toggle.on { background: rgba(0,191,179,0.2); border-color: rgba(0,191,179,0.4); }
+  .cp-toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--elastic-pink); transition: all 0.25s;
+  }
+  .cp-toggle.on::after { left: 18px; background: var(--elastic-teal); }
+  .cp-goto {
+    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500;
+    color: var(--text-muted); background: transparent; border: 1px solid transparent;
+    border-radius: 4px; padding: 2px 8px; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .cp-goto:hover { color: var(--elastic-teal); border-color: rgba(0,191,179,0.3); background: rgba(0,191,179,0.06); }
+
+  /* Control Panel trigger button */
+  .cp-trigger {
+    position: fixed; top: 8px; right: 24px; z-index: 150;
+    width: 32px; height: 32px; border-radius: 7px;
+    background: rgba(21, 37, 80, 0.8); border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px); cursor: pointer; display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s; color: var(--text-muted); font-size: 14px;
+  }
+  .cp-trigger:hover { background: var(--card-bg); border-color: var(--elastic-teal); color: var(--elastic-teal); }
+  .cp-trigger .skip-indicator {
+    position: absolute; top: -5px; right: -5px; width: 16px; height: 16px;
+    background: var(--elastic-pink); border-radius: 50%; font-size: 9px; font-weight: 700;
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+  }
+  .cp-trigger .skip-indicator.hidden { display: none; }
+
+  /* Preset save dialog */
+  .cp-save-dialog {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: var(--card-bg); border: 1px solid var(--elastic-teal);
+    border-radius: 12px; padding: 20px 24px; z-index: 10; min-width: 320px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5); display: none;
+  }
+  .cp-save-dialog.visible { display: block; }
+  .cp-save-dialog h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+  .cp-save-input {
+    width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--card-border);
+    background: var(--code-bg); color: var(--text-primary); font-family: 'Inter', sans-serif;
+    font-size: 13px; outline: none; margin-bottom: 12px;
+  }
+  .cp-save-input:focus { border-color: var(--elastic-teal); }
+  .cp-save-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .cp-save-actions button {
+    padding: 6px 16px; border-radius: 6px; font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .cp-save-cancel { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); }
+  .cp-save-cancel:hover { border-color: var(--elastic-pink); color: var(--elastic-pink); }
+  .cp-save-confirm { background: var(--elastic-teal); border: 1px solid var(--elastic-teal); color: #fff; }
+  .cp-save-confirm:hover { background: #009E94; }
+
+  /* Edit fields in control panel */
+  .cp-edit-section {
+    padding: 10px 16px; border-bottom: 1px solid var(--card-border);
+    background: rgba(0,191,179,0.03);
+  }
+  .cp-edit-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none; padding: 2px 0;
+  }
+  .cp-edit-toggle span {
+    font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--elastic-teal);
+  }
+  .cp-edit-toggle .cp-edit-arrow { color: var(--text-muted); font-size: 12px; transition: transform 0.2s; }
+  .cp-edit-toggle .cp-edit-arrow.open { transform: rotate(180deg); }
+  .cp-edit-fields { display: none; margin-top: 10px; }
+  .cp-edit-fields.visible { display: flex; flex-direction: column; gap: 8px; }
+  .cp-edit-field label {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 3px; display: block;
+  }
+  .cp-edit-field input, .cp-edit-field textarea {
+    width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--card-border);
+    background: var(--code-bg); color: var(--text-primary); font-family: 'Inter', sans-serif;
+    font-size: 12px; outline: none; transition: border-color 0.2s;
+  }
+  .cp-edit-field textarea { resize: vertical; min-height: 48px; line-height: 1.5; }
+  .cp-edit-field input:focus, .cp-edit-field textarea:focus { border-color: var(--elastic-teal); }
+
   /* Presenter Notes */
   .presenter-notes { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(11, 21, 48, 0.97); border-top: 1px solid var(--card-border); padding: 16px 32px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 180px; overflow-y: auto; }
   .presenter-notes.visible { transform: translateY(0); }
@@ -710,8 +962,8 @@
     <div class="slide-content centered">
       <img src="assets/logo-elastic-horizontal-color-reverse.svg" alt="Elastic" style="height: 96px; margin-bottom: 36px;">
       <div class="section-label">Elastic Agent Builder for Enterprise Use Cases</div>
-      <h1 class="slide-title">Elastic Agent Builder<br><span class="highlight">for Enterprise Use Cases</span></h1>
-      <p class="slide-subtitle">Build, deploy, and scale production-grade AI agents — from retrieval to orchestration — powered by the Elastic AI Search platform trusted at enterprise scale.</p>
+      <h1 class="slide-title" id="deckTitle">Elastic Agent Builder<br><span class="highlight">for Enterprise Use Cases</span></h1>
+      <p class="slide-subtitle" id="deckSubtitle">Build, deploy, and scale production-grade AI agents — from retrieval to orchestration — powered by the Elastic AI Search platform trusted at enterprise scale.</p>
       <div class="tag-list" style="justify-content: center; margin-top: 24px;">
         <span class="tag">Agent Builder</span>
         <span class="tag">MCP / A2A</span>
@@ -722,8 +974,8 @@
         <span class="tag">Open Source</span>
       </div>
       <div style="margin-top: 56px; font-size: 15px; color: var(--text-secondary);">
-        <strong style="color: var(--text-primary); font-size: 17px;">Ashish Tiwari</strong><br>
-        <span style="color: var(--elastic-teal); font-weight: 600;">Principal Solutions Architect</span> — Search Specialist
+        <strong style="color: var(--text-primary); font-size: 17px;" id="deckSpeaker">Ashish Tiwari</strong><br>
+        <span style="color: var(--elastic-teal); font-weight: 600;" id="deckRole">Principal Solutions Architect</span> — Search Specialist
       </div>
     </div>
   </div>
@@ -1037,6 +1289,16 @@
         <h3 style="font-size: 14px; margin: 0; white-space: nowrap;">Requirements</h3>
         <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Elasticsearch v8.14+, one index with data, LLM provider credentials (Elastic, OpenAI, Bedrock, Azure, or local)</p>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION TITLE: AGENT BUILDER ===== -->
+  <div class="slide" data-notes="Section divider — Agent Builder">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(40px, 5vw, 72px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Agent Builder</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-teal); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">Build, connect, and expose intelligent agents — all from a single platform.</p>
     </div>
   </div>
 
@@ -1692,6 +1954,16 @@
     </div>
   </div>
 
+  <!-- ===== SECTION TITLE: ELASTIC INFERENCE SERVICE ===== -->
+  <div class="slide" data-notes="Section divider — Elastic Inference Service">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(40px, 5vw, 72px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Elastic Inference Service</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-blue); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">One API. Every model. Fully managed, GPU-accelerated inference.</p>
+    </div>
+  </div>
+
   <!-- ===== SLIDE 11: MODEL CATALOG ===== -->
   <div class="slide" data-notes="Full model catalog grouped by provider. EIS manages everything — GPU, scaling, inference. Swap models per step, API stays the same. Show bigger cards with provider icons and code example.">
     <div class="slide-content">
@@ -1846,6 +2118,16 @@
           <p style="font-size: 13px;">Right docs, right time. Sub-second retrieval. Grounded answers with citations.</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION TITLE: CONTEXT ENGINEERING / SEARCH ===== -->
+  <div class="slide" data-notes="Section divider — Context Engineering / Search">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 4.5vw, 64px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Context Engineering</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-pink); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">The right information, at the right time — powered by Elastic search.</p>
     </div>
   </div>
 
@@ -2406,6 +2688,924 @@
     </div>
   </div>
 
+  <!-- ===== SECTION TITLE: FEDERATED SEARCH ===== -->
+  <div class="slide" data-notes="Section divider — Federated Search">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(40px, 5vw, 72px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Federated Search</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-yellow); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">Query everywhere. Move nothing. Data stays where it belongs.</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: FEDERATED SEARCH — MCP MULTI-SOURCE ===== -->
+  <div class="slide" data-notes="Federated search via MCP. Agent Builder connects to multiple external data sources without ingesting data into Elastic. Real-time query federation. Data sovereignty compliant — data never moves.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/icons/productfeature/reverse/AI.svg" alt="" style="height: 18px; width: 18px;">
+        Federated Search — Agent Builder + MCP
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 42px);">Query Any Source. <span class="highlight">Store Nothing.</span></h1>
+      <p class="slide-subtitle" style="font-size: 16px; margin-bottom: 20px;">Agent Builder uses MCP connectors to query external data sources in real time — data stays at the source, sovereignty-compliant by design.</p>
+
+      <!-- Architecture Flow Diagram -->
+      <div style="margin-bottom: 20px; width: 100%; max-width: 1500px;">
+        <svg viewBox="0 0 1100 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+          <defs>
+            <marker id="fedArrowTeal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#00BFB3"/></marker>
+            <marker id="fedArrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#93C90E"/></marker>
+          </defs>
+
+          <!-- User/Agent -->
+          <rect x="0" y="95" width="110" height="70" rx="12" fill="#152550" stroke="#2E4A7A" stroke-width="1.5"/>
+          <text x="55" y="122" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="14">User</text>
+          <text x="55" y="142" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="11">or AI Agent</text>
+
+          <!-- Arrow to Agent Builder -->
+          <line x1="110" y1="130" x2="188" y2="130" stroke="#00BFB3" stroke-width="2" marker-end="url(#fedArrowTeal)"/>
+
+          <!-- Agent Builder Hub -->
+          <rect x="196" y="75" width="180" height="110" rx="14" fill="#152550" stroke="#00BFB3" stroke-width="2"/>
+          <image href="assets/icons/productfeature/reverse/AI.svg" x="212" y="86" width="22" height="22"/>
+          <text x="286" y="102" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="14">Agent Builder</text>
+          <text x="286" y="120" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="10" font-weight="700">MCP Gateway</text>
+          <text x="286" y="140" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">Reason → Route → Merge</text>
+          <text x="286" y="156" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">Zero data ingestion</text>
+          <text x="286" y="172" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">Data stays at source</text>
+
+          <!-- MCP Fan-out lines -->
+          <line x1="376" y1="100" x2="478" y2="28" stroke="#93C90E" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#fedArrowGreen)"><animate attributeName="stroke-dashoffset" values="16;0" dur="1.2s" repeatCount="indefinite"/></line>
+          <line x1="376" y1="115" x2="478" y2="78" stroke="#93C90E" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#fedArrowGreen)"><animate attributeName="stroke-dashoffset" values="16;0" dur="1.4s" repeatCount="indefinite"/></line>
+          <line x1="376" y1="130" x2="478" y2="130" stroke="#93C90E" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#fedArrowGreen)"><animate attributeName="stroke-dashoffset" values="16;0" dur="1.6s" repeatCount="indefinite"/></line>
+          <line x1="376" y1="145" x2="478" y2="180" stroke="#93C90E" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#fedArrowGreen)"><animate attributeName="stroke-dashoffset" values="16;0" dur="1.8s" repeatCount="indefinite"/></line>
+          <line x1="376" y1="160" x2="478" y2="232" stroke="#93C90E" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#fedArrowGreen)"><animate attributeName="stroke-dashoffset" values="16;0" dur="2.0s" repeatCount="indefinite"/></line>
+
+          <!-- MCP Protocol label -->
+          <text x="428" y="88" fill="#93C90E" font-family="Space Mono" font-size="9" font-weight="700" transform="rotate(-20 428 88)">MCP</text>
+
+          <!-- External Sources -->
+          <rect x="486" y="8" width="180" height="40" rx="8" fill="rgba(0,119,204,0.08)" stroke="rgba(0,119,204,0.35)" stroke-width="1.5"/>
+          <text x="524" y="24" fill="#0077CC" font-family="Space Grotesk" font-weight="700" font-size="11">SF</text>
+          <text x="576" y="24" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">Salesforce</text>
+          <text x="576" y="40" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">CRM Data • US Region</text>
+
+          <rect x="486" y="58" width="180" height="40" rx="8" fill="rgba(240,78,152,0.08)" stroke="rgba(240,78,152,0.35)" stroke-width="1.5"/>
+          <text x="524" y="74" fill="#F04E98" font-family="Space Grotesk" font-weight="700" font-size="11">SN</text>
+          <text x="576" y="74" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">ServiceNow</text>
+          <text x="576" y="90" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">ITSM Tickets • EU Region</text>
+
+          <rect x="486" y="110" width="180" height="40" rx="8" fill="rgba(0,191,179,0.08)" stroke="rgba(0,191,179,0.35)" stroke-width="1.5"/>
+          <text x="524" y="126" fill="#00BFB3" font-family="Space Grotesk" font-weight="700" font-size="11">CF</text>
+          <text x="576" y="126" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">Confluence</text>
+          <text x="576" y="142" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">Knowledge Base • APAC</text>
+
+          <rect x="486" y="160" width="180" height="40" rx="8" fill="rgba(254,197,20,0.08)" stroke="rgba(254,197,20,0.35)" stroke-width="1.5"/>
+          <text x="524" y="176" fill="#FEC514" font-family="Space Grotesk" font-weight="700" font-size="11">PG</text>
+          <text x="576" y="176" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">PostgreSQL</text>
+          <text x="576" y="192" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">Transaction DB • MENA</text>
+
+          <rect x="486" y="212" width="180" height="40" rx="8" fill="rgba(249,139,43,0.08)" stroke="rgba(249,139,43,0.35)" stroke-width="1.5"/>
+          <text x="524" y="228" fill="#F98B2B" font-family="Space Grotesk" font-weight="700" font-size="11">S3</text>
+          <text x="576" y="228" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">AWS S3 / SharePoint</text>
+          <text x="576" y="244" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="9">Documents • LATAM</text>
+
+          <!-- Sovereignty Shield Icons -->
+          <rect x="690" y="8" width="150" height="244" rx="10" fill="rgba(0,0,0,0.15)" stroke="#2E4A7A" stroke-width="1"/>
+          <text x="765" y="32" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="11">Data Sovereignty</text>
+          <text x="765" y="50" text-anchor="middle" fill="#0077CC" font-family="Space Mono" font-size="10" font-weight="700">🇺🇸 US • FedRAMP</text>
+          <text x="765" y="78" text-anchor="middle" fill="#F04E98" font-family="Space Mono" font-size="10" font-weight="700">🇪🇺 EU • GDPR</text>
+          <text x="765" y="106" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="10" font-weight="700">🇦🇺 APAC • PDPA</text>
+          <text x="765" y="134" text-anchor="middle" fill="#9B59B6" font-family="Space Mono" font-size="10" font-weight="700">🇮🇳 India • DPDPA</text>
+          <text x="765" y="162" text-anchor="middle" fill="#FEC514" font-family="Space Mono" font-size="10" font-weight="700">🇦🇪 MENA • PDPL</text>
+          <text x="765" y="190" text-anchor="middle" fill="#F98B2B" font-family="Space Mono" font-size="10" font-weight="700">🇧🇷 LATAM • LGPD</text>
+          <text x="765" y="210" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="10">Data never crosses</text>
+          <text x="765" y="226" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="10">sovereign boundaries</text>
+          <text x="765" y="242" text-anchor="middle" fill="#93C90E" font-family="Space Mono" font-size="9" font-weight="700">✓ COMPLIANT</text>
+
+          <!-- Results flow back -->
+          <rect x="880" y="90" width="200" height="80" rx="12" fill="rgba(0,191,179,0.06)" stroke="#00BFB3" stroke-width="1.5"/>
+          <text x="980" y="118" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="13">Unified Results</text>
+          <text x="980" y="138" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="10" font-weight="700">+ Citations + Provenance</text>
+          <text x="980" y="156" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="10">Only answers cross borders</text>
+        </svg>
+      </div>
+
+      <!-- Bottom: Decision Framework + Key Points -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 8px; max-width: 1500px; width: 100%;">
+        <!-- MCP Federation -->
+        <div class="card" style="border-top: 3px solid var(--elastic-green); padding: 16px;">
+          <h3 style="font-size: 15px; color: var(--elastic-green); margin-bottom: 6px;">MCP Federation</h3>
+          <p style="font-size: 12px; line-height: 1.5;">Query at source — zero data movement. Sovereignty-compliant. Always fresh, no sync lag. Source retains access control.</p>
+        </div>
+        <!-- Elastic Connectors -->
+        <div class="card" style="border-top: 3px solid var(--elastic-teal); padding: 16px;">
+          <h3 style="font-size: 15px; color: var(--elastic-teal); margin-bottom: 6px;">200+ Connectors</h3>
+          <p style="font-size: 12px; line-height: 1.5;">Ingest into Elastic for hybrid search, ML, and analytics. Incremental sync, DLS built-in, auto chunking + embedding.</p>
+        </div>
+        <!-- Decision -->
+        <div class="card" style="border-top: 3px solid var(--elastic-yellow); padding: 16px;">
+          <h3 style="font-size: 15px; color: var(--elastic-yellow); margin-bottom: 6px;">Use Both Together</h3>
+          <p style="font-size: 12px; line-height: 1.5;"><strong style="color: var(--elastic-green);">Federate</strong> when compliance prevents data movement. <strong style="color: var(--elastic-teal);">Ingest</strong> when you need search + ML. Combine for maximum coverage.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: FEDERATED SEARCH — ELASTIC CONNECTORS ===== -->
+  <div class="slide" data-notes="Elastic's 200+ native connectors for data ingestion. When you DO want to bring data into Elastic — these are the pre-built integrations. Combined with MCP for external query, this gives you maximum flexibility.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/icons/productfeature/reverse/pipeline.svg" alt="" style="height: 18px; width: 18px;">
+        Elastic Connectors — 200+ Integrations
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 42px);">Ingest <span class="highlight">or</span> Federate. <span class="highlight-pink">Your Choice.</span></h1>
+      <p class="slide-subtitle" style="font-size: 16px; margin-bottom: 20px;">When you need data in Elastic for search, analytics, or ML — 200+ connectors handle ingestion. When sovereignty says no, MCP federates instead.</p>
+
+      <!-- Two-column: Connectors + MCP comparison -->
+      <div class="two-col" style="margin-top: 12px; align-items: start;">
+        <!-- Left: Elastic Connectors -->
+        <div>
+          <div class="card" style="border-top: 3px solid var(--elastic-teal); margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <img src="assets/icons/productfeature/reverse/pipeline.svg" alt="" style="height: 28px; width: 28px;">
+              <h3 style="margin-bottom: 0; font-size: 17px;">Native Connectors <span style="font-size: 12px; color: var(--elastic-teal); font-weight: 400;">(Data → Elastic)</span></h3>
+            </div>
+            <p style="font-size: 13px; margin-bottom: 14px;">Sync data into Elasticsearch indices for hybrid search, analytics, and ML. Full text + vector + sparse vector support.</p>
+
+            <!-- Connector categories grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-teal); margin-bottom: 4px;">Cloud Storage</div>
+                <div style="font-size: 11px; color: #D0DCE8;">S3, Azure Blob, GCS, Dropbox, Box, OneDrive</div>
+              </div>
+              <div style="background: rgba(0,119,204,0.06); border: 1px solid rgba(0,119,204,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-blue); margin-bottom: 4px;">Databases</div>
+                <div style="font-size: 11px; color: #D0DCE8;">PostgreSQL, MySQL, MongoDB, Oracle, SQL Server</div>
+              </div>
+              <div style="background: rgba(240,78,152,0.06); border: 1px solid rgba(240,78,152,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-pink); margin-bottom: 4px;">SaaS Apps</div>
+                <div style="font-size: 11px; color: #D0DCE8;">Salesforce, ServiceNow, Jira, Confluence, Slack</div>
+              </div>
+              <div style="background: rgba(254,197,20,0.06); border: 1px solid rgba(254,197,20,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-yellow); margin-bottom: 4px;">Content & Docs</div>
+                <div style="font-size: 11px; color: #D0DCE8;">SharePoint, Google Drive, Notion, GitHub, Web Crawler</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; padding: 10px; background: rgba(0,191,179,0.04); border-radius: 8px;">
+              <ul class="feature-list" style="font-size: 13px; margin-top: 0;">
+                <li>Incremental sync — only changed docs</li>
+                <li>Access control sync (DLS) built in</li>
+                <li>Auto chunking + embedding for vector search</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: When to use which -->
+        <div>
+          <div class="card" style="border-top: 3px solid var(--elastic-green); margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <img src="assets/icons/productfeature/reverse/AI.svg" alt="" style="height: 28px; width: 28px;">
+              <h3 style="margin-bottom: 0; font-size: 17px;">MCP Federation <span style="font-size: 12px; color: var(--elastic-green); font-weight: 400;">(Query at Source)</span></h3>
+            </div>
+            <p style="font-size: 13px; margin-bottom: 14px;">Agent Builder queries external systems in real time via MCP protocol. Data never enters Elastic.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-green); margin-bottom: 4px;">CRM / ERP</div>
+                <div style="font-size: 11px; color: #D0DCE8;">Salesforce, SAP, HubSpot, Dynamics 365</div>
+              </div>
+              <div style="background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-green); margin-bottom: 4px;">IT Operations</div>
+                <div style="font-size: 11px; color: #D0DCE8;">PagerDuty, ServiceNow, Jira, GitHub</div>
+              </div>
+              <div style="background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-green); margin-bottom: 4px;">Databases</div>
+                <div style="font-size: 11px; color: #D0DCE8;">PostgreSQL, MySQL, Snowflake, BigQuery</div>
+              </div>
+              <div style="background: rgba(147,201,14,0.06); border: 1px solid rgba(147,201,14,0.15); border-radius: 8px; padding: 10px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--elastic-green); margin-bottom: 4px;">Communication</div>
+                <div style="font-size: 11px; color: #D0DCE8;">Slack, Teams, Email, Custom APIs</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; padding: 10px; background: rgba(147,201,14,0.04); border-radius: 8px;">
+              <ul class="feature-list" style="font-size: 13px; margin-top: 0;">
+                <li>No data movement — sovereign-compliant</li>
+                <li>Always fresh — no sync lag</li>
+                <li>Source retains its own access control</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision callout -->
+      <div style="background: rgba(0,191,179,0.06); border: 1px solid rgba(0,191,179,0.15); border-radius: 10px; padding: 14px 24px; text-align: center; margin-top: 8px; width: 100%; max-width: 1500px;">
+        <p style="font-size: 14px; color: #D0DCE8; margin: 0;">
+          <strong style="color: var(--elastic-teal);">Choose connectors</strong> when you need hybrid search, ML, or analytics on the data.
+          <strong style="color: var(--elastic-green);">Choose MCP</strong> when sovereignty, freshness, or compliance prevents data movement.
+          <strong style="color: var(--text-primary);">Use both together</strong> for maximum coverage.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: FEDERATED SEARCH — CCS ELASTIC-TO-ELASTIC ===== -->
+  <div class="slide" data-notes="Cross-Cluster Search: the Elastic-to-Elastic federation story. Multiple Elastic clusters across sovereign regions connected via CCS. Native protocol, full Query DSL, security at each cluster. Data never leaves its home cluster.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/logo-elastic-glyph-white.svg" alt="" style="height: 18px; width: 18px;">
+        Cross-Cluster Search — Elastic to Elastic
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 42px);">One Query. <span class="highlight">Every Cluster.</span> <span class="highlight-blue">Every Region.</span></h1>
+      <p class="slide-subtitle" style="font-size: 16px; margin-bottom: 16px;">CCS sends queries to remote Elastic clusters and merges results at the coordinator. Raw data never leaves its home cluster.</p>
+
+      <!-- CCS Architecture SVG -->
+      <div style="margin-bottom: 16px; width: 100%; max-width: 1500px;">
+        <svg viewBox="0 0 1100 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+          <defs>
+            <marker id="ccsArrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#00BFB3"/></marker>
+            <marker id="ccsArrowB" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0077CC"/></marker>
+          </defs>
+
+          <!-- Central Coordinating Cluster -->
+          <rect x="390" y="90" width="320" height="130" rx="16" fill="#152550" stroke="#00BFB3" stroke-width="2"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="410" y="106" width="32" height="32"/>
+          <text x="550" y="118" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="16">Coordinating Cluster</text>
+          <text x="550" y="140" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="11" font-weight="700">AGENT BUILDER + CCS HUB</text>
+          <text x="550" y="162" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="11">Fan-out queries → Merge results → Apply ranking</text>
+          <text x="550" y="180" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="11">Full Query DSL + ES|QL across all clusters</text>
+          <text x="550" y="198" text-anchor="middle" fill="#8BA3C0" font-family="Inter" font-size="10">DLS/FLS enforced at each remote cluster</text>
+
+          <!-- EU Cluster (top-left) -->
+          <rect x="10" y="10" width="250" height="100" rx="12" fill="rgba(0,191,179,0.06)" stroke="rgba(0,191,179,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="22" y="22" width="24" height="24"/>
+          <text x="135" y="34" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="13">EU-West (Frankfurt)</text>
+          <text x="135" y="52" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="10" font-weight="700">eu_cluster</text>
+          <text x="135" y="70" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">Customer PII • Financial Records</text>
+          <text x="135" y="88" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="9">GDPR • Schrems II</text>
+          <rect x="194" y="94" width="52" height="16" rx="4" fill="rgba(0,191,179,0.15)" stroke="rgba(0,191,179,0.3)" stroke-width="1"/>
+          <text x="220" y="105" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="8" font-weight="700">CCS</text>
+
+          <!-- US Cluster (top-right) -->
+          <rect x="840" y="10" width="250" height="100" rx="12" fill="rgba(0,119,204,0.06)" stroke="rgba(0,119,204,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="852" y="22" width="24" height="24"/>
+          <text x="965" y="34" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="13">US-East (Virginia)</text>
+          <text x="965" y="52" text-anchor="middle" fill="#0077CC" font-family="Space Mono" font-size="10" font-weight="700">us_cluster</text>
+          <text x="965" y="70" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">Gov Records • Defense Intel</text>
+          <text x="965" y="88" text-anchor="middle" fill="#0077CC" font-family="Space Mono" font-size="9">FedRAMP • ITAR • HIPAA</text>
+          <rect x="854" y="94" width="52" height="16" rx="4" fill="rgba(0,119,204,0.15)" stroke="rgba(0,119,204,0.3)" stroke-width="1"/>
+          <text x="880" y="105" text-anchor="middle" fill="#0077CC" font-family="Space Mono" font-size="8" font-weight="700">CCS</text>
+
+          <!-- APAC Cluster (bottom-left) -->
+          <rect x="10" y="200" width="250" height="100" rx="12" fill="rgba(240,78,152,0.06)" stroke="rgba(240,78,152,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="22" y="212" width="24" height="24"/>
+          <text x="135" y="224" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="13">APAC (Sydney / Tokyo)</text>
+          <text x="135" y="242" text-anchor="middle" fill="#F04E98" font-family="Space Mono" font-size="10" font-weight="700">apac_cluster</text>
+          <text x="135" y="260" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">User Analytics • Transactions</text>
+          <text x="135" y="278" text-anchor="middle" fill="#F04E98" font-family="Space Mono" font-size="9">PIPL • PDPA • Privacy Act</text>
+          <rect x="194" y="284" width="52" height="16" rx="4" fill="rgba(240,78,152,0.15)" stroke="rgba(240,78,152,0.3)" stroke-width="1"/>
+          <text x="220" y="295" text-anchor="middle" fill="#F04E98" font-family="Space Mono" font-size="8" font-weight="700">CCS</text>
+
+          <!-- India Cluster (bottom-center-left) -->
+          <rect x="280" y="248" width="220" height="56" rx="10" fill="rgba(155,89,182,0.06)" stroke="rgba(155,89,182,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="292" y="258" width="20" height="20"/>
+          <text x="390" y="270" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">India (Mumbai)</text>
+          <text x="390" y="290" text-anchor="middle" fill="#9B59B6" font-family="Space Mono" font-size="9" font-weight="700">india_cluster • DPDPA</text>
+          <rect x="448" y="252" width="42" height="14" rx="4" fill="rgba(155,89,182,0.15)" stroke="rgba(155,89,182,0.3)" stroke-width="1"/>
+          <text x="469" y="262" text-anchor="middle" fill="#9B59B6" font-family="Space Mono" font-size="7" font-weight="700">CCS</text>
+
+          <!-- MENA Cluster (bottom-center) -->
+          <rect x="550" y="248" width="260" height="56" rx="10" fill="rgba(254,197,20,0.06)" stroke="rgba(254,197,20,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="562" y="258" width="20" height="20"/>
+          <text x="680" y="270" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="12">MENA (UAE / Riyadh)</text>
+          <text x="680" y="290" text-anchor="middle" fill="#FEC514" font-family="Space Mono" font-size="9" font-weight="700">mena_cluster • UAE PDPL • Saudi PDPL</text>
+          <rect x="760" y="252" width="42" height="14" rx="4" fill="rgba(254,197,20,0.15)" stroke="rgba(254,197,20,0.3)" stroke-width="1"/>
+          <text x="781" y="262" text-anchor="middle" fill="#FEC514" font-family="Space Mono" font-size="7" font-weight="700">CCS</text>
+
+          <!-- LATAM Cluster (bottom-right) -->
+          <rect x="840" y="200" width="250" height="100" rx="12" fill="rgba(249,139,43,0.06)" stroke="rgba(249,139,43,0.4)" stroke-width="1.5"/>
+          <image href="assets/logo-elastic-glyph-white.svg" x="852" y="212" width="24" height="24"/>
+          <text x="965" y="224" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-weight="700" font-size="13">LATAM (São Paulo)</text>
+          <text x="965" y="242" text-anchor="middle" fill="#F98B2B" font-family="Space Mono" font-size="10" font-weight="700">latam_cluster</text>
+          <text x="965" y="260" text-anchor="middle" fill="#C0D4E8" font-family="Inter" font-size="10">Citizen Records • Health Data</text>
+          <text x="965" y="278" text-anchor="middle" fill="#F98B2B" font-family="Space Mono" font-size="9">LGPD • Chile DPA</text>
+          <rect x="854" y="284" width="52" height="16" rx="4" fill="rgba(249,139,43,0.15)" stroke="rgba(249,139,43,0.3)" stroke-width="1"/>
+          <text x="880" y="295" text-anchor="middle" fill="#F98B2B" font-family="Space Mono" font-size="8" font-weight="700">CCS</text>
+
+          <!-- CCS Lines with animation -->
+          <line x1="260" y1="60" x2="390" y2="120" stroke="#00BFB3" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+          <line x1="840" y1="60" x2="710" y2="120" stroke="#0077CC" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+          <line x1="260" y1="250" x2="390" y2="190" stroke="#F04E98" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+          <line x1="390" y1="248" x2="450" y2="220" stroke="#9B59B6" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+          <line x1="680" y1="248" x2="550" y2="220" stroke="#FEC514" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+          <line x1="840" y1="250" x2="710" y2="190" stroke="#F98B2B" stroke-width="1.5" stroke-dasharray="6,4"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.5s" repeatCount="indefinite"/></line>
+        </svg>
+      </div>
+
+      <!-- Bottom: CCS Advantages -->
+      <div class="three-col" style="margin-top: 4px;">
+        <div class="card" style="border-top: 3px solid var(--elastic-teal);">
+          <h3 style="font-size: 16px;">Native Protocol</h3>
+          <ul class="feature-list" style="font-size: 13px;">
+            <li>Zero translation overhead between clusters</li>
+            <li>Full Query DSL + ES|QL support</li>
+            <li>Aggregations compute locally, merge at hub</li>
+            <li>CCR available for read replicas when needed</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-blue);">
+          <h3 style="font-size: 16px;">Security at Every Layer</h3>
+          <ul class="feature-list" style="font-size: 13px;">
+            <li>Each cluster enforces its own DLS/FLS</li>
+            <li>API keys scoped per cluster per role</li>
+            <li>TLS encryption in transit between clusters</li>
+            <li>Full audit logging at every node</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--elastic-pink);">
+          <h3 style="font-size: 16px;">Sovereignty by Design</h3>
+          <ul class="feature-list" style="font-size: 13px;">
+            <li>Raw data never leaves the source cluster</li>
+            <li>Only doc IDs + scores return to coordinator</li>
+            <li>Each region operates independently</li>
+            <li>Central orchestration, distributed execution</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 30: Federated Search — Connectors & Third-Party Integration ===== -->
+  <div class="slide" data-notes="Connectors & Third-Party Data Source Integration — Elastic 9.4 roadmap item from elastic/roadmap#235">
+    <div class="slide-content">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0;">
+        <div>
+          <div class="section-label">Federated Search — Connector Integration</div>
+          <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 40px); margin-bottom: 24px;">Chat With Your <span class="highlight">Entire Ecosystem</span></h1>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(254,197,20,0.18), rgba(249,139,43,0.15)); border: 2px solid rgba(254,197,20,0.6); border-radius: 12px; padding: 12px 24px; text-align: center; box-shadow: 0 0 30px rgba(254,197,20,0.2), inset 0 0 20px rgba(254,197,20,0.05); flex-shrink: 0; animation: fedBadgePulse 2s ease-in-out infinite;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(254,197,20,0.8); font-family: 'Space Mono', monospace; margin-bottom: 4px;">Coming in</div>
+          <div style="font-size: 28px; font-weight: 900; color: var(--elastic-yellow); font-family: 'Space Grotesk', sans-serif; line-height: 1; text-shadow: 0 0 16px rgba(254,197,20,0.4);">Elastic 9.4</div>
+        </div>
+      </div>
+
+      <!-- Architecture SVG Diagram — higher resolution -->
+      <svg viewBox="0 0 1100 520" style="width: 100%; max-height: 65vh;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="fedArrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto"><polygon points="0 0, 10 4, 0 8" fill="#00BFB3"/></marker>
+          <marker id="fedArrowBlue" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto"><polygon points="0 0, 10 4, 0 8" fill="#0077CC"/></marker>
+          <marker id="fedArrowReturn" markerWidth="10" markerHeight="8" refX="0" refY="4" orient="auto"><polygon points="10 0, 0 4, 10 8" fill="#FEC514"/></marker>
+          <filter id="fedGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="fedGlowTeal"><feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00BFB3" flood-opacity="0.25"/></filter>
+        </defs>
+
+        <!-- ══════ LEFT: User + Chat ══════ -->
+        <rect x="12" y="70" width="210" height="340" rx="14" fill="rgba(0,119,204,0.06)" stroke="rgba(0,119,204,0.25)" stroke-width="1.5"/>
+        <circle cx="117" cy="108" r="22" fill="rgba(0,119,204,0.15)" stroke="#0077CC" stroke-width="1.5"/>
+        <text x="117" y="103" text-anchor="middle" fill="#0077CC" font-size="18">👤</text>
+        <text x="117" y="120" text-anchor="middle" fill="#0077CC" font-family="Space Mono" font-size="8" font-weight="700">USER</text>
+        <text x="117" y="148" text-anchor="middle" fill="#5599cc" font-family="Space Mono" font-size="9" font-weight="600">END USER</text>
+
+        <!-- Chat window mockup -->
+        <rect x="28" y="162" width="180" height="130" rx="10" fill="rgba(0,0,0,0.3)" stroke="rgba(0,119,204,0.2)" stroke-width="1"/>
+        <rect x="28" y="162" width="180" height="22" rx="10" fill="rgba(0,119,204,0.12)"/>
+        <rect x="197" y="172" width="0" height="0" rx="5"/>
+        <circle cx="42" cy="173" r="4" fill="#00BFB3"/>
+        <text x="52" y="177" fill="#8ebbdb" font-family="Space Grotesk" font-size="9" font-weight="600">Agent Chat</text>
+
+        <!-- User query bubble -->
+        <rect x="40" y="194" width="156" height="38" rx="8" fill="rgba(0,119,204,0.12)" stroke="rgba(0,119,204,0.2)" stroke-width="0.8"/>
+        <text x="118" y="209" text-anchor="middle" fill="#a8cde8" font-family="Inter" font-size="10" font-weight="500">"Find outage root cause</text>
+        <text x="118" y="223" text-anchor="middle" fill="#a8cde8" font-family="Inter" font-size="10" font-weight="500">across Slack and Jira"</text>
+
+        <!-- Response bubble -->
+        <rect x="40" y="240" width="156" height="40" rx="8" fill="rgba(0,191,179,0.08)" stroke="rgba(0,191,179,0.15)" stroke-width="0.8"/>
+        <text x="118" y="255" text-anchor="middle" fill="#8cd4cf" font-family="Inter" font-size="9" font-weight="500">Searching 3 sources...</text>
+        <text x="118" y="268" text-anchor="middle" fill="#00BFB3" font-family="Space Mono" font-size="9" font-weight="700">12 results unified + ranked</text>
+
+        <!-- OAuth badge -->
+        <rect x="32" y="310" width="172" height="36" rx="8" fill="rgba(240,78,152,0.06)" stroke="rgba(240,78,152,0.2)" stroke-width="1"/>
+        <text x="118" y="327" text-anchor="middle" fill="#F04E98" font-family="Space Mono" font-size="10" font-weight="700">Per-User OAuth 2.0</text>
+        <text x="118" y="340" text-anchor="middle" fill="#8899aa" font-family="Inter" font-size="8">User-scoped ACL enforcement</text>
+
+        <!-- ══ Arrow: User → Agent Builder ══ -->
+        <line x1="222" y1="260" x2="298" y2="260" stroke="#0077CC" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fedArrowBlue)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <text x="260" y="253" text-anchor="middle" fill="#5599cc" font-family="Space Mono" font-size="8" font-weight="600">query</text>
+
+        <!-- ══════ CENTER: Agent Builder ══════ -->
+        <rect x="305" y="120" width="240" height="280" rx="16" fill="rgba(0,191,179,0.05)" stroke="rgba(0,191,179,0.4)" stroke-width="2" filter="url(#fedGlowTeal)"/>
+
+        <!-- Agent Builder header -->
+        <rect x="330" y="136" width="190" height="34" rx="8" fill="rgba(0,191,179,0.2)"/>
+        <text x="425" y="150" text-anchor="middle" fill="#00BFB3" font-family="Space Grotesk" font-size="15" font-weight="800">Agent Builder</text>
+        <text x="425" y="163" text-anchor="middle" fill="#6dbdb8" font-family="Space Mono" font-size="8" font-weight="600">FEDERATED QUERY ENGINE</text>
+
+        <!-- Step 1: Query Parser -->
+        <rect x="322" y="186" width="206" height="52" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <text x="425" y="204" text-anchor="middle" fill="#e0e6ed" font-family="Space Grotesk" font-size="12" font-weight="700">01 · Query Parser</text>
+        <text x="425" y="220" text-anchor="middle" fill="#8899aa" font-family="Inter" font-size="10">Detect connector targets, build sub-queries</text>
+
+        <text x="425" y="252" text-anchor="middle" fill="rgba(0,191,179,0.5)" font-size="14">▼</text>
+
+        <!-- Step 2: Federated Orchestrator -->
+        <rect x="322" y="260" width="206" height="52" rx="10" fill="rgba(0,191,179,0.08)" stroke="rgba(0,191,179,0.2)" stroke-width="1"/>
+        <text x="425" y="278" text-anchor="middle" fill="#00BFB3" font-family="Space Grotesk" font-size="12" font-weight="700">02 · Fan-Out Orchestrator</text>
+        <text x="425" y="294" text-anchor="middle" fill="#8899aa" font-family="Inter" font-size="10">Parallel dispatch to all data sources</text>
+
+        <!-- Unified Response box -->
+        <text x="425" y="326" text-anchor="middle" fill="rgba(254,197,20,0.5)" font-size="14">▼</text>
+        <rect x="322" y="334" width="206" height="46" rx="10" fill="rgba(254,197,20,0.06)" stroke="rgba(254,197,20,0.2)" stroke-width="1"/>
+        <text x="425" y="352" text-anchor="middle" fill="#FEC514" font-family="Space Grotesk" font-size="12" font-weight="700">Unified Response</text>
+        <text x="425" y="368" text-anchor="middle" fill="#8899aa" font-family="Inter" font-size="10">Cross-source score normalization</text>
+
+        <!-- ══ Arrows: Agent Builder → Connector Groups ══ -->
+        <!-- To Messaging -->
+        <path d="M545 220 Q590 220 630 120" stroke="#00BFB3" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fedArrow)" fill="none">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite"/>
+        </path>
+        <!-- To Productivity -->
+        <path d="M545 280 L630 260" stroke="#00BFB3" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fedArrow)" fill="none">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite"/>
+        </path>
+        <!-- To CRM/ITSM -->
+        <path d="M545 300 Q590 340 630 400" stroke="#00BFB3" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fedArrow)" fill="none">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- Native Connectors label — below Agent Builder box -->
+        <text x="425" y="416" text-anchor="middle" fill="#93C90E" font-family="Space Mono" font-size="10" font-weight="700" letter-spacing="0.1em">NATIVE CONNECTORS</text>
+
+        <!-- ══════ RIGHT: Connector Groups ══════ -->
+
+        <!-- ── GROUP 1: Messaging & Collaboration ── -->
+        <rect x="640" y="40" width="440" height="130" rx="12" fill="rgba(240,78,152,0.04)" stroke="rgba(240,78,152,0.2)" stroke-width="1.5"/>
+        <text x="665" y="65" fill="#F04E98" font-family="Space Mono" font-size="11" font-weight="700">MESSAGING &amp; COLLABORATION</text>
+
+        <!-- Slack -->
+        <rect x="660" y="80" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="685" y="92" width="42" height="26" rx="5" fill="rgba(225,30,90,0.12)"/>
+        <text x="706" y="110" text-anchor="middle" fill="#E01E5A" font-family="Space Grotesk" font-size="16" font-weight="800">#</text>
+        <text x="706" y="140" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="11" font-weight="600">Slack</text>
+
+        <!-- Teams -->
+        <rect x="762" y="80" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="787" y="92" width="42" height="26" rx="5" fill="rgba(123,131,235,0.12)"/>
+        <text x="808" y="110" text-anchor="middle" fill="#7B83EB" font-family="Space Grotesk" font-size="14" font-weight="800">T</text>
+        <text x="808" y="140" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="11" font-weight="600">Teams</text>
+
+        <!-- Gmail -->
+        <rect x="864" y="80" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="889" y="92" width="42" height="26" rx="5" fill="rgba(234,67,53,0.12)"/>
+        <text x="910" y="110" text-anchor="middle" fill="#EA4335" font-family="Space Grotesk" font-size="14" font-weight="800">M</text>
+        <text x="910" y="140" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="11" font-weight="600">Gmail</text>
+
+        <!-- Confluence -->
+        <rect x="966" y="80" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="991" y="92" width="42" height="26" rx="5" fill="rgba(24,104,219,0.12)"/>
+        <text x="1012" y="110" text-anchor="middle" fill="#1868DB" font-family="Space Grotesk" font-size="14" font-weight="800">C</text>
+        <text x="1012" y="140" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">Confluence</text>
+
+        <!-- ── GROUP 2: Productivity & Storage ── -->
+        <rect x="640" y="195" width="440" height="130" rx="12" fill="rgba(0,119,204,0.04)" stroke="rgba(0,119,204,0.2)" stroke-width="1.5"/>
+        <text x="665" y="220" fill="#0077CC" font-family="Space Mono" font-size="11" font-weight="700">PRODUCTIVITY &amp; STORAGE</text>
+
+        <!-- Google Drive -->
+        <rect x="660" y="235" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="685" y="247" width="42" height="26" rx="5" fill="rgba(0,102,218,0.12)"/>
+        <text x="706" y="265" text-anchor="middle" fill="#0066DA" font-family="Space Grotesk" font-size="14" font-weight="800">GD</text>
+        <text x="706" y="293" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">Google Drive</text>
+
+        <!-- SharePoint -->
+        <rect x="762" y="235" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="787" y="247" width="42" height="26" rx="5" fill="rgba(3,131,135,0.12)"/>
+        <text x="808" y="265" text-anchor="middle" fill="#038387" font-family="Space Grotesk" font-size="14" font-weight="800">SP</text>
+        <text x="808" y="293" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">SharePoint</text>
+
+        <!-- Notion -->
+        <rect x="864" y="235" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="889" y="247" width="42" height="26" rx="5" fill="rgba(255,255,255,0.08)"/>
+        <text x="910" y="265" text-anchor="middle" fill="white" font-family="Space Grotesk" font-size="14" font-weight="800">N</text>
+        <text x="910" y="293" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="11" font-weight="600">Notion</text>
+
+        <!-- Azure Blob -->
+        <rect x="966" y="235" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="991" y="247" width="42" height="26" rx="5" fill="rgba(0,137,214,0.12)"/>
+        <text x="1012" y="265" text-anchor="middle" fill="#0089D6" font-family="Space Grotesk" font-size="12" font-weight="800">Az</text>
+        <text x="1012" y="293" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">Azure Blob</text>
+
+        <!-- ── GROUP 3: CRM & ITSM ── -->
+        <rect x="640" y="350" width="440" height="130" rx="12" fill="rgba(254,197,20,0.04)" stroke="rgba(254,197,20,0.2)" stroke-width="1.5"/>
+        <text x="665" y="375" fill="#FEC514" font-family="Space Mono" font-size="11" font-weight="700">CRM &amp; ITSM</text>
+
+        <!-- Salesforce -->
+        <rect x="660" y="390" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="685" y="402" width="42" height="26" rx="5" fill="rgba(0,161,224,0.12)"/>
+        <text x="706" y="420" text-anchor="middle" fill="#00A1E0" font-family="Space Grotesk" font-size="12" font-weight="800">SF</text>
+        <text x="706" y="450" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">Salesforce</text>
+
+        <!-- ServiceNow -->
+        <rect x="762" y="390" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="787" y="402" width="42" height="26" rx="5" fill="rgba(129,181,161,0.12)"/>
+        <text x="808" y="420" text-anchor="middle" fill="#81B5A1" font-family="Space Grotesk" font-size="12" font-weight="800">SN</text>
+        <text x="808" y="450" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">ServiceNow</text>
+
+        <!-- Jira -->
+        <rect x="864" y="390" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="889" y="402" width="42" height="26" rx="5" fill="rgba(38,132,255,0.12)"/>
+        <text x="910" y="420" text-anchor="middle" fill="#2684FF" font-family="Space Grotesk" font-size="14" font-weight="800">J</text>
+        <text x="910" y="450" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="11" font-weight="600">Jira</text>
+
+        <!-- HubSpot -->
+        <rect x="966" y="390" width="92" height="72" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <rect x="991" y="402" width="42" height="26" rx="5" fill="rgba(255,122,89,0.12)"/>
+        <text x="1012" y="420" text-anchor="middle" fill="#FF7A59" font-family="Space Grotesk" font-size="12" font-weight="800">HS</text>
+        <text x="1012" y="450" text-anchor="middle" fill="#c0c8d0" font-family="Inter" font-size="10" font-weight="600">HubSpot</text>
+
+        <!-- ══ Bottom flow strip ══ -->
+        <rect x="12" y="492" width="1076" height="26" rx="6" fill="rgba(0,191,179,0.06)" stroke="rgba(0,191,179,0.1)" stroke-width="1"/>
+        <text x="550" y="509" text-anchor="middle" fill="#6dbdb8" font-family="Space Mono" font-size="10" font-weight="600">
+          User query  ─▸  Parse connector targets  ─▸  Per-user OAuth  ─▸  Parallel fan-out via native connectors  ─▸  Unified ranked response
+        </text>
+
+      </svg>
+
+    </div>
+  </div>
+
+  <!-- ===== USE CASE ANIMATIONS ===== -->
+  <style>
+    @keyframes archPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,191,179,0); }
+      50% { box-shadow: 0 0 14px 3px rgba(0,191,179,0.18); }
+    }
+    @keyframes archFlowDown {
+      0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; }
+    }
+    @keyframes chatDotBounce {
+      0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-4px); }
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 0.5; box-shadow: 0 0 0 0 rgba(0,191,179,0); }
+      50% { opacity: 1; box-shadow: 0 0 8px 3px rgba(0,191,179,0.35); }
+    }
+    @keyframes fedBadgePulse {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 20px rgba(254,197,20,0.1); }
+      50% { opacity: 1; box-shadow: 0 0 35px rgba(254,197,20,0.35); }
+    }
+    @keyframes chatSlideIn {
+      0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); }
+    }
+    .arch-layer { animation: archPulse 3s ease-in-out infinite; }
+    .arch-layer-d1 { animation: archPulse 3s ease-in-out infinite 0.4s; }
+    .arch-layer-d2 { animation: archPulse 3s ease-in-out infinite 0.8s; }
+    .arch-layer-d3 { animation: archPulse 3s ease-in-out infinite 1.2s; }
+    .arch-arrow-anim { animation: archFlowDown 1.5s ease-in-out infinite; color: #00BFB3; font-weight: bold; }
+    .arch-arrow-d1 { animation-delay: 0.3s; }
+    .arch-arrow-d2 { animation-delay: 0.6s; }
+    .chat-status-dot { animation: statusPulse 2s ease-in-out infinite; }
+    .typing-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #00BFB3; margin: 0 2px; }
+    .typing-dot:nth-child(1) { animation: chatDotBounce 1.2s ease-in-out infinite; }
+    .typing-dot:nth-child(2) { animation: chatDotBounce 1.2s ease-in-out infinite 0.2s; }
+    .typing-dot:nth-child(3) { animation: chatDotBounce 1.2s ease-in-out infinite 0.4s; }
+    .uc-chat-msg { animation: chatSlideIn 0.4s ease-out both; }
+    .uc-chat-msg:nth-child(2) { animation-delay: 0.1s; }
+    .uc-chat-msg:nth-child(3) { animation-delay: 0.2s; }
+    .uc-chat-msg:nth-child(4) { animation-delay: 0.3s; }
+  </style>
+
+  <!-- ===== SECTION TITLE: USE CASES ===== -->
+  <div class="slide" data-notes="Section divider — Use Cases">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(40px, 5vw, 72px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Use Cases</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-orange); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">From document search to call analysis — see the platform in action.</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: USE CASE — CENTRAL DOCUMENT SEARCH ===== -->
+  <div class="slide" data-notes="Central document search and chat. Elastic Connectors ingest from any source (SharePoint, Confluence, S3, Databases, APIs). semantic_text auto-chunks and embeds. DiskBBQ+HNSW stores vectors at 32x savings. Agent Builder orchestrates conversational RAG with citations and guardrails.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/icons/productfeature/reverse/discover.svg" alt="" style="height: 18px; width: 18px;">
+        Use Case — Central Document Intelligence
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 40px); margin-bottom: 28px;">Central Document <span class="highlight">Search & Chat</span></h1>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1500px; width: 100%;">
+        <!-- LEFT: Architecture Diagram -->
+        <div style="display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+
+          <!-- Layer 1: Data Sources -->
+          <div class="arch-layer" style="border-left: 4px solid var(--elastic-yellow); padding: 12px 14px; background: rgba(254,197,20,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-yellow); font-family: 'Space Mono'; margin-bottom: 4px;">01 · DATA SOURCES</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">SharePoint · Confluence · S3 · Databases · APIs</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">200+ Elastic Connectors — ingest from anywhere</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 2: Chunk & Embed -->
+          <div class="arch-layer arch-layer-d1" style="border-left: 4px solid var(--elastic-teal); padding: 12px 14px; background: rgba(0,191,179,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-teal); font-family: 'Space Mono'; margin-bottom: 4px;">02 · CHUNK & EMBED</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">semantic_text — zero pipeline code</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Auto-chunk + embed via EIS (ELSER · OpenAI · Google · HuggingFace)</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim arch-arrow-d1" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 3: Vector Store -->
+          <div class="arch-layer arch-layer-d2" style="border-left: 4px solid var(--elastic-blue); padding: 12px 14px; background: rgba(0,119,204,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-blue); font-family: 'Space Mono'; margin-bottom: 4px;">03 · VECTOR STORE</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">DiskBBQ + HNSW — 32× memory savings</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">float→int4 quantized · BM25 + kNN + RRF hybrid search</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim arch-arrow-d2" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 4: Agent Builder -->
+          <div class="arch-layer arch-layer-d3" style="border-left: 4px solid var(--elastic-pink); padding: 12px 14px; background: rgba(240,78,152,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-pink); font-family: 'Space Mono'; margin-bottom: 4px;">04 · AGENT BUILDER</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">Conversational RAG with citations</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Intent routing · semantic reranking · inline citations · guardrails + DLS/FLS</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Chat Window -->
+        <div style="background: var(--code-bg); border: 1px solid var(--card-border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+          <div style="padding: 10px 14px; background: rgba(0,191,179,0.08); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--elastic-teal); animation: statusPulse 2s ease-in-out infinite;"></div>
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-primary); font-family: 'Space Grotesk';">Enterprise Document Agent</span>
+            <span style="margin-left: auto; font-size: 10px; color: var(--elastic-teal); font-family: 'Space Mono';">LIVE</span>
+          </div>
+          <div style="flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,191,179,0.1); border: 1px solid rgba(0,191,179,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">What is our refund policy for enterprise contracts?</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;">Per <span style="color: var(--elastic-teal); font-weight: 600;">Policy-ENT-2024-07</span>, enterprise contracts allow pro-rata refunds within 30 days of renewal. Requires VP approval for amounts over $50K. <span style="color: var(--text-muted); font-size: 10px;">[§3.2] [§5.1]</span></div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,191,179,0.1); border: 1px solid rgba(0,191,179,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">Compare onboarding SLAs across regions</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;"><span style="color: var(--elastic-yellow); font-weight: 600;">APAC:</span> 5 business days. <span style="color: var(--elastic-yellow); font-weight: 600;">EMEA:</span> 7 business days. <span style="color: var(--elastic-yellow); font-weight: 600;">Americas:</span> 3 business days. <span style="color: var(--text-muted); font-size: 10px;">[SLA Doc v4.1]</span></div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,191,179,0.1); border: 1px solid rgba(0,191,179,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">Find all docs mentioning GDPR data retention</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;">Found <span style="color: var(--elastic-teal); font-weight: 600;">23 documents</span> across Confluence, SharePoint, and Legal S3. Top match: <span style="color: var(--elastic-blue); font-weight: 600;">Data-Governance-EU.pdf</span> — retention capped at 36 months. <span style="color: var(--text-muted); font-size: 10px;">[Art. 17] [Art. 5(1)(e)]</span></div>
+            </div>
+
+          </div>
+          <div style="padding: 8px 14px; border-top: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px;">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+            <span style="color: var(--text-muted); font-size: 10px; margin-left: 4px;">Searching 48,000 documents across 12 sources...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: USE CASE — IMAGE SEARCH & VISUAL RECOGNITION ===== -->
+  <div class="slide" data-notes="Visual search pipeline. External vision models (CLIP, SigLIP, ColPali — NOT in EIS) generate embeddings. OCR extracts text from images. ColPali late-interaction for document understanding. DiskBBQ+HNSW stores vectors. kNN, reverse image search, metadata pre-filter, face matching — all Elastic-native capabilities.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/icons/productfeature/reverse/lens.svg" alt="" style="height: 18px; width: 18px;">
+        Use Case — Visual Intelligence
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 40px); margin-bottom: 28px;">Image Search & <span class="highlight">Visual Recognition</span></h1>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1500px; width: 100%;">
+        <!-- LEFT: Architecture Diagram -->
+        <div style="display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+
+          <!-- Layer 1: Image Sources + OCR -->
+          <div class="arch-layer" style="border-left: 4px solid var(--elastic-orange); padding: 12px 14px; background: rgba(249,139,43,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-orange); font-family: 'Space Mono'; margin-bottom: 4px;">01 · INGEST & OCR</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">Product images · Camera feeds · Scanned docs</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">OCR text extraction + EXIF metadata + preprocessing</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 2: Vision Models (External) -->
+          <div class="arch-layer arch-layer-d1" style="border-left: 4px solid var(--elastic-pink); padding: 12px 14px; background: rgba(240,78,152,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-pink); font-family: 'Space Mono'; margin-bottom: 4px;">02 · VISION EMBEDDINGS</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">CLIP · SigLIP · ArcFace (external)</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Image vectors + face vectors — run outside EIS</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim arch-arrow-d1" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 3: Elastic Storage + ColPali -->
+          <div class="arch-layer arch-layer-d2" style="border-left: 4px solid var(--elastic-teal); padding: 12px 14px; background: rgba(0,191,179,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-teal); font-family: 'Space Mono'; margin-bottom: 4px;">03 · STORE & INDEX</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">DiskBBQ + HNSW — 32× memory savings</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Image vectors · face vectors · OCR text · EXIF metadata</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="text-align: center; line-height: 1;">
+            <div class="arch-arrow-anim arch-arrow-d2" style="font-size: 16px;">↓</div>
+          </div>
+
+          <!-- Layer 4: Search Capabilities (no Agent Builder) -->
+          <div class="arch-layer arch-layer-d3" style="border-left: 4px solid var(--elastic-blue); padding: 12px 14px; background: rgba(0,119,204,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-blue); font-family: 'Space Mono'; margin-bottom: 4px;">04 · SEARCH CAPABILITIES</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">kNN similarity · ColPali late-interaction ranking</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Reverse image search · face matching · metadata pre-filter · OCR hybrid fallback</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Chat Window -->
+        <div style="background: var(--code-bg); border: 1px solid var(--card-border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+          <div style="padding: 10px 14px; background: rgba(249,139,43,0.08); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--elastic-orange); animation: statusPulse 2s ease-in-out infinite;"></div>
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-primary); font-family: 'Space Grotesk';">Visual Search Agent</span>
+            <span style="margin-left: auto; font-size: 10px; color: var(--elastic-orange); font-family: 'Space Mono';">LIVE</span>
+          </div>
+          <div style="flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(249,139,43,0.1); border: 1px solid rgba(249,139,43,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">Find similar products to this shoe image</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;"><span style="color: var(--text-muted); font-size: 10px;">kNN visual similarity →</span> Found <span style="color: var(--elastic-teal); font-weight: 600;">8 matches</span>:<br>
+              <span style="color: var(--elastic-yellow);">1.</span> Nike Air Max 90 — <span style="color: var(--elastic-teal);">97.2%</span><br>
+              <span style="color: var(--elastic-yellow);">2.</span> Adidas Ultraboost — <span style="color: var(--elastic-teal);">94.1%</span><br>
+              <span style="color: var(--elastic-yellow);">3.</span> Puma RS-X — <span style="color: var(--elastic-teal);">91.8%</span></div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(249,139,43,0.1); border: 1px solid rgba(249,139,43,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">Filter to red colorway under &#8377;5,000</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;"><span style="color: var(--text-muted); font-size: 10px;">metadata pre-filter + kNN →</span><br>
+              <span style="color: var(--elastic-yellow);">1.</span> Puma RS-X Red — <span style="color: var(--elastic-teal);">91.8%</span> · &#8377;4,299<br>
+              <span style="color: var(--elastic-yellow);">2.</span> Campus Flash Red — <span style="color: var(--elastic-teal);">88.4%</span> · &#8377;2,999</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(249,139,43,0.1); border: 1px solid rgba(249,139,43,0.2); border-radius: 12px 12px 2px 12px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.4;">Search this scanned invoice for total amount</div>
+            </div>
+
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 8px 12px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 12px; line-height: 1.4;"><span style="color: var(--text-muted); font-size: 10px;">ColPali late-interaction + OCR →</span><br>Total: <span style="color: var(--elastic-teal); font-weight: 600;">&#8377;1,24,500</span> · Vendor: Reliance Digital · Date: 12-Mar-2025. <span style="color: var(--text-muted); font-size: 10px;">MaxSim score: 0.94</span></div>
+            </div>
+
+          </div>
+          <div style="padding: 8px 14px; border-top: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px;">
+            <div class="typing-dot" style="background: var(--elastic-orange)"></div><div class="typing-dot" style="background: var(--elastic-orange)"></div><div class="typing-dot" style="background: var(--elastic-orange)"></div>
+            <span style="color: var(--text-muted); font-size: 10px; margin-left: 4px;">Processing image embeddings...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE: USE CASE — CUSTOMER CALL ANALYSIS ===== -->
+  <div class="slide" data-notes="Customer support call analysis. Stepwise pipeline: Audio → Whisper STT (speech-to-text via EIS) → chunk transcripts → generate embeddings (semantic_text e5) → store in DiskBBQ+HNSW → hybrid search (BM25+kNN+RRF) to surface insights. LLM enrichment for sentiment, diarization, compliance.">
+    <div class="slide-content">
+      <div class="section-label" style="display: flex; align-items: center; gap: 8px;">
+        <img src="assets/icons/productfeature/reverse/APM.svg" alt="" style="height: 18px; width: 18px;">
+        Use Case — Customer Call Intelligence
+      </div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 40px); margin-bottom: 28px;">Customer Support <span class="highlight">Call Analysis</span></h1>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1500px; width: 100%;">
+        <!-- LEFT: Stepwise Pipeline -->
+        <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+
+          <!-- Step 1: Audio Input -->
+          <div class="arch-layer" style="border-left: 4px solid var(--elastic-orange); padding: 10px 14px; background: rgba(249,139,43,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-orange); font-family: 'Space Mono'; margin-bottom: 3px;">01 · AUDIO INPUT</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">Customer call recordings</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Support calls, sales calls, video meetings</div>
+          </div>
+
+          <div style="text-align: center; line-height: 1;"><div class="arch-arrow-anim" style="font-size: 14px;">↓</div></div>
+
+          <!-- Step 2: Speech to Text -->
+          <div class="arch-layer arch-layer-d1" style="border-left: 4px solid var(--elastic-blue); padding: 10px 14px; background: rgba(0,119,204,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-blue); font-family: 'Space Mono'; margin-bottom: 3px;">02 · SPEECH → TEXT</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">Whisper model via EIS</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Speaker diarization + timestamp alignment</div>
+          </div>
+
+          <div style="text-align: center; line-height: 1;"><div class="arch-arrow-anim arch-arrow-d1" style="font-size: 14px;">↓</div></div>
+
+          <!-- Step 3: Chunk + Embed -->
+          <div class="arch-layer arch-layer-d2" style="border-left: 4px solid var(--elastic-teal); padding: 10px 14px; background: rgba(0,191,179,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-teal); font-family: 'Space Mono'; margin-bottom: 3px;">03 · CHUNK & EMBED</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">semantic_text — auto-chunk transcripts</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Generate e5 embeddings + sentiment + entity extraction</div>
+          </div>
+
+          <div style="text-align: center; line-height: 1;"><div class="arch-arrow-anim arch-arrow-d2" style="font-size: 14px;">↓</div></div>
+
+          <!-- Step 4: Store in Elastic -->
+          <div class="arch-layer arch-layer-d3" style="border-left: 4px solid var(--elastic-pink); padding: 10px 14px; background: rgba(240,78,152,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-pink); font-family: 'Space Mono'; margin-bottom: 3px;">04 · STORE IN ELASTIC</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">DiskBBQ + HNSW — 32× memory savings</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Text vectors + metadata + compliance flags + sentiment scores</div>
+          </div>
+
+          <div style="text-align: center; line-height: 1;"><div class="arch-arrow-anim" style="font-size: 14px;">↓</div></div>
+
+          <!-- Step 5: Hybrid Search -->
+          <div class="arch-layer" style="border-left: 4px solid var(--elastic-yellow); padding: 10px 14px; background: rgba(254,197,20,0.06); border-radius: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--elastic-yellow); font-family: 'Space Mono'; margin-bottom: 3px;">05 · HYBRID SEARCH</div>
+            <div style="font-size: 12px; color: var(--text-primary); font-weight: 600;">BM25 + kNN + RRF on Elastic</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Semantic reranking · cross-call aggregation · trend surfacing</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Chat Window (Rich) -->
+        <div style="background: var(--code-bg); border: 1px solid var(--card-border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+          <div style="padding: 10px 14px; background: rgba(0,119,204,0.08); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--elastic-blue); animation: statusPulse 2s ease-in-out infinite;"></div>
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-primary); font-family: 'Space Grotesk';">Call Analysis Agent</span>
+            <span style="margin-left: auto; font-size: 10px; color: var(--elastic-blue); font-family: 'Space Mono';">LIVE</span>
+          </div>
+          <div style="flex: 1; padding: 10px 10px; display: flex; flex-direction: column; gap: 7px; overflow: hidden;">
+
+            <!-- Q1 -->
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,119,204,0.1); border: 1px solid rgba(0,119,204,0.2); border-radius: 12px 12px 2px 12px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 11px; line-height: 1.4;">Why was customer on call #4821 disappointed?</div>
+            </div>
+
+            <!-- A1 -->
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 11px; line-height: 1.45;">Customer escalated twice. <span style="color: var(--elastic-pink); font-weight: 600;">Sentiment: negative (0.18)</span>. Root cause: promised callback in 2hrs, actual callback after 26hrs. Agent failed to log the commitment. <span style="color: var(--text-muted); font-size: 10px;">[00:04:12–00:06:45]</span></div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,119,204,0.1); border: 1px solid rgba(0,119,204,0.2); border-radius: 12px 12px 2px 12px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 11px; line-height: 1.4;">Show me common frustration patterns this week</div>
+            </div>
+
+            <!-- A2 -->
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 11px; line-height: 1.45;">Analyzed <span style="color: var(--elastic-teal); font-weight: 600;">842 calls</span> this week:<br>
+              <span style="color: var(--elastic-pink);">1.</span> Long hold times — <span style="color: var(--elastic-yellow); font-weight: 600;">31%</span> of negative calls<br>
+              <span style="color: var(--elastic-pink);">2.</span> Repeated issue explanation — <span style="color: var(--elastic-yellow); font-weight: 600;">24%</span><br>
+              <span style="color: var(--elastic-pink);">3.</span> Unresolved billing disputes — <span style="color: var(--elastic-yellow); font-weight: 600;">19%</span></div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="uc-chat-msg" style="align-self: flex-end; background: rgba(0,119,204,0.1); border: 1px solid rgba(0,119,204,0.2); border-radius: 12px 12px 2px 12px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-secondary); font-size: 11px; line-height: 1.4;">Which agents need coaching on empathy?</div>
+            </div>
+
+            <!-- A3 -->
+            <div class="uc-chat-msg" style="align-self: flex-start; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px 12px 12px 2px; padding: 7px 11px; max-width: 88%;">
+              <div style="color: var(--text-primary); font-size: 11px; line-height: 1.45;"><span style="color: var(--elastic-blue); font-weight: 600;">3 agents</span> below empathy threshold:<br>
+              Agent Priya K. — avg sentiment <span style="color: var(--elastic-pink);">0.22</span> · 6 escalations<br>
+              Agent Rahul M. — avg sentiment <span style="color: var(--elastic-pink);">0.29</span> · 4 escalations<br>
+              <span style="color: var(--text-muted); font-size: 10px;">Based on tone analysis + customer feedback scores</span></div>
+            </div>
+
+          </div>
+          <div style="padding: 7px 14px; border-top: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px;">
+            <div class="typing-dot" style="background: var(--elastic-blue)"></div><div class="typing-dot" style="background: var(--elastic-blue)"></div><div class="typing-dot" style="background: var(--elastic-blue)"></div>
+            <span style="color: var(--text-muted); font-size: 10px; margin-left: 4px;">Analyzing 3,400 call transcripts via hybrid search...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== SLIDE 19: COMPETITIVE LANDSCAPE ===== -->
   <div class="slide" data-notes="Be factual. Let feature gaps speak. Key differentiator: only platform with search + observability + security + agent builder + MCP/A2A.">
     <div class="slide-content">
@@ -2470,6 +3670,84 @@
     </div>
   </div></div>
 
+<!-- Slide Control Panel Trigger Button -->
+<button class="cp-trigger" id="cpTrigger" title="Slide Manager (M)">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/><polyline points="9 3 12 6 9 9"/></svg>
+  <!-- skip badge removed -->
+</button>
+
+<!-- Slide Control Panel Overlay -->
+<div class="control-panel-overlay" id="controlPanel">
+  <div class="control-panel" style="position: relative;">
+    <div class="cp-header">
+      <div>
+        <h2>Slide Manager</h2>
+        <div class="cp-subtitle">Toggle, reorder, search, and save audience presets. Press <kbd style="background:var(--code-bg);padding:1px 6px;border-radius:3px;font-family:'Space Mono',monospace;font-size:11px;border:1px solid var(--card-border);">M</kbd> to open/close</div>
+      </div>
+      <button class="cp-close" id="cpClose">✕</button>
+    </div>
+    <!-- Search -->
+    <div class="cp-search-bar">
+      <div class="cp-search-wrap">
+        <span class="cp-search-icon">⌕</span>
+        <input type="text" class="cp-search" id="cpSearch" placeholder="Filter slides by title..." autocomplete="off">
+      </div>
+    </div>
+    <!-- Actions -->
+    <div class="cp-actions">
+      <button class="cp-action-btn" id="cpEnableAll">Enable All</button>
+      <button class="cp-action-btn" id="cpDisableAll">Disable All</button>
+      <div class="cp-action-sep"></div>
+      <button class="cp-action-btn" id="cpPresetsToggle">Presets ▾</button>
+      <div class="cp-stats">
+        <span class="active-count" id="cpActiveCount">0</span> active
+      </div>
+    </div>
+    <!-- Presets bar (hidden by default) -->
+    <div class="cp-presets-bar" id="cpPresetsBar">
+      <span class="cp-presets-label">Presets</span>
+      <div id="cpPresetsList"></div>
+      <button class="cp-preset-save" id="cpPresetSave">+ Save Current</button>
+    </div>
+    <!-- Edit Title/Speaker -->
+    <div class="cp-edit-section">
+      <div class="cp-edit-toggle" id="cpEditToggle">
+        <span>✎ Edit Title & Speaker</span>
+        <span class="cp-edit-arrow" id="cpEditArrow">▾</span>
+      </div>
+      <div class="cp-edit-fields" id="cpEditFields">
+        <div class="cp-edit-field">
+          <label>Presentation Title</label>
+          <input type="text" id="cpEditTitle" value="Elastic Agent Builder for Enterprise Use Cases">
+        </div>
+        <div class="cp-edit-field">
+          <label>Description</label>
+          <textarea id="cpEditDesc" rows="2">Build, deploy, and scale production-grade AI agents — from retrieval to orchestration — powered by the Elastic AI Search platform trusted at enterprise scale.</textarea>
+        </div>
+        <div class="cp-edit-field">
+          <label>Speaker Name</label>
+          <input type="text" id="cpEditSpeaker" value="Ashish Tiwari">
+        </div>
+        <div class="cp-edit-field">
+          <label>Role / Title</label>
+          <input type="text" id="cpEditRole" value="Principal Solutions Architect">
+        </div>
+      </div>
+    </div>
+    <!-- Slide list -->
+    <div class="cp-list" id="cpList"></div>
+    <!-- Save preset dialog -->
+    <div class="cp-save-dialog" id="cpSaveDialog">
+      <h3>Save Audience Preset</h3>
+      <input type="text" class="cp-save-input" id="cpSaveName" placeholder="e.g. Executive Summary, Technical Deep Dive...">
+      <div class="cp-save-actions">
+        <button class="cp-save-cancel" id="cpSaveCancel">Cancel</button>
+        <button class="cp-save-confirm" id="cpSaveConfirm">Save Preset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Presenter Notes -->
 <div class="presenter-notes" id="presenterNotes">
   <div class="notes-label">Speaker Notes</div>
@@ -2478,7 +3756,8 @@
 
 <script>
 (function() {
-  const slides = document.querySelectorAll('.slide');
+  const deck = document.querySelector('.deck');
+  let slideElements = Array.from(document.querySelectorAll('.slide'));
   const progressBar = document.getElementById('progressBar');
   const slideCounter = document.getElementById('slideCounter');
   const presenterNotes = document.getElementById('presenterNotes');
@@ -2487,7 +3766,61 @@
   let notesVisible = false;
   let transitioning = false;
 
-  // ── Auto-tag animatable elements inside each slide ──
+  // ── Slide order tracking (for drag reorder) ──
+  // slideOrder[i] = original DOM index. Custom order per section plan.
+  // 37 slides (0-36). 5 section title slides: 4(Agent Builder), 12(EIS), 16(Context), 26(Federated), 30(Use Cases)
+  // Changes: Agent Without Context(15) moved to Context Eng; Observability(25) moved to Agent Builder;
+  //          Vibe Coding(22)+Agent Skills(21) merged into Use Cases; Vibe Coding section removed.
+  //          Federated slides 1+2 merged: Connectors slide(28) skipped, content folded into MCP slide(27).
+  let slideOrder = [0,1,2,3, 4,5,6,7,8,9,10,11,25, 12,13,14, 16,15,17,18,19,20, 26,27,29,30, 31,32,33,34,23,24,22,21, 35,36,37];
+
+  function getOrderedSlides() { return slideOrder.map(i => slideElements[i]); }
+  function getSlideAtPosition(pos) { return slideElements[slideOrder[pos]]; }
+
+  // ── Skipped slides (tracks original indices) ──
+  const skippedSlides = new Set([]); // slide 28 fully removed from slideOrder
+  function isSkipped(origIdx) { return skippedSlides.has(origIdx); }
+  function isPositionSkipped(pos) { return skippedSlides.has(slideOrder[pos]); }
+
+  function getActivePositions() {
+    const active = [];
+    for (let p = 0; p < slideOrder.length; p++) { if (!isPositionSkipped(p)) active.push(p); }
+    return active;
+  }
+
+  function getActiveIndex(pos) { return getActivePositions().indexOf(pos); }
+
+  function findNextActive(fromPos, direction) {
+    const step = direction === 'next' ? 1 : -1;
+    let p = fromPos + step;
+    while (p >= 0 && p < slideOrder.length) {
+      if (!isPositionSkipped(p)) return p;
+      p += step;
+    }
+    return -1;
+  }
+
+  // ── Slide sections (for grouping) ──
+  // Uses index sets (DOM indices) since sections have non-contiguous slides after reorder.
+  const SECTIONS = [
+    { label: 'Introduction', indices: new Set([0, 1, 2, 3]) },
+    { label: 'Agent Builder', indices: new Set([4, 5, 6, 7, 8, 9, 10, 11, 25]) },
+    { label: 'Elastic Inference Service', indices: new Set([12, 13, 14]) },
+    { label: 'Context Engineering / Search', indices: new Set([16, 15, 17, 18, 19, 20]) },
+    { label: 'Federated Search', indices: new Set([26, 27, 29, 30]) },
+    { label: 'Use Cases', indices: new Set([31, 32, 33, 34, 23, 24, 22, 21]) },
+    { label: 'Competitive & Closing', indices: new Set([35, 36, 37]) },
+  ];
+
+  function getSectionForPosition(pos) {
+    const origIdx = slideOrder[pos];
+    for (const s of SECTIONS) {
+      if (s.indices.has(origIdx)) return s;
+    }
+    return null;
+  }
+
+  // ── Auto-tag animatable elements ──
   const ANIM_MAP = [
     { sel: '.section-label',       cls: 'anim-item anim-fade-down anim-fast' },
     { sel: '.slide-title',         cls: 'anim-item anim-blur anim-normal' },
@@ -2508,11 +3841,10 @@
     { sel: '.footnote-section',    cls: 'anim-item anim-fade-up anim-normal' },
   ];
 
-  slides.forEach(slide => {
+  slideElements.forEach(slide => {
     let delay = 0;
     ANIM_MAP.forEach(({ sel, cls }) => {
       slide.querySelectorAll(sel).forEach(el => {
-        // Don't double-tag
         if (el.classList.contains('anim-item')) return;
         cls.split(' ').forEach(c => el.classList.add(c));
         el.classList.add('anim-d' + Math.min(delay, 10));
@@ -2521,78 +3853,448 @@
     });
   });
 
-  // ── Reset animations when entering a slide ──
   function resetAnimations(slide) {
-    const items = slide.querySelectorAll('.anim-item');
-    items.forEach(el => {
-      el.style.animation = 'none';
-      el.offsetHeight; // force reflow
-      el.style.animation = '';
+    slide.querySelectorAll('.anim-item').forEach(el => {
+      el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
     });
   }
 
-  // ── Animate benchmark bars (fill from 0) ──
   function animateBars(slide) {
-    const bars = slide.querySelectorAll('.benchmark-bar-fill');
-    bars.forEach(bar => {
-      const targetWidth = bar.style.width;
-      bar.style.width = '0%';
-      bar.style.transition = 'none';
-      bar.offsetHeight;
-      bar.style.transition = '';
-      setTimeout(() => { bar.style.width = targetWidth; }, 300);
+    slide.querySelectorAll('.benchmark-bar-fill').forEach(bar => {
+      const tw = bar.style.width; bar.style.width = '0%'; bar.style.transition = 'none';
+      bar.offsetHeight; bar.style.transition = '';
+      setTimeout(() => { bar.style.width = tw; }, 300);
     });
   }
 
-  function goTo(index) {
-    if (index < 0 || index >= slides.length || transitioning || index === current) return;
-    transitioning = true;
-    const dir = index > current ? 'left' : 'right';
-    const prev = current;
-
-    slides[prev].classList.remove('active');
-    slides[prev].classList.add(dir === 'left' ? 'exit-left' : 'exit-right');
-
-    current = index;
-    slides[current].style.transition = 'none';
-    slides[current].classList.remove('exit-left', 'exit-right');
-    slides[current].style.transform = dir === 'left' ? 'translateX(60px)' : 'translateX(-60px)';
-    slides[current].style.opacity = '0';
-    slides[current].offsetHeight;
-    slides[current].style.transition = '';
-    slides[current].classList.add('active');
-    slides[current].style.transform = '';
-    slides[current].style.opacity = '';
-
-    // Scroll to top on mobile
-    slides[current].scrollTop = 0;
-    window.scrollTo(0, 0);
-
-    // Trigger staggered entrance animations
-    resetAnimations(slides[current]);
-    animateBars(slides[current]);
-
-    setTimeout(() => { slides[prev].classList.remove('exit-left', 'exit-right'); transitioning = false; }, 500);
-
-    progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
-    slideCounter.textContent = (current + 1) + ' / ' + slides.length;
-    notesContent.textContent = slides[current].getAttribute('data-notes') || 'No notes.';
-
-    // Show bottom-left logo on slides 2 through second-to-last (hide on title + closing)
+  function updateUI() {
+    const active = getActivePositions();
+    const activePos = getActiveIndex(current) + 1;
+    progressBar.style.width = (activePos / active.length * 100) + '%';
+    slideCounter.textContent = activePos + ' / ' + active.length;
+    const s = getSlideAtPosition(current);
+    notesContent.textContent = s ? (s.getAttribute('data-notes') || 'No notes.') : '';
     const logo = document.getElementById('bottomLeftLogo');
-    if (logo) {
-      logo.style.display = (current > 0 && current < slides.length - 1) ? 'block' : 'none';
-    }
+    if (logo) logo.style.display = (current > 0 && current < slideOrder.length - 1) ? 'block' : 'none';
+    // skip badge removed
   }
 
+  function goTo(pos) {
+    if (pos < 0 || pos >= slideOrder.length || pos === current) return;
+    if (isPositionSkipped(pos)) return;
+    if (transitioning) { transitioning = false; } // allow rapid clicks
+    transitioning = true;
+    const dir = pos > current ? 'left' : 'right';
+    const prev = current;
+    const prevSlide = getSlideAtPosition(prev);
+    const nextSlide = getSlideAtPosition(pos);
+
+    prevSlide.classList.remove('active');
+    prevSlide.classList.add(dir === 'left' ? 'exit-left' : 'exit-right');
+
+    current = pos;
+    // Position next slide at start (no transition)
+    nextSlide.style.transition = 'none';
+    nextSlide.classList.remove('exit-left', 'exit-right', 'active');
+    nextSlide.style.transform = dir === 'left' ? 'translateX(60px)' : 'translateX(-60px)';
+    nextSlide.style.opacity = '0';
+    nextSlide.offsetHeight; // force reflow
+    // Animate to final position
+    nextSlide.style.transition = '';
+    nextSlide.classList.add('active');
+    nextSlide.style.transform = '';
+    nextSlide.style.opacity = '';
+    nextSlide.scrollTop = 0;
+    resetAnimations(nextSlide);
+    animateBars(nextSlide);
+
+    setTimeout(() => { prevSlide.classList.remove('exit-left', 'exit-right'); transitioning = false; }, 480);
+    updateUI();
+  }
+
+  function goNext() { const n = findNextActive(current, 'next'); if (n >= 0) goTo(n); }
+  function goPrev() { const p = findNextActive(current, 'prev'); if (p >= 0) goTo(p); }
+
+  // ── Control Panel ──
+  const controlPanel = document.getElementById('controlPanel');
+  const cpList = document.getElementById('cpList');
+  const cpTrigger = document.getElementById('cpTrigger');
+  const cpClose = document.getElementById('cpClose');
+  const cpEnableAll = document.getElementById('cpEnableAll');
+  const cpDisableAll = document.getElementById('cpDisableAll');
+  const cpSearch = document.getElementById('cpSearch');
+  const cpPresetsToggle = document.getElementById('cpPresetsToggle');
+  const cpPresetsBar = document.getElementById('cpPresetsBar');
+  const cpPresetsList = document.getElementById('cpPresetsList');
+  const cpPresetSave = document.getElementById('cpPresetSave');
+  const cpSaveDialog = document.getElementById('cpSaveDialog');
+  const cpSaveName = document.getElementById('cpSaveName');
+  const cpSaveCancel = document.getElementById('cpSaveCancel');
+  const cpSaveConfirm = document.getElementById('cpSaveConfirm');
+  let panelOpen = false;
+  let presetsVisible = false;
+  let currentPreset = null;
+
+  // ── Presets storage ──
+  let presets = [];
+  try { presets = JSON.parse(localStorage.getItem('slidePresets') || '[]'); } catch(e) { presets = []; }
+  function savePresetsToStorage() {
+    try { localStorage.setItem('slidePresets', JSON.stringify(presets)); } catch(e) {}
+  }
+
+  function getSlideTitle(slide) {
+    const t = slide.querySelector('.slide-title');
+    if (t) return t.textContent.trim().substring(0, 55);
+    const l = slide.querySelector('.section-label');
+    if (l) return l.textContent.trim().substring(0, 55);
+    return 'Untitled Slide';
+  }
+
+  // ── Drag-to-reorder state ──
+  let dragFrom = -1;
+
+  function renderPanel() {
+    const filter = cpSearch.value.toLowerCase().trim();
+    cpList.innerHTML = '';
+    const activeCount = getActivePositions().length;
+    document.getElementById('cpActiveCount').textContent = activeCount;
+
+    let lastSection = null;
+
+    for (let pos = 0; pos < slideOrder.length; pos++) {
+      const origIdx = slideOrder[pos];
+      const slide = slideElements[origIdx];
+      const title = getSlideTitle(slide);
+
+      // Section dividers
+      const section = getSectionForPosition(pos);
+      if (section && section !== lastSection) {
+        lastSection = section;
+        const secDiv = document.createElement('div');
+        secDiv.className = 'cp-section';
+
+        const secLabel = document.createElement('span');
+        secLabel.className = 'cp-section-label';
+        secLabel.textContent = section.label;
+
+        const secLine = document.createElement('span');
+        secLine.className = 'cp-section-line';
+
+        const secToggle = document.createElement('button');
+        secToggle.className = 'cp-section-toggle';
+        // Check if all slides in this section are skipped
+        const sectionPositions = [];
+        for (let sp = 0; sp < slideOrder.length; sp++) {
+          if (getSectionForPosition(sp) === section) sectionPositions.push(sp);
+        }
+        const allSkipped = sectionPositions.every(sp => isPositionSkipped(sp) || sp === current);
+        secToggle.textContent = allSkipped ? 'Enable All' : 'Skip All';
+        secToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (allSkipped) {
+            sectionPositions.forEach(sp => skippedSlides.delete(slideOrder[sp]));
+          } else {
+            sectionPositions.forEach(sp => { if (sp !== current) skippedSlides.add(slideOrder[sp]); });
+          }
+          currentPreset = null;
+          renderPanel(); updateUI();
+        });
+
+        secDiv.appendChild(secLabel);
+        secDiv.appendChild(secLine);
+        secDiv.appendChild(secToggle);
+
+        // Hide section header if all its items are filtered out
+        if (filter) {
+          const hasVisible = sectionPositions.some(sp => getSlideTitle(slideElements[slideOrder[sp]]).toLowerCase().includes(filter));
+          if (!hasVisible) continue;
+        }
+        cpList.appendChild(secDiv);
+      }
+
+      // Filter
+      const matchesFilter = !filter || title.toLowerCase().includes(filter);
+
+      const item = document.createElement('div');
+      item.className = 'cp-item' + (pos === current ? ' current' : '') + (isSkipped(origIdx) ? ' skipped' : '');
+      if (!matchesFilter) item.classList.add('filtered-out');
+      item.setAttribute('data-pos', pos);
+
+      // Drag handle
+      const drag = document.createElement('span');
+      drag.className = 'cp-drag';
+      drag.innerHTML = '⋮⋮';
+      drag.title = 'Drag to reorder';
+      drag.setAttribute('draggable', 'true');
+      drag.addEventListener('dragstart', function(e) {
+        dragFrom = pos;
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', pos);
+      });
+      drag.addEventListener('dragend', function() {
+        item.classList.remove('dragging');
+        cpList.querySelectorAll('.cp-item').forEach(el => { el.classList.remove('drag-over-top', 'drag-over-bottom'); });
+      });
+
+      item.addEventListener('dragover', function(e) {
+        e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+        const rect = item.getBoundingClientRect();
+        const mid = rect.top + rect.height / 2;
+        item.classList.remove('drag-over-top', 'drag-over-bottom');
+        item.classList.add(e.clientY < mid ? 'drag-over-top' : 'drag-over-bottom');
+      });
+      item.addEventListener('dragleave', function() {
+        item.classList.remove('drag-over-top', 'drag-over-bottom');
+      });
+      item.addEventListener('drop', function(e) {
+        e.preventDefault();
+        item.classList.remove('drag-over-top', 'drag-over-bottom');
+        const toPos = parseInt(item.getAttribute('data-pos'));
+        if (dragFrom >= 0 && dragFrom !== toPos) {
+          // Reorder slideOrder
+          const moving = slideOrder.splice(dragFrom, 1)[0];
+          const insertAt = dragFrom < toPos ? toPos : toPos;
+          slideOrder.splice(insertAt, 0, moving);
+          // Adjust current position
+          if (current === dragFrom) current = insertAt;
+          else if (dragFrom < current && insertAt >= current) current--;
+          else if (dragFrom > current && insertAt <= current) current++;
+          currentPreset = null;
+          renderPanel(); updateUI();
+        }
+        dragFrom = -1;
+      });
+
+      const num = document.createElement('span');
+      num.className = 'cp-num';
+      num.textContent = (pos + 1);
+
+      const titleEl = document.createElement('span');
+      titleEl.className = 'cp-title';
+      titleEl.textContent = title;
+
+      const badge = document.createElement('span');
+      badge.className = 'cp-badge ' + (isSkipped(origIdx) ? 'off' : 'on');
+      badge.textContent = isSkipped(origIdx) ? 'SKIP' : 'ON';
+
+      const toggle = document.createElement('div');
+      toggle.className = 'cp-toggle' + (isSkipped(origIdx) ? '' : ' on');
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (isSkipped(origIdx)) { skippedSlides.delete(origIdx); }
+        else { if (pos === current) return; skippedSlides.add(origIdx); }
+        currentPreset = null;
+        renderPanel(); updateUI();
+      });
+
+      const gotoBtn = document.createElement('button');
+      gotoBtn.className = 'cp-goto';
+      gotoBtn.textContent = 'Go →';
+      gotoBtn.disabled = isSkipped(origIdx);
+      gotoBtn.style.opacity = isSkipped(origIdx) ? '0.3' : '1';
+      gotoBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!isSkipped(origIdx)) { closePanel(); goTo(pos); }
+      });
+
+      item.appendChild(drag);
+      item.appendChild(num);
+      item.appendChild(titleEl);
+      item.appendChild(badge);
+      item.appendChild(toggle);
+      item.appendChild(gotoBtn);
+      cpList.appendChild(item);
+    }
+
+    renderPresets();
+  }
+
+  // ── Presets ──
+  function renderPresets() {
+    cpPresetsList.innerHTML = '';
+    presets.forEach((preset, idx) => {
+      const chip = document.createElement('button');
+      chip.className = 'cp-preset-chip' + (currentPreset === idx ? ' loaded' : '');
+
+      const name = document.createElement('span');
+      name.textContent = preset.name;
+
+      const count = document.createElement('span');
+      count.className = 'preset-count';
+      count.textContent = preset.activeCount + ' slides';
+
+      const del = document.createElement('span');
+      del.className = 'preset-delete';
+      del.textContent = '✕';
+      del.addEventListener('click', function(e) {
+        e.stopPropagation();
+        presets.splice(idx, 1);
+        savePresetsToStorage();
+        if (currentPreset === idx) currentPreset = null;
+        else if (currentPreset > idx) currentPreset--;
+        renderPanel();
+      });
+
+      chip.appendChild(name);
+      chip.appendChild(count);
+      chip.appendChild(del);
+
+      chip.addEventListener('click', function(e) {
+        e.stopPropagation();
+        loadPreset(idx);
+      });
+
+      cpPresetsList.appendChild(chip);
+    });
+  }
+
+  function loadPreset(idx) {
+    const preset = presets[idx];
+    if (!preset) return;
+    skippedSlides.clear();
+    slideOrder = preset.order.slice();
+    // Skip slides not in active set
+    for (let p = 0; p < slideOrder.length; p++) {
+      if (!preset.active.includes(slideOrder[p])) skippedSlides.add(slideOrder[p]);
+    }
+    // Ensure current slide is valid
+    if (isPositionSkipped(current)) {
+      const first = getActivePositions()[0];
+      if (first !== undefined) {
+        getSlideAtPosition(current).classList.remove('active');
+        current = first;
+        getSlideAtPosition(current).classList.add('active');
+        resetAnimations(getSlideAtPosition(current));
+      }
+    }
+    currentPreset = idx;
+    renderPanel(); updateUI();
+  }
+
+  function savePreset(name) {
+    const active = [];
+    for (let p = 0; p < slideOrder.length; p++) {
+      if (!isPositionSkipped(p)) active.push(slideOrder[p]);
+    }
+    presets.push({ name: name, order: slideOrder.slice(), active: active, activeCount: active.length });
+    savePresetsToStorage();
+    currentPreset = presets.length - 1;
+    renderPanel();
+  }
+
+  // ── Search ──
+  cpSearch.addEventListener('input', function() { renderPanel(); });
+
+  // ── Panel open/close ──
+  function openPanel() {
+    panelOpen = true;
+    renderPanel();
+    controlPanel.style.display = 'flex';
+    requestAnimationFrame(() => {
+      controlPanel.classList.add('visible');
+      cpSearch.focus();
+    });
+  }
+  function closePanel() {
+    panelOpen = false;
+    controlPanel.classList.remove('visible');
+    cpSearch.value = '';
+    setTimeout(() => { controlPanel.style.display = 'none'; }, 300);
+  }
+  function togglePanel() { panelOpen ? closePanel() : openPanel(); }
+
+  cpTrigger.addEventListener('click', function(e) { e.stopPropagation(); togglePanel(); });
+  cpClose.addEventListener('click', function(e) { e.stopPropagation(); closePanel(); });
+  controlPanel.addEventListener('click', function(e) { if (e.target === controlPanel) closePanel(); });
+
+  cpEnableAll.addEventListener('click', function() { skippedSlides.clear(); currentPreset = null; renderPanel(); updateUI(); });
+  cpDisableAll.addEventListener('click', function() {
+    for (let p = 0; p < slideOrder.length; p++) { if (p !== current) skippedSlides.add(slideOrder[p]); }
+    currentPreset = null; renderPanel(); updateUI();
+  });
+
+  // Presets toggle
+  cpPresetsToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    presetsVisible = !presetsVisible;
+    cpPresetsBar.classList.toggle('visible', presetsVisible);
+    cpPresetsToggle.textContent = presetsVisible ? 'Presets ▴' : 'Presets ▾';
+  });
+
+  // Preset save flow
+  cpPresetSave.addEventListener('click', function(e) {
+    e.stopPropagation();
+    cpSaveDialog.classList.add('visible');
+    cpSaveName.value = '';
+    cpSaveName.focus();
+  });
+  cpSaveCancel.addEventListener('click', function(e) { e.stopPropagation(); cpSaveDialog.classList.remove('visible'); });
+  cpSaveConfirm.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const name = cpSaveName.value.trim();
+    if (name) { savePreset(name); cpSaveDialog.classList.remove('visible'); }
+  });
+  cpSaveName.addEventListener('keydown', function(e) {
+    e.stopPropagation();
+    if (e.key === 'Enter') { cpSaveConfirm.click(); }
+    if (e.key === 'Escape') { cpSaveCancel.click(); }
+  });
+  // Prevent search from triggering slide navigation
+  cpSearch.addEventListener('keydown', function(e) { e.stopPropagation(); });
+
+  // ── Edit Title/Speaker Panel ──
+  const cpEditToggle = document.getElementById('cpEditToggle');
+  const cpEditFields = document.getElementById('cpEditFields');
+  const cpEditArrow = document.getElementById('cpEditArrow');
+  const cpEditTitle = document.getElementById('cpEditTitle');
+  const cpEditDesc = document.getElementById('cpEditDesc');
+  const cpEditSpeaker = document.getElementById('cpEditSpeaker');
+  const cpEditRole = document.getElementById('cpEditRole');
+  const deckTitle = document.getElementById('deckTitle');
+  const deckSubtitle = document.getElementById('deckSubtitle');
+  const deckSpeaker = document.getElementById('deckSpeaker');
+  const deckRole = document.getElementById('deckRole');
+
+  cpEditToggle.addEventListener('click', function() {
+    cpEditFields.classList.toggle('visible');
+    cpEditArrow.classList.toggle('open');
+  });
+
+  function applyEdits() {
+    const t = cpEditTitle.value.trim();
+    if (t && deckTitle) {
+      // Preserve highlight span for second line
+      const parts = t.split('\n').length > 1 ? t.split('\n') : t.split(' for ');
+      if (parts.length > 1) {
+        deckTitle.innerHTML = parts[0] + '<br><span class="highlight">' + (t.includes(' for ') ? 'for ' : '') + parts.slice(1).join(' ') + '</span>';
+      } else {
+        deckTitle.innerHTML = t;
+      }
+    }
+    if (deckSubtitle) deckSubtitle.textContent = cpEditDesc.value;
+    if (deckSpeaker) deckSpeaker.textContent = cpEditSpeaker.value;
+    if (deckRole) deckRole.textContent = cpEditRole.value;
+  }
+
+  // Live update as user types
+  [cpEditTitle, cpEditDesc, cpEditSpeaker, cpEditRole].forEach(function(el) {
+    el.addEventListener('input', applyEdits);
+    el.addEventListener('keydown', function(e) { e.stopPropagation(); });
+  });
+
+  // ── Keyboard Navigation ──
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+    if (document.activeElement && (document.activeElement.isContentEditable || document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+    if (panelOpen && e.key !== 'Escape' && e.key !== 'm' && e.key !== 'M') return;
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goNext(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goPrev(); }
     if (e.key === 'n' || e.key === 'N') { notesVisible = !notesVisible; presenterNotes.classList.toggle('visible', notesVisible); }
     if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen(); }
-    if (e.key === 'Escape' && document.fullscreenElement) { /* browser handles exit */ }
-    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
-    if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+    if (e.key === 'm' || e.key === 'M') { e.preventDefault(); togglePanel(); }
+    if (e.key === 'Escape' && panelOpen) { closePanel(); e.preventDefault(); }
+    if (e.key === 'Home') { e.preventDefault(); const f = getActivePositions()[0]; if (f !== undefined) goTo(f); }
+    if (e.key === 'End') { e.preventDefault(); const a = getActivePositions(); goTo(a[a.length - 1]); }
   });
 
   let touchX = 0, touchY = 0;
@@ -2600,23 +4302,20 @@
   document.addEventListener('touchend', function(e) {
     const dx = touchX - e.changedTouches[0].clientX;
     const dy = touchY - e.changedTouches[0].clientY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      dx > 0 ? goTo(current + 1) : goTo(current - 1);
-    }
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) { dx > 0 ? goNext() : goPrev(); }
   });
 
   document.addEventListener('click', function(e) {
-    if (e.target.closest('.tab, .tabs, a, button')) return;
-    (e.clientX / window.innerWidth > 0.5) ? goTo(current + 1) : goTo(current - 1);
+    if (e.target.closest('.tab, .tabs, a, button, .cp-trigger, .control-panel-overlay, .control-panel, .cp-drag')) return;
+    if (panelOpen) return;
+    (e.clientX / window.innerWidth > 0.5) ? goNext() : goPrev();
   });
 
-  // Init first slide
-  slides[0].classList.add('active');
-  resetAnimations(slides[0]);
-  animateBars(slides[0]);
-  progressBar.style.width = (1 / slides.length * 100) + '%';
-  slideCounter.textContent = '1 / ' + slides.length;
-  notesContent.textContent = slides[0].getAttribute('data-notes') || '';
+  // Init
+  slideElements[0].classList.add('active');
+  resetAnimations(slideElements[0]);
+  animateBars(slideElements[0]);
+  updateUI();
 })();
 
 // ── Fullscreen Toggle ──
