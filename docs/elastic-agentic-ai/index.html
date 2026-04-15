@@ -68,6 +68,8 @@
     opacity: 0;
     pointer-events: none;
     background: var(--dark-bg);
+    background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,191,179,0.04) 0%, transparent 70%),
+                      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,119,204,0.03) 0%, transparent 60%);
     overflow-y: auto;
     transition: opacity 0.45s ease, transform 0.45s ease;
     transform: translateX(60px);
@@ -75,6 +77,17 @@
   .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
   .slide.exit-left { opacity: 0; transform: translateX(-60px); }
   .slide.exit-right { opacity: 0; transform: translateX(60px); }
+
+  /* Subtle vignette overlay on each slide */
+  .slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(11,21,48,0.4) 100%);
+    z-index: 0;
+  }
+  .slide > * { position: relative; z-index: 1; }
 
   /* Progress */
   .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--elastic-teal), var(--elastic-blue)); transition: width 0.4s ease; z-index: 100; }
@@ -2216,38 +2229,147 @@
     </div>
   </div>
 
-  <!-- ===== SLIDE 14: 3-PHASE RETRIEVAL PIPELINE ===== -->
-  <div class="slide" data-notes="This is the technical differentiator. Three-phase retrieval pipeline. Phase 1: multi-method search (BM25, semantic, hybrid RRF, weighted RRF). Phase 2: rescoring with popularity and LTR. Phase 3: semantic reranking with reranking models like Jina Reranker.">
-    <div class="slide-content">
-      <div class="section-label">Hybrid Search — 3-Phase Retrieval Pipeline</div>
-      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">Three Search Methods. <span class="highlight">One API (<span style="font-family: 'Space Mono', monospace;">_search</span>)</span></h1>
-      <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Elastic's retrieval pipeline goes beyond vector search — three phases that progressively refine results for maximum relevance.</p>
-      <div class="pipeline">
-        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-teal);">
-          <div class="pipeline-phase-num" style="color: var(--elastic-teal);">Phase 1 — Retrieval</div>
-          <h3>Multi-Method Search</h3>
-          <div class="pipeline-method">BM25 — Exact keyword matching</div>
-          <div class="pipeline-method">Semantic Search — Dense vector similarity</div>
-          <div class="pipeline-method" style="background: rgba(0,191,179,0.1); border-color: rgba(0,191,179,0.3);"><strong style="color: var(--elastic-teal);">Hybrid Search + RRF</strong> — BM25 + Vector + ELSER fused via Reciprocal Rank Fusion</div>
-          <div class="pipeline-method">Weighted RRF — Custom weights per retriever</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-blue);">
-          <div class="pipeline-phase-num" style="color: var(--elastic-blue);">Phase 2 — Rescoring</div>
-          <h3>Business Logic Layer</h3>
-          <div class="pipeline-method">Popularity Rescoring — Boost by clicks, views, sales</div>
-          <div class="pipeline-method">Function Score — Custom decay, geo, field values</div>
-          <div class="pipeline-method" style="background: rgba(0,119,204,0.1); border-color: rgba(0,119,204,0.3);"><strong style="color: var(--elastic-blue);">Learning to Rank (LTR)</strong> — ML-trained ranking models</div>
-        </div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-phase" style="border-top: 3px solid var(--elastic-pink);">
-          <div class="pipeline-phase-num" style="color: var(--elastic-pink);">Phase 3 — Reranking</div>
-          <h3>Semantic Precision</h3>
-          <div class="pipeline-method" style="background: rgba(240,78,152,0.1); border-color: rgba(240,78,152,0.3);"><strong style="color: var(--elastic-pink);">Semantic Rerank</strong> — Cross-encoder reranking models</div>
-          <div class="pipeline-method">Jina Reranker v3 — Native on EIS</div>
-          <div class="pipeline-method">Cohere Rerank — Supported via inference API</div>
-        </div>
-      </div>
+  <!-- ===== SLIDE 14: SEARCH RELEVANCE PYRAMID ===== -->
+  <div class="slide" data-notes="Search relevance pyramid. Three tiers: Retrieval (Billions+), Fine Tuning (Thousands), Late Stage Reranking (Hundreds). Resources increase as you move up.">
+    <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div class="section-label">Search Relevance</div>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);"><span class="highlight">Search Relevance Pyramid</span></h1>
+      <img src="assets/search-pyramid.png" alt="Search Relevance Pyramid — Retrieval (Billions+), Fine Tuning (Thousands), Late Stage Reranking (Hundreds)" style="max-width: 90%; max-height: 65vh; object-fit: contain; margin-top: 12px; border-radius: 8px;">
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 14a: RETRIEVERS API ===== -->
+  <div class="slide" data-notes="Retrievers API — composable multi-stage query in a single _search request. Three nested stages: 1) Core Search Retrieval (semantic, knn, match), 2) Statistical Reranking via RRF, 3) Semantic Reranking via text_similarity_reranker. One API call, fully composable.">
+    <div class="slide-content" style="max-width: 1400px;">
+      <div class="section-label">Retrievers API</div>
+      <h1 class="slide-title" style="font-size: clamp(22px, 2.5vw, 34px); margin-bottom: 6px;">Retrievers API — <span class="highlight">Making Multi-Stage Query Easy</span></h1>
+      <p class="slide-subtitle" style="font-size: 14px; margin-bottom: 14px;">Compose retrieval, rescoring, and reranking in a single <code style="font-family: 'Space Mono', monospace; color: var(--elastic-teal); background: rgba(0,191,179,0.1); padding: 2px 6px; border-radius: 4px;">POST /_search</code> request — fully nested, fully composable.</p>
+
+      <svg viewBox="0 0 1200 600" style="width: 100%; max-width: 1200px;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowPink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#F04E98"/>
+          </marker>
+          <marker id="arrowTeal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#00BFB3"/>
+          </marker>
+          <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#F98B2B"/>
+          </marker>
+        </defs>
+
+        <!-- ===== LEFT: Stage boxes (vertically centered against code block) ===== -->
+        <!-- Code block: y=10 to y=530, center=270. Boxes total: 3×95 + 2×35 = 355. Start: 270-177=93 -->
+
+        <!-- Stage 3: Semantic Reranking (TOP) -->
+        <rect x="15" y="93" width="300" height="95" rx="10" fill="rgba(240,78,152,0.08)" stroke="#F04E98" stroke-width="1.5" stroke-opacity="0.45"/>
+        <circle cx="42" cy="123" r="15" fill="#F04E98"/>
+        <text x="42" y="128" fill="#fff" font-size="14" font-weight="800" text-anchor="middle" font-family="Space Grotesk, sans-serif">3</text>
+        <text x="66" y="128" fill="#F04E98" font-size="15" font-weight="700" font-family="Space Grotesk, sans-serif">Semantic Reranking</text>
+        <text x="34" y="153" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">Cross-encoder re-scores top results</text>
+        <text x="34" y="170" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">by deep semantic similarity</text>
+
+        <!-- Arrow UP from Stage 2 → Stage 3 -->
+        <line x1="165" y1="225" x2="165" y2="195" stroke="#8BA3C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polygon points="159,198 165,188 171,198" fill="#8BA3C0"/>
+
+        <!-- Stage 2: Statistical Reranking (MIDDLE) -->
+        <rect x="15" y="230" width="300" height="95" rx="10" fill="rgba(0,191,179,0.08)" stroke="#00BFB3" stroke-width="1.5" stroke-opacity="0.45"/>
+        <circle cx="42" cy="260" r="15" fill="#00BFB3"/>
+        <text x="42" y="265" fill="#fff" font-size="14" font-weight="800" text-anchor="middle" font-family="Space Grotesk, sans-serif">2</text>
+        <text x="66" y="265" fill="#00BFB3" font-size="14" font-weight="700" font-family="Space Grotesk, sans-serif">Statistical Reranking &amp; Rescoring</text>
+        <text x="34" y="292" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">RRF fuses ranked lists from multiple</text>
+        <text x="34" y="309" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">retrievers into one optimized order</text>
+
+        <!-- Arrow UP from Stage 1 → Stage 2 -->
+        <line x1="165" y1="362" x2="165" y2="332" stroke="#8BA3C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polygon points="159,335 165,325 171,335" fill="#8BA3C0"/>
+
+        <!-- Stage 1: Core Search Retrieval (BOTTOM) -->
+        <rect x="15" y="367" width="300" height="95" rx="10" fill="rgba(249,139,43,0.08)" stroke="#F98B2B" stroke-width="1.5" stroke-opacity="0.45"/>
+        <circle cx="42" cy="397" r="15" fill="#F98B2B"/>
+        <text x="42" y="402" fill="#fff" font-size="14" font-weight="800" text-anchor="middle" font-family="Space Grotesk, sans-serif">1</text>
+        <text x="66" y="402" fill="#F98B2B" font-size="15" font-weight="700" font-family="Space Grotesk, sans-serif">Core Search Retrieval</text>
+        <text x="34" y="429" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">Semantic, kNN vector, and keyword</text>
+        <text x="34" y="446" fill="#C0D4E8" font-size="12" font-family="Inter, sans-serif">match queries run in parallel</text>
+
+        <!-- ===== RIGHT: Code block background ===== -->
+        <rect x="435" y="10" width="755" height="520" rx="10" fill="#0E1A3A" stroke="#2E4A7A" stroke-width="1"/>
+
+        <!-- Colored left-border bars on code block to mark sections -->
+        <!-- Pink bar: text_similarity_reranker -->
+        <rect x="435" y="60" width="5" height="72" rx="2" fill="#F04E98" opacity="0.85"/>
+        <!-- Teal bar: rrf -->
+        <rect x="435" y="142" width="5" height="56" rx="2" fill="#00BFB3" opacity="0.85"/>
+        <!-- Orange bar: retrievers -->
+        <rect x="435" y="208" width="5" height="288" rx="2" fill="#F98B2B" opacity="0.85"/>
+
+        <!-- ===== Code text (font-size 13.5) ===== -->
+        <text font-family="Space Mono, monospace" font-size="13.5" fill="#8BA3C0">
+          <tspan x="456" y="38">POST /_search</tspan>
+          <tspan x="456" y="58" fill="#D0DCE8">{</tspan>
+        </text>
+
+        <!-- Stage 3 code: text_similarity_reranker -->
+        <text font-family="Space Mono, monospace" font-size="13.5">
+          <tspan x="474" y="78" fill="#F04E98" font-weight="600">"retriever"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="492" y="98" fill="#F04E98" font-weight="600">"text_similarity_reranker"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="510" y="118" fill="#8BA3C0" font-style="italic">// ... semantic reranking parameters</tspan>
+        </text>
+
+        <!-- Stage 2 code: rrf -->
+        <text font-family="Space Mono, monospace" font-size="13.5">
+          <tspan x="510" y="150" fill="#00BFB3" font-weight="600">"retriever"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="528" y="170" fill="#00BFB3" font-weight="600">"rrf"</tspan><tspan fill="#D0DCE8">: {</tspan>
+        </text>
+
+        <!-- Stage 1 code: retrievers array -->
+        <text font-family="Space Mono, monospace" font-size="13.5">
+          <tspan x="546" y="202" fill="#F98B2B" font-weight="600">"retrievers"</tspan><tspan fill="#D0DCE8">: [{</tspan>
+          <tspan x="564" y="222" fill="#F98B2B" font-weight="600">"standard"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="582" y="242" fill="#D0DCE8">"query"."semantic": {</tspan>
+          <tspan x="610" y="262" fill="#D0DCE8">"field": </tspan><tspan fill="#93C90E">"a-semantic_text-field"</tspan><tspan fill="#D0DCE8">,</tspan>
+          <tspan x="610" y="282" fill="#D0DCE8">"query": </tspan><tspan fill="#93C90E">"why are retrievers fun?"</tspan>
+          <tspan x="564" y="302" fill="#D0DCE8">}}},{</tspan>
+          <tspan x="564" y="322" fill="#F98B2B" font-weight="600">"knn"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="582" y="342" fill="#8BA3C0" font-style="italic">// ... knn parameters</tspan>
+          <tspan x="582" y="362" fill="#8BA3C0" font-style="italic">// ... query_vector_builder parameters</tspan>
+          <tspan x="600" y="382" fill="#D0DCE8">"model_text": </tspan><tspan fill="#93C90E">"why are retrievers fun?"</tspan>
+          <tspan x="564" y="402" fill="#D0DCE8">}}}},{</tspan>
+          <tspan x="564" y="422" fill="#F98B2B" font-weight="600">"standard"</tspan><tspan fill="#D0DCE8">: {</tspan>
+          <tspan x="582" y="442" fill="#D0DCE8">"query"."match": {</tspan>
+          <tspan x="610" y="462" fill="#D0DCE8">"some-field": </tspan><tspan fill="#93C90E">"why are retrievers fun?"</tspan>
+          <tspan x="564" y="482" fill="#D0DCE8">}}}}]</tspan>
+        </text>
+
+        <!-- Closing braces -->
+        <text font-family="Space Mono, monospace" font-size="13.5">
+          <tspan x="528" y="502" fill="#D0DCE8">}</tspan><tspan fill="#8BA3C0"> // end rrf</tspan>
+          <tspan x="510" y="520" fill="#D0DCE8">}</tspan><tspan fill="#8BA3C0"> // end rrf retriever</tspan>
+        </text>
+
+        <!-- ===== CONNECTING ARROWS (box → code section) ===== -->
+
+        <!-- Arrow: Stage 3 box → pink code section (text_similarity_reranker) -->
+        <path d="M315 140 C370 140, 390 90, 415 90 L433 90" stroke="#F04E98" stroke-width="2.5" fill="none" stroke-opacity="0.75" marker-end="url(#arrowPink)"/>
+
+        <!-- Arrow: Stage 2 box → teal code section (rrf) -->
+        <path d="M315 277 C370 277, 390 170, 415 170 L433 170" stroke="#00BFB3" stroke-width="2.5" fill="none" stroke-opacity="0.75" marker-end="url(#arrowTeal)"/>
+
+        <!-- Arrow: Stage 1 box → orange code section (retrievers) -->
+        <path d="M315 414 C370 414, 390 350, 415 350 L433 350" stroke="#F98B2B" stroke-width="2.5" fill="none" stroke-opacity="0.75" marker-end="url(#arrowOrange)"/>
+
+        <!-- ===== COLOR LEGEND (below code block, with space) ===== -->
+        <rect x="440" y="554" width="14" height="14" rx="3" fill="#F04E98"/>
+        <text x="462" y="566" fill="#D0DCE8" font-size="13" font-weight="500" font-family="Inter, sans-serif">Stage 3 — Semantic Reranking</text>
+
+        <rect x="680" y="554" width="14" height="14" rx="3" fill="#00BFB3"/>
+        <text x="702" y="566" fill="#D0DCE8" font-size="13" font-weight="500" font-family="Inter, sans-serif">Stage 2 — RRF Fusion</text>
+
+        <rect x="890" y="554" width="14" height="14" rx="3" fill="#F98B2B"/>
+        <text x="912" y="566" fill="#D0DCE8" font-size="13" font-weight="500" font-family="Inter, sans-serif">Stage 1 — Core Retrievers</text>
+
+      </svg>
     </div>
   </div>
 
@@ -2396,6 +2518,16 @@
       <div class="card" style="margin: 14px auto 0; border-left: 3px solid var(--elastic-yellow); padding: 12px 18px; max-width: 1200px; width: 100%;">
         <p style="font-size: 13px; color: #D0DCE8; margin: 0;"><strong style="color: var(--text-primary);">How they work together:</strong> An agent can only call its assigned tools (Layer 1). When a tool runs a search, Elasticsearch enforces index/field/document-level permissions for that user (Layer 2). Two independent layers — no single point of bypass.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION DIVIDER: VIBE CODING WITH ELASTIC ===== -->
+  <div class="slide" data-notes="Section divider — Vibe Coding with Elastic">
+    <div class="slide-content centered" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- section number removed -->
+      <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(40px, 5vw, 72px); font-weight: 700; color: var(--text-primary); line-height: 1.1; letter-spacing: -1px;">Vibe Coding with Elastic</h1>
+      <div style="width: 60px; height: 3px; background: var(--elastic-teal); margin: 24px auto; border-radius: 2px;"></div>
+      <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; line-height: 1.5;">Describe what you want in natural language — Agent Skills handle the rest.</p>
     </div>
   </div>
 
@@ -2617,7 +2749,7 @@
   <div class="slide" data-notes="LLM Observability is a native Elastic feature. Monitor your agents in production: token usage, latency, cost, trace spans, hallucination detection. No third-party APM needed — it's the same platform. Massive differentiator.">
     <div class="slide-content">
       <div class="section-label" style="display: flex; align-items: center; gap: 8px; justify-content: center;"><img src="assets/apm-logo-color-reverse-64px.svg" alt="APM" style="height: 18px;"> Observability — Monitor Your Agents in Production</div>
-      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">LLM <span class="highlight">Observability</span> — Built In, Not Bolted On</h1>
+      <h1 class="slide-title" style="font-size: clamp(24px, 2.8vw, 36px);">LLM & Agent <span class="highlight">Observability</span> — Built In, Not Bolted On</h1>
       <p class="slide-subtitle" style="font-size: 15px; margin-bottom: 16px;">Your agents are only as good as your ability to monitor them. Elastic gives you full-stack observability for every agent interaction.</p>
 
       <div class="three-col" style="margin-top: 12px;">
@@ -3768,11 +3900,10 @@
 
   // ── Slide order tracking (for drag reorder) ──
   // slideOrder[i] = original DOM index. Custom order per section plan.
-  // 37 slides (0-36). 5 section title slides: 4(Agent Builder), 12(EIS), 16(Context), 26(Federated), 30(Use Cases)
-  // Changes: Agent Without Context(15) moved to Context Eng; Observability(25) moved to Agent Builder;
-  //          Vibe Coding(22)+Agent Skills(21) merged into Use Cases; Vibe Coding section removed.
-  //          Federated slides 1+2 merged: Connectors slide(28) skipped, content folded into MCP slide(27).
-  let slideOrder = [0,1,2,3, 4,5,6,7,8,9,10,11,25, 12,13,14, 16,15,17,18,19,20, 26,27,29,30, 31,32,33,34,23,24,22,21, 35,36,37];
+  // 40 slides (DOM 0-39). Vibe Coding divider inserted at DOM 22.
+  // Intro(0-3) | Agent Builder(4-11,27) | Context Eng(16,15,17-21) | EIS(12-14)
+  // Federated(28,29,31,32) | Vibe Coding(22,23,24) | Use Cases(33,34,35,36,25,26) | Closing(37,38,39)
+  let slideOrder = [0,1,2,3, 4,5,6,7,8,9,10,11,27, 16,15,17,18,19,20,21, 12,13,14, 28,29,31,32, 22,23,24, 33,34,35,36,25,26, 37,38,39];
 
   function getOrderedSlides() { return slideOrder.map(i => slideElements[i]); }
   function getSlideAtPosition(pos) { return slideElements[slideOrder[pos]]; }
@@ -3804,12 +3935,13 @@
   // Uses index sets (DOM indices) since sections have non-contiguous slides after reorder.
   const SECTIONS = [
     { label: 'Introduction', indices: new Set([0, 1, 2, 3]) },
-    { label: 'Agent Builder', indices: new Set([4, 5, 6, 7, 8, 9, 10, 11, 25]) },
+    { label: 'Agent Builder', indices: new Set([4, 5, 6, 7, 8, 9, 10, 11, 27]) },
+    { label: 'Context Engineering / Search', indices: new Set([16, 15, 17, 18, 19, 20, 21]) },
     { label: 'Elastic Inference Service', indices: new Set([12, 13, 14]) },
-    { label: 'Context Engineering / Search', indices: new Set([16, 15, 17, 18, 19, 20]) },
-    { label: 'Federated Search', indices: new Set([26, 27, 29, 30]) },
-    { label: 'Use Cases', indices: new Set([31, 32, 33, 34, 23, 24, 22, 21]) },
-    { label: 'Competitive & Closing', indices: new Set([35, 36, 37]) },
+    { label: 'Federated Search', indices: new Set([28, 29, 31, 32]) },
+    { label: 'Vibe Coding with Elastic', indices: new Set([22, 23, 24]) },
+    { label: 'Use Cases', indices: new Set([33, 34, 35, 36, 25, 26]) },
+    { label: 'Competitive & Closing', indices: new Set([37, 38, 39]) },
   ];
 
   function getSectionForPosition(pos) {
