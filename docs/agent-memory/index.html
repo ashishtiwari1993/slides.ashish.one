@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>1 Million Tokens Are Not An Agent's Memory</title>
+<style>
+:root{
+ --ink:#1C1E23; --body:#3D4350; --mute:#595959; --hair:#E3E6EB; --paper:#FFFFFF; --wash:#F5F6F8;
+ --accent:#0B64DD; --deep:#153385; --blue:#0B64DD; --bad:#B23A20; --good:#00767F;
+ --mono:'Space Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+ --sans:'Inter',-apple-system,'Segoe UI',system-ui,Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#101828;font-family:var(--sans);color:var(--body)}
+.s{position:absolute;inset:0;background:var(--paper);display:none;flex-direction:column;justify-content:center;padding:4.5vh 5vw 9vh}
+.s.active{display:flex}
+.k{font-family:var(--sans);font-size:.95vw;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:2.6vh}
+h1{font-family:var(--sans);font-size:4.4vw;font-weight:700;color:var(--ink);line-height:1.14;letter-spacing:-.025em}
+h2{font-family:var(--sans);font-size:3.1vw;font-weight:700;color:var(--ink);line-height:1.14;margin-bottom:2.6vh;letter-spacing:-.02em}
+h3{font-size:1.5vw;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+p{font-size:1.44vw;line-height:1.55;color:#1C1E23}
+.lead{font-size:2.1vw;line-height:1.45;max-width:60vw;color:var(--body)}
+.mute{color:var(--mute)}
+.rule{width:6vw;height:4px;background:var(--accent);margin-bottom:2.4vh}
+.g{display:grid;gap:1.6vw}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.c{background:var(--wash);border:1px solid var(--hair);border-radius:6px;padding:1.85vw}
+.c.dk{background:var(--ink);color:#D8E2F7;border-color:var(--ink)}.c.dk h3{color:#fff}
+.big{font-family:var(--mono);font-size:4.4vw;font-weight:700;line-height:1;color:var(--ink);letter-spacing:-.04em}
+.big.a{color:var(--accent)}.big.b{color:var(--bad)}.big.g{color:var(--good)}
+.lbl{font-family:var(--sans);font-size:.95vw;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);font-weight:700}
+.src{position:absolute;left:5vw;right:5vw;bottom:5vh;font-family:var(--mono);font-size:.92vw;color:var(--mute);line-height:1.5;border-top:1px solid var(--hair);padding-top:1.1vh}
+.src b{color:var(--body);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:1.44vw}
+th{font-family:var(--sans);text-align:left;font-size:.92vw;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);padding:0 1vw .9vh 0;border-bottom:2px solid var(--ink)}
+td{padding:1vh 1vw 1vh 0;border-bottom:1px solid var(--hair)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+tr.hi td{background:#EAF1FD}
+.quote{font-size:1.72vw;line-height:1.4;color:var(--ink)}
+.quote small{display:block;font-family:var(--mono);font-size:.9vw;color:var(--mute);margin-top:1.1vh}
+button.t{font-family:var(--mono);font-weight:700;font-size:1.1vw;padding:.6vw 1.5vw;border:2px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;margin-right:.7vw;border-radius:4px}
+button.t.on{background:var(--ink);color:#fff}
+.row{display:grid;grid-template-columns:1.05fr 2fr;gap:1.2vw;align-items:center;padding:1vw 0;border-bottom:1px solid var(--hair)}
+.row .q{font-family:var(--mono);font-weight:700;font-size:1.36vw;color:var(--ink)}
+.res{font-size:1.26vw;font-weight:400;padding:.55vw 1.1vw;border-radius:4px;display:inline-block}
+.res.w{background:#FDF0EC;color:var(--bad)}.res.r{background:#EAF1FD;color:var(--good)}
+.box{border:1px solid var(--hair);border-left:4px solid var(--ink);padding:1vw 1.25vw;font-size:1.26vw;font-weight:400;color:var(--ink);background:#fff;border-radius:0 4px 4px 0}
+.box.a{border-left-color:var(--accent)}.box.d{border-left-color:var(--deep)}
+input[type=range]{width:100%;accent-color:var(--accent);height:1.6vh}
+code{font-family:var(--mono);font-size:1.02vw;background:var(--wash);padding:.1vw .4vw;border-radius:3px;color:var(--ink)}
+.prog{position:absolute;top:0;left:0;height:4px;background:var(--accent);z-index:9}
+.foot{position:fixed;bottom:2.2vh;left:5vw;right:11vw;display:flex;justify-content:space-between;font-family:var(--mono);font-size:.82vw;color:var(--mute);z-index:9}
+.nav{position:fixed;bottom:1.8vh;right:5vw;display:flex;gap:6px;z-index:10}
+.nav button{width:30px;height:30px;border:1px solid var(--hair);background:#fff;cursor:pointer;border-radius:3px;font-size:14px}
+#nt{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:#D8E2F7;padding:2.2vh 5.5vw 2.4vh;font-size:1.05vw;line-height:1.55;display:none;z-index:20;border-top:3px solid var(--accent)}
+#nt.on{display:block} #nt b{color:#FF957D;font-family:var(--mono)}
+.ctr{align-items:center;text-align:center;justify-content:center}
+svg text{font-family:var(--sans)}
+.tight p{font-size:1.26vw}
+.fs .foot,.fs .nav{display:none}
+</style>
+
+
+<style>
+/* full-bleed slides: white ground, quiet dot field, no wordmark */
+.s.cover,.s.divider,.s.closing{
+  background-color:#FFFFFF;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23D8DEE8'/%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:28px 28px;background-position:0 0}
+.s.cover::before,.s.divider::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 50% 45%,#FFFFFF 38%,rgba(255,255,255,0) 78%)}
+.s.cover>*,.s.divider>*,.s.closing>*{position:relative;z-index:1}
+.s.cover h1,.s.divider h1,.s.closing h1{color:#1C1E23}
+.s.cover h1 span,.s.divider h1 span,.s.closing h1 span{color:#0B64DD!important}
+.s.divider{border-top:6px solid #0B64DD}
+.s.closing::before{content:'';position:absolute;left:0;right:0;bottom:0;height:8px;
+  background:linear-gradient(90deg,#0B64DD 0 34%,#48EFCF 34% 62%,#F04E98 62% 82%,#FEC514 82% 100%)}
+</style>
+<style>
+.src a{color:#0B64DD;text-decoration:none;border-bottom:1px solid #BBD3F5}
+.src a:hover{border-bottom-color:#0B64DD}
+.refs a{color:#0B64DD;text-decoration:none}
+.refs a:hover{text-decoration:underline}
+.fig{border:2px dashed #C7CEDB;border-radius:6px;background:#FBFCFD;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;padding:0;text-align:center;min-height:22vh}
+.fig img{max-width:100%;max-height:46vh;width:100%;object-fit:contain;display:block}
+.fig.lg img{max-height:60vh}
+.fig figcaption{font-family:var(--mono);font-size:.85vw;color:#595959;line-height:1.5;margin-top:.8vh}
+.fig figcaption b{color:#1C1E23}
+.fig.has-img{border:0;background:transparent;min-height:0;padding:0}
+.fig.has-img figcaption{display:none}
+.pt{font-size:1.8vw;color:#1C1E23;font-weight:400;line-height:1.4;letter-spacing:-.005em}
+</style>
+</head>
+<body>
+
+<div class="s ctr cover" data-n="<b>0:00 to 1:00</b> Cold open on the title alone. 'Show of hands: who has shipped an agent that forgot something it was explicitly told twenty turns ago?' Wait for hands. 'Keep them up if the fix you reached for was a bigger context window.' Then the map: six minutes of evidence that the window is not memory, six on why vector search alone does not replace it, and eleven on how we actually solve it in Agent Builder.">
+  <div class="rule" style="margin:0 auto 3vh"></div>
+  <h1>1 Million Tokens Are Not<br>An Agent's Memory.</h1>
+  <p style="margin-top:6vh;font-family:var(--mono);font-size:1.15vw"><strong style="color:#1C1E23">Ashish Tiwari</strong> <span class="mute">&nbsp;|&nbsp; Search AI Specialist @ Elastic</span></p>
+</div>
+
+<div class="s" data-n="<b>1:00 to 1:45</b> Give them the map. Say it plainly: the first two acts are the problem and every number there comes from someone else's benchmark, not ours. The third act is how we solve it, with real constants from the platform I work on. Sources sit on every slide and the deck goes out afterwards.">
+  <div class="k">The argument</div>
+  <h2>Three claims, and every one of them is measured.</h2>
+  <div class="g g3">
+    <div class="c"><div class="lbl">Part one</div><h3 style="margin:1.4vh 0;font-size:1.75vw">The window is not memory</h3><p class="mute">Advertised length is not usable length.</p></div>
+    <div class="c"><div class="lbl">Part two</div><h3 style="margin:1.4vh 0;font-size:1.75vw">Vectors are not retrieval</h3><p class="mute">Embedding recall has a hard ceiling.</p></div>
+    <div class="c" style="border-left:4px solid var(--accent)"><div class="lbl">Part three</div><h3 style="margin:1.4vh 0;font-size:1.75vw">How we solve it</h3><p class="mute">Inside Agent Builder, with the constants.</p></div>
+  </div>
+</div>
+
+<div class="s" data-n="<b>1:45 to 3:45</b> Two findings on one slide. Left: RULER measures every model against one fixed accuracy bar. Effective length is where it stops clearing that bar. LWM ships a one million token window that is effective below four thousand. GPT-4 was the best performer tested and it still halves. Right: twenty documents, the answer in exactly one. First position 75.8 percent, middle 53.8. Now the control, same model, zero documents: 56.1. Say it slowly. Handing the model the answer, buried mid context, was worse than handing it nothing at all.">
+  <div class="k">Evidence 1</div>
+  <h2>The window is not what the spec sheet says.</h2>
+  <div class="g g2" style="align-items:center;gap:3.2vw">
+    <div>
+      <div class="big a" style="font-size:6vw">250x</div>
+      <p class="pt" style="margin-top:1.6vh">gap between the largest advertised window and its measured effective length.</p>
+      <table style="margin-top:2.4vh">
+        <tr><th>Model</th><th>Claimed</th><th>Effective</th></tr>
+        <tr class="hi"><td>LWM (7B)</td><td class="n">1M</td><td class="n" style="color:var(--bad)">&lt;4K</td></tr>
+        <tr><td>GPT-4</td><td class="n">128K</td><td class="n" style="color:var(--bad)">64K</td></tr>
+        <tr><td>Yi (34B)</td><td class="n">200K</td><td class="n" style="color:var(--bad)">32K</td></tr>
+      </table>
+    </div>
+    <div>
+      <svg viewBox="0 0 460 250" style="width:100%">
+        <line x1="60" y1="210" x2="450" y2="210" stroke="#E3E6EB" stroke-width="1.5"/>
+        <line x1="60" y1="210" x2="60" y2="26" stroke="#E3E6EB" stroke-width="1.5"/>
+        <text x="30" y="120" font-size="14" fill="#595959" font-weight="700" transform="rotate(-90 30,120)" text-anchor="middle">accuracy</text>
+        <line x1="60" y1="97" x2="450" y2="97" stroke="#595959" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <line x1="66" y1="190" x2="96" y2="190" stroke="#595959" stroke-width="1.5" stroke-dasharray="5 4"/><text x="103" y="195" font-size="13.5" fill="#595959" font-weight="700">closed book, no documents: 56.1%</text>
+        <polyline points="110,55 190,110 265,131 340,110 418,89" fill="none" stroke="#0B64DD" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="110" cy="55" r="6" fill="#0B64DD"/><text x="86" y="40" font-size="15" font-weight="700" fill="#1C1E23">75.8%</text>
+        <circle cx="265" cy="131" r="8" fill="#B23A20"/><text x="238" y="157" font-size="15" font-weight="700" fill="#B23A20">53.8%</text>
+        <circle cx="418" cy="89" r="6" fill="#0B64DD"/><text x="396" y="74" font-size="15" font-weight="700" fill="#1C1E23">63.2%</text>
+        <text x="82" y="234" font-size="13" fill="#595959">first</text><text x="240" y="234" font-size="13" fill="#595959">middle</text><text x="404" y="234" font-size="13" fill="#595959">last</text>
+      </svg>
+      <p class="pt" style="margin-top:1.2vh;text-align:center">Accuracy by answer position, 20 document QA.</p>
+    </div>
+  </div>
+  <div class="src"><b>Sources:</b> <a href="https://arxiv.org/abs/2404.06654" target="_blank" rel="noopener">RULER, COLM 2024</a> &nbsp;|&nbsp; <a href="https://aclanthology.org/2024.tacl-1.9/" target="_blank" rel="noopener">Lost in the Middle, TACL 2024</a></div>
+</div>
+
+<div class="s" data-n="<b>3:45 to 5:30</b> NoLiMa strips literal keyword overlap so the model has to actually associate rather than pattern match. Ten of twelve models drop below half their own short context baseline at 32K. Not one million. Thirty two thousand. Chroma ran eighteen models and one hundred ninety four thousand calls and got the same shape, on the right. The line to read out: models scored better on a shuffled haystack than on a logically coherent one. Whatever long context attention is doing, it is not reading.">
+  <div class="k">Evidence 2</div>
+  <h2>It breaks at 32K, not at 1M.</h2>
+  <div class="g g2" style="gap:3vw;align-items:center">
+    <div>
+      <div class="lbl" style="margin-bottom:1.4vh">Score at 32K, as % of the model's own baseline</div>
+      <svg viewBox="0 -16 430 218" style="width:100%">
+        <line x1="150" y1="6" x2="150" y2="192" stroke="#E3E6EB" stroke-width="1"/>
+        <line x1="290" y1="6" x2="290" y2="192" stroke="#595959" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <text x="268" y="4" font-size="11" fill="#595959" font-weight="700">50%</text>
+        <g font-size="13.5" fill="#3D4350">
+          <text x="0" y="28">GPT-4o</text><rect x="150" y="16" width="98" height="16" rx="3" fill="#153385"/><text x="256" y="29" font-weight="700" fill="#153385">69.7%</text>
+          <text x="0" y="60">Gemini 1.5 Pro</text><rect x="150" y="48" width="68" height="16" rx="3" fill="#0B64DD"/><text x="226" y="61" font-weight="700" fill="#1C1E23">48.2%</text>
+          <text x="0" y="92">Llama 3.3 70B</text><rect x="150" y="80" width="60" height="16" rx="3" fill="#0B64DD"/><text x="218" y="93" font-weight="700" fill="#1C1E23">42.7%</text>
+          <text x="0" y="124">Claude 3.5 Sonnet</text><rect x="150" y="112" width="42" height="16" rx="3" fill="#0B64DD"/><text x="200" y="125" font-weight="700" fill="#1C1E23">29.8%</text>
+          <text x="0" y="156">GPT-4o mini</text><rect x="150" y="144" width="19" height="16" rx="3" fill="#B23A20"/><text x="177" y="157" font-weight="700" fill="#1C1E23">13.7%</text>
+          <text x="0" y="188">Command R+</text><rect x="150" y="176" width="10" height="16" rx="3" fill="#B23A20"/><text x="168" y="189" font-weight="700" fill="#1C1E23">7.4%</text>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <figure class="fig" data-file="images/context_rot_curve.png">
+        <img src="images/context_rot_curve.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+      </figure>
+      <p class="pt" style="margin-top:2.2vh;text-align:center">18 models. 194,480 calls. Same result.</p>
+    </div>
+  </div>
+  <div class="src"><b>Sources:</b> <a href="https://arxiv.org/abs/2502.05167" target="_blank" rel="noopener">NoLiMa, ICML 2025</a> &nbsp;|&nbsp; <a href="https://www.trychroma.com/research/context-rot" target="_blank" rel="noopener">Chroma, Context Rot</a></div>
+</div>
+
+<div class="s" data-n="<b>5:30 to 7:30</b> Now the benchmark that is literally our problem, plus the bill. Left: long term chat memory. Hand the model only the sessions containing the evidence and GPT-4o scores 0.87. Hand it the whole history, about 115 thousand tokens, and it scores 0.61. Llama 70B loses fifty five percent. Shipped assistants: ChatGPT down 37, Coze down 64. Right, drag it live: resending history grows with the square of the turns. Agent loops are overwhelmingly prefill, roughly a hundred to one input to output, so context length is the bill. Ask the room who has an alert on tokens per turn. Almost no hands. That is the gap between a demo and production.">
+  <div class="k">Evidence 3. Drag it.</div>
+  <h2>On real chat memory, drops of 30 to 60%.</h2>
+  <div class="g g2" style="gap:3vw;align-items:center">
+    <div>
+      <table>
+        <tr><th>System</th><th>Evidence only</th><th>Full history</th><th>Drop</th></tr>
+        <tr><td>GPT-4o</td><td class="n">0.870</td><td class="n">0.606</td><td class="n" style="color:var(--bad)">-30%</td></tr>
+        <tr class="hi"><td>Llama 3.1 70B</td><td class="n">0.744</td><td class="n">0.334</td><td class="n" style="color:var(--bad)">-55%</td></tr>
+        <tr><td>ChatGPT, shipped</td><td class="n">-</td><td class="n">-</td><td class="n" style="color:var(--bad)">-37%</td></tr>
+        <tr><td>Coze, shipped</td><td class="n">-</td><td class="n">-</td><td class="n" style="color:var(--bad)">-64%</td></tr>
+      </table>
+      <p class="pt" style="margin-top:2.2vh">Same model and same question, so the only thing that changed is who picked the context.</p>
+    </div>
+    <div>
+      <div class="lbl">Conversation turns</div>
+      <div class="big a" id="tv" style="margin:.6vh 0 1.4vh;font-size:4vw">20</div>
+      <input type="range" id="turns" min="5" max="100" value="20" oninput="calc()">
+      <div class="g g3" style="gap:1vw;margin-top:2vh">
+        <div class="c" style="padding:1.1vw"><div class="lbl">Resend all</div><div class="big b" id="naive" style="font-size:2.4vw;margin-top:.6vh">0</div></div>
+        <div class="c" style="padding:1.1vw"><div class="lbl">Retrieve</div><div class="big g" id="rag" style="font-size:2.4vw;margin-top:.6vh">0</div></div>
+        <div class="c" style="padding:1.1vw;background:#FDF0EC;border-color:#FF957D"><div class="lbl" style="color:var(--bad)">Gap</div><div class="big b" id="mult" style="font-size:2.4vw;margin-top:.6vh">0</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="src"><b>Sources:</b> <a href="https://arxiv.org/abs/2410.10813" target="_blank" rel="noopener">LongMemEval, ICLR 2025</a> &nbsp;|&nbsp; <a href="https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus" target="_blank" rel="noopener">Manus, Context Engineering</a></div>
+</div>
+
+<div class="s" data-n="<b>7:30 to 9:00</b> Now our own data, because this is what we watch at Elastic. A published year of production traffic: 209,220 threads, 955,020 messages, about 150,000 sessions. Quality when retrieval found the right context: 9.81 across eighty thousand threads. When it found nothing: 9.18. When it found only part: 8.15. Partial retrieval is worse than no retrieval, because an empty result fails loudly while a confident half answer is unfalsifiable. And look at the hit rate, 54 to 66 percent even in well documented areas. That is production, not a demo. IF CHALLENGED ON ACT I: the same report shows deep sessions above 50K tokens scored 9.74 against a 9.45 average. Long context is not the enemy. Irrelevant context is.">
+  <div class="k">Evidence 4. What we see in production.</div>
+  <h2>Partial retrieval scored worse than no retrieval.</h2>
+  <div class="g g3">
+    <div class="c"><div class="lbl">Found the answer</div><div class="big g" style="margin-top:1vh">9.81</div><p class="mute" style="margin-top:1.2vh;font-size:1.15vw">80,887 threads</p></div>
+    <div class="c"><div class="lbl">Found nothing</div><div class="big" style="margin-top:1vh">9.18</div><p class="mute" style="margin-top:1.2vh;font-size:1.15vw">65,624 threads</p></div>
+    <div class="c" style="background:#FDF0EC;border-color:#FF957D"><div class="lbl" style="color:var(--bad)">Found part of it</div><div class="big b" style="margin-top:1vh">8.15</div><p class="mute" style="margin-top:1.2vh;font-size:1.15vw">9,732 threads</p></div>
+  </div>
+  <p class="pt" style="margin-top:2.8vh;font-size:2vw">An empty result fails loudly. Half an answer just sounds right.</p>
+  <div class="g g2" style="margin-top:2.4vh;gap:2.4vw;align-items:center">
+    <p class="mute" style="font-size:1.2vw">209,220 threads and 955,020 messages, across a single year</p>
+    <p style="font-size:1.2vw">Retrieval hit rate in production: <strong style="color:#1C1E23">54% to 66%</strong>, by product area</p>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.elastic.co/pdf/elastic-ai-year-in-review.pdf" target="_blank" rel="noopener">AI Year in Review, production telemetry 2025</a></div>
+</div>
+
+<div class="s ctr divider" data-n="<b>9:00 to 9:20</b> Breathe. Land part one, pause, then pivot: 'so we retrieve. And the industry's answer to retrieval is embeddings. That is part two, and its limit is not an engineering problem. It is a theorem.'">
+  <div class="rule" style="margin:0 auto 3.4vh"></div>
+  <h1 style="font-size:3.6vw;max-width:74vw">A context window is a cache.<br>Memory decides what goes in it.</h1>
+</div>
+
+<div class="s" data-n="<b>9:20 to 11:50</b> CENTREPIECE. Read the three questions, then hit Hybrid. These three shapes break embedding only retrieval in every production system I have worked on: exact identifiers, exact phrasing, temporal scoping. Then the part that matters: the failure is silent. Cosine similarity always returns something, ranked, with a confident score. There is no error to alert on, which is why teams ship this and hear about it from a customer.">
+  <div class="k">The obvious fix, and its blind spot</div>
+  <h2>Three questions that break vector search.</h2>
+  <div style="margin-bottom:1.4vh">
+    <button class="t on" id="bv" onclick="mode('v')">Vector only</button>
+    <button class="t" id="bh" onclick="mode('h')">Hybrid</button>
+  </div>
+  <div id="rows"></div>
+  <p id="cap" class="pt" style="margin-top:2.2vh"></p>
+  <div class="src"><b>Anthropic:</b> <a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">"could miss the exact TS-999 match"</a></div>
+</div>
+
+<div class="s" data-n="<b>11:50 to 13:50</b> The slide for the advanced crowd, because it is a theorem, not a benchmark. DeepMind: the number of distinct top-k document sets an embedding of dimension d can express is bounded by d. Not a training problem, an architectural ceiling, and you can see it in the plot: every model flattens as you push the dimension. Their LIMIT benchmark is deliberately trivial and state of the art embedders still get under twenty percent recall at one hundred. On a forty six document version the best model manages fifty four percent recall at two. Forty six documents. Sparse lexical does not hit this ceiling, which is the dashed line sitting above all of them. Then BEIR out of domain.">
+  <div class="k">The ceiling</div>
+  <h2>Embeddings have a proven upper bound.</h2>
+  <div class="g" style="grid-template-columns:1.45fr 1fr;gap:2.6vw;align-items:center">
+    <figure class="fig" data-file="images/limit_recall.png">
+      <img src="images/limit_recall.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+    </figure>
+    <div>
+      <p class="pt">One vector of size <em>d</em> can only ever express so many different answers.</p>
+      <div class="c" style="margin-top:2.4vh"><div class="big" style="font-size:3.2vw">9 <span class="mute" style="font-size:1.8vw">of 18</span></div><p style="margin-top:.8vh">BEIR datasets where plain keyword search beat every dense retriever tested.</p></div>
+    </div>
+  </div>
+  <div class="src"><b>Sources:</b> <a href="https://arxiv.org/abs/2508.21038" target="_blank" rel="noopener">DeepMind, Limitations of Embedding-Based Retrieval</a> &nbsp;|&nbsp; <a href="https://arxiv.org/abs/2104.08663" target="_blank" rel="noopener">BEIR, NeurIPS 2021</a></div>
+</div>
+
+<div class="s" data-n="<b>13:50 to 15:20</b> The fix, with the cleanest published before and after numbers. Anthropic measured top twenty retrieval failure rate. Embeddings alone: 5.7 percent. Add context to the chunks: 3.7. Add BM25, an algorithm from the 1970s: 2.9, a 49 percent cut. Add reranking: 1.9, a 67 percent cut. Each signal covers another's blind spot. This is not vectors plus a bit of keyword, it is a four stage pipeline, and everything in part twoI is about making that pipeline the default instead of a project.">
+  <div class="k">What fixes it</div>
+  <h2>Every signal covers another one's blind spot.</h2>
+  <div class="g" style="grid-template-columns:1.5fr 1fr;gap:2.4vw;align-items:center;margin-bottom:2.4vh">
+    <figure class="fig" data-file="images/cover_blindspot.webp">
+      <img src="images/cover_blindspot.webp" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+    </figure>
+    <div>
+      <p class="pt">Adding keyword search to embeddings cut failed retrievals by nearly half.</p>
+      <p class="mute" style="margin-top:2vh;font-size:1.2vw">Add a reranking pass on top and it drops again, to 1.9%.</p>
+    </div>
+  </div>
+  <div class="g g4" style="margin-top:3.2vh">
+    <div class="box a">Keyword: IDs and codes</div>
+    <div class="box">Semantic: meaning</div>
+    <div class="box d">Filters: time and tenant</div>
+    <div class="box" style="border-left-color:var(--good)">Rerank: the final order</div>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">Anthropic, Contextual Retrieval</a></div>
+</div>
+
+<div class="s" data-n="<b>15:20 to 17:20</b> Start the solution with the model, because most teams get this wrong first. Memory is not one bucket, it is four, and each wants a different query plan. Then point at the chart, which is measured on our open source agent memory reference build. Overall recall at ten is 0.89. But episodic is 0.98 and procedural is a perfect 1.00, while semantic sits at 0.81. Same pipeline, same corpus, twenty points apart. Your worst store sets the agent's ceiling, and the average hides it. That is why one retrieval strategy for all four is how agents end up feeling amnesiac.">
+  <div class="k">What that means for memory</div>
+  <h2>There is no single memory. There are four.</h2>
+  <div class="g g4" style="gap:1.1vw">
+    <div class="c" style="padding:1.2vw"><div class="lbl">Working</div><h3 style="margin-top:.8vh;font-size:1.35vw">This turn</h3></div>
+    <div class="c" style="padding:1.2vw"><div class="lbl">Episodic</div><h3 style="margin-top:.8vh;font-size:1.35vw">What happened</h3></div>
+    <div class="c" style="padding:1.2vw"><div class="lbl">Semantic</div><h3 style="margin-top:.8vh;font-size:1.35vw">What is true</h3></div>
+    <div class="c" style="padding:1.2vw"><div class="lbl">Procedural</div><h3 style="margin-top:.8vh;font-size:1.35vw">What works</h3></div>
+  </div>
+  <div class="g" style="grid-template-columns:1.55fr 1fr;gap:2.4vw;margin-top:1.6vh;align-items:center">
+    <figure class="fig" data-file="images/recall@10_by_memory_type.png">
+      <img src="images/recall@10_by_memory_type.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+    </figure>
+    <div>
+      <p class="pt">Same pipeline, same corpus, and the stores land twenty points apart.</p>
+      <div class="lbl" style="margin-top:2.4vh;color:var(--accent)">Elastic reference build</div>
+      <div style="border-left:4px solid var(--accent);padding-left:1.2vw;margin-top:1.2vh">
+        <p style="font-family:var(--mono);font-size:1.08vw;line-height:2;color:#1C1E23">
+          80 keyword + 80 vector<br>
+          &nbsp;&rarr; rank fusion<br>
+          &nbsp;&rarr; cross encoder rerank<br>
+          time decay + usage boost<br>
+          per user access control
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.elastic.co/search-labs/blog/agent-memory-elasticsearch" target="_blank" rel="noopener">Agent memory with hybrid retrieval, Search Labs</a></div>
+</div>
+
+<div class="s ctr divider" data-n="<b>17:20 to 17:40</b> Short beat to switch gears. 'Everything so far was someone else's benchmark. The rest is what we actually run, and I am going to give you the constants, not the marketing.'">
+  <div class="rule" style="margin:0 auto 3.4vh"></div>
+  <h1 style="font-size:3.4vw;max-width:76vw">So we stopped enlarging the window<br>and started engineering the retrieval.</h1>
+</div>
+
+<div class="s" data-n="<b>17:40 to 19:00</b> What all of that buys, measured. Skills load as stubs, so the agent reads the full instructions only when it actually needs them: 21 to 39 percent fewer input tokens across their test sets. Tools return snippets rather than whole documents: another 27 to 34 percent. Together, up to 40 percent lower token cost, and chats that stay inside the window past thirty turns. Every one of those is the same idea in a different place: retrieve less, but retrieve the right thing. That is the whole talk in one sentence.">
+  <div class="k">Inside Agent Builder</div>
+  <h2>Load the context you need, when you need it.</h2>
+  <div class="g" style="grid-template-columns:1.6fr 1fr;gap:2.6vw;align-items:center">
+    <figure class="fig lg" data-file="images/skills_as_stubs.png">
+      <img src="images/skills_as_stubs.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+      <figcaption><b>Drop in: images/skills_as_stubs.png</b><br>"Skills as stubs" diagram, 1328x1176, from the section<br>"Getting agents to know what you know"</figcaption>
+    </figure>
+    <div>
+      <p class="pt" style="font-size:1.5vw">Skills load only when the agent needs them. Everything else stays a lightweight stub.</p>
+      <div class="c" style="margin-top:2.2vh;padding:1.3vw"><div class="lbl">Skills as stubs</div><div class="big a" style="font-size:2.8vw;margin-top:.8vh">21-39%</div><p class="mute" style="margin-top:.6vh;font-size:1.05vw">fewer input tokens</p></div>
+      <div class="c" style="margin-top:1.2vh;padding:1.3vw"><div class="lbl">Top snippets, not documents</div><div class="big a" style="font-size:2.8vw;margin-top:.8vh">27-34%</div><p class="mute" style="margin-top:.6vh;font-size:1.05vw">fewer input tokens</p></div>
+    </div>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.elastic.co/search-labs/blog/elastic-agent-builder-ai-agents-context-management" target="_blank" rel="noopener">Elastic Agent Builder: context management</a></div>
+</div>
+
+<div class="s" data-n="<b>19:00 to 20:40</b> Now the failure everyone in this room recognises, and it is their sentence, not mine: an agent that starts contradicting itself at turn twelve. The window fills, fidelity drops, token costs climb. Two mechanisms answer it. First, selective compaction: rather than truncating the oldest turns, keep what is most likely to matter for the next one. Second, and this is the one I would steal for any agent you build: query results do not go into the conversation at all. They sit in an in-memory file store and get pulled into active context only when the agent actually needs them, which is what lets a conversation work across several large result sets without the cost scaling with the number of turns. The outcome they publish is chats past thirty turns and up to forty percent lower token cost. If you take one design idea home from part twoI, take this one: large results belong beside the context, not inside it.">
+  <div class="k">Inside Agent Builder</div>
+  <h2>Agents start contradicting themselves at turn twelve.</h2>
+  <div class="g" style="grid-template-columns:1.25fr 1fr;gap:2.6vw;align-items:center">
+    <figure class="fig lg" data-file="images/context_store.png">
+      <img src="images/context_store.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
+      <figcaption><b>Drop in: images/context_store.png</b><br>the context store diagram from the same post</figcaption>
+    </figure>
+    <div>
+      <p class="quote" style="font-size:1.55vw">"Eventually the context window fills up, fidelity drops and token costs climb."</p>
+      <div class="c" style="padding:1.2vw;margin-top:2vh"><div class="lbl">Selective compaction</div><p style="margin-top:.6vh;font-size:1.18vw">Keep what matters for the next turn, rather than dropping the oldest.</p></div>
+      <div class="c" style="padding:1.2vw;margin-top:1.2vh;border-left:4px solid var(--accent)"><div class="lbl" style="color:var(--accent)">The context store</div><p style="margin-top:.6vh;font-size:1.18vw">Results sit in an in-memory file store and enter context only when needed.</p></div>
+      <p class="pt" style="margin-top:2vh;font-size:1.45vw">Chats past 30 turns, at up to 40% lower token cost.</p>
+    </div>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.elastic.co/search-labs/blog/elastic-agent-builder-ai-agents-context-management" target="_blank" rel="noopener">Elastic Agent Builder: context management</a></div>
+</div>
+
+<div class="s" data-n="<b>20:40 to 21:40</b> Slide to photograph. Five things anyone here can take from how we built this, whatever stack they are on. One, lazy load instructions: skills arrive as stubs and the full text only when needed. Two, keep big results out of the conversation entirely, park them in a store and pull them in on demand. Three, return the passages that matter rather than whole documents. Four, when you compact, keep what the next turn will need instead of dropping the oldest turns, because oldest is not the same as least useful. Five, and this one is governance rather than tokens: connect to data at the source with the user's own permissions, so your agent is not quietly accumulating copies of enterprise data. Say the last one slowly, it is the one that gets security teams nodding.">
+  <div class="k">Take these with you</div>
+  <h2>Five things to steal, whatever you are building on.</h2>
+  <div class="g" style="gap:1.1vh;margin-top:1vh">
+    <div class="box a" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--accent)">01</span> &nbsp; Load instructions lazily. Stubs first, full text only when needed.</div>
+    <div class="box" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--mute)">02</span> &nbsp; Keep large results out of the conversation. Park them, pull on demand.</div>
+    <div class="box" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--mute)">03</span> &nbsp; Return the passages that matter, not whole documents.</div>
+    <div class="box d" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--deep)">04</span> &nbsp; Compact for what the next turn needs. Oldest is not the same as least useful.</div>
+    <div class="box" style="border-left-color:var(--good);font-size:1.3vw"><span style="font-family:var(--mono);color:var(--good)">05</span> &nbsp; Connect at the source, with the user's permissions. Do not let agents hoard copies.</div>
+  </div>
+  <div class="src"><b>Source:</b> <a href="https://www.elastic.co/search-labs/blog/elastic-agent-builder-ai-agents-context-management" target="_blank" rel="noopener">Elastic Agent Builder: context management</a></div>
+</div>
+
+<div class="s" data-n="<b>21:40 to 23:00</b> The blueprint they photograph, and it is platform agnostic on purpose: everything on this slide you can build anywhere. Call out the two steps everyone skips: tag time, actor and tenant at write time, because you cannot filter on what you never indexed; and budget tokens per store before you assemble. Then the metrics: if you cannot state recall at ten and MRR for your agent's memory, you do not know whether it works. You know that it demoed.">
+  <div class="k">Build this Monday</div>
+  <h2>Two paths, and five numbers worth watching.</h2>
+  <div class="g g2" style="gap:2.6vw">
+    <div>
+      <div class="lbl" style="color:var(--accent);margin-bottom:1.2vh">When you write</div>
+      <div class="g" style="gap:.9vh">
+        <div class="box a">Split on structure, not on size</div>
+        <div class="box a">Pull out entities and decisions</div>
+        <div class="box a">Index keyword and vector, both</div>
+        <div class="box a">Tag time, actor, tenant</div>
+      </div>
+    </div>
+    <div>
+      <div class="lbl" style="color:var(--deep);margin-bottom:1.2vh">When you read</div>
+      <div class="g" style="gap:.9vh">
+        <div class="box d">Route the question to the right store</div>
+        <div class="box d">Search both ways, under filters</div>
+        <div class="box d">Fuse, then rerank</div>
+        <div class="box d">Budget the tokens, log what you sent</div>
+      </div>
+    </div>
+  </div>
+  <p class="pt" style="margin-top:2.8vh">Five to watch: recall@10, MRR, tokens per turn, compaction events, and partial hits.</p>
+</div>
+
+<div class="s ctr closing" data-n="<b>23:00</b> Land it, pause two seconds, then open Q&A: 'and if it goes quiet, ask me where I have seen hybrid retrieval fail, because the honest answer is bad chunking and no evaluation set, and that is a better conversation than any of my slides.'">
+  <div class="rule" style="margin:0 auto 3.4vh"></div>
+  <h1 style="font-size:3.6vw;max-width:74vw">Tokens are just fuel,<br>retrieval is the engine,<br><span>and memory is the architecture in between.</span></h1>
+  <p style="margin-top:4vh;font-family:var(--mono);font-size:1.15vw" class="mute">Ashish Tiwari &nbsp;|&nbsp; Search AI Specialist @ Elastic</p>
+</div>
+
+<div class="s tight refs" data-n="Leave this up through Q&A. Anticipated: which reranker (cross encoder over the top 100, budget 50 to 100 ms); chunking (sentence based with overlap, entities pulled at write time); when do I need relationship traversal (genuinely multi hop questions, not an agent that is wrong about IDs); cost of indexing twice (storage is cheap, silent wrong answers are not); eval sets (about 40 annotated queries is enough to tune rank fusion, roughly 300 if you want weighted fusion).">
+  <div class="k">References</div>
+  <h2>Every number here, with its source.</h2>
+  <div class="g g2" style="gap:2.6vw;line-height:1.9">
+    <div>
+      <p><strong style="color:#1C1E23">The problem</strong><br>
+      <a href="https://arxiv.org/abs/2404.06654" target="_blank">RULER, COLM 2024</a><br>
+      <a href="https://aclanthology.org/2024.tacl-1.9/" target="_blank">Lost in the Middle, TACL 2024</a><br>
+      <a href="https://arxiv.org/abs/2502.05167" target="_blank">NoLiMa, ICML 2025</a><br>
+      <a href="https://www.trychroma.com/research/context-rot" target="_blank">Context Rot, Chroma 2025</a><br>
+      <a href="https://arxiv.org/abs/2410.10813" target="_blank">LongMemEval, ICLR 2025</a><br>
+      <a href="https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus" target="_blank">Manus, Context Engineering for AI Agents</a></p>
+      <p style="margin-top:1.8vh"><strong style="color:#1C1E23">The retrieval ceiling</strong><br>
+      <a href="https://arxiv.org/abs/2508.21038" target="_blank">DeepMind, Limitations of Embedding-Based Retrieval</a><br>
+      <a href="https://arxiv.org/abs/2104.08663" target="_blank">BEIR, NeurIPS 2021</a><br>
+      <a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank">Anthropic, Contextual Retrieval</a></p>
+    </div>
+    <div>
+      <p><strong style="color:#1C1E23">How we solve it</strong><br>
+      <a href="https://www.elastic.co/search-labs/blog/agent-memory-elasticsearch" target="_blank">Agent memory: hybrid retrieval and access control</a><br>
+      <a href="https://www.elastic.co/search-labs/blog/elastic-agent-builder-ai-agents-context-management" target="_blank">Elastic Agent Builder: context management</a><br>
+      <a href="https://www.elastic.co/search-labs/blog/search-tools-context-engineering" target="_blank">Search tools for context engineering</a><br>
+      <a href="https://www.elastic.co/search-labs/blog/context-engineering-relevance-ai-agents-elasticsearch" target="_blank">Relevance and context engineering for agents</a><br>
+      <a href="https://www.elastic.co/search-labs/blog/improving-information-retrieval-elastic-stack-hybrid" target="_blank">Hybrid retrieval and rank fusion benchmarks</a><br>
+      <a href="https://www.elastic.co/pdf/elastic-ai-year-in-review.pdf" target="_blank">AI Year in Review, production telemetry 2025</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="prog" id="prog"></div>
+<div class="nav"><button onclick="go(-1)">&lsaquo;</button><button onclick="go(1)">&rsaquo;</button></div>
+<div class="foot"><div>&larr; &rarr; navigate &nbsp;&nbsp;N notes &nbsp;&nbsp;F fullscreen</div><div id="ctr"></div></div>
+<div id="nt"></div>
+
+<script>
+const S=[...document.querySelectorAll('.s')];let i=0;const NT=document.getElementById('nt');
+function render(){S.forEach((s,x)=>s.classList.toggle('active',x===i));
+document.getElementById('prog').style.width=((i+1)/S.length*100)+'%';
+document.getElementById('ctr').textContent=(i+1)+' / '+S.length;
+NT.innerHTML=S[i].dataset.n||'';}
+function go(d){i=Math.min(S.length-1,Math.max(0,i+d));render()}
+const fsSync=()=>document.body.classList.toggle('fs',!!(document.fullscreenElement||document.webkitFullscreenElement));
+document.addEventListener('fullscreenchange',fsSync);document.addEventListener('webkitfullscreenchange',fsSync);
+document.addEventListener('keydown',e=>{
+if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();go(1)}
+if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
+if(e.key.toLowerCase()==='n')NT.classList.toggle('on');
+if(e.key.toLowerCase()==='f')document.documentElement.requestFullscreen?.();});
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':Math.round(n/1000)+'K';
+function calc(){const t=+document.getElementById('turns').value;document.getElementById('tv').textContent=t;
+const naive=800*t*(t+1)/2,rag=t*(8*250+800);
+document.getElementById('naive').textContent=fmt(naive);
+document.getElementById('rag').textContent=fmt(rag);
+document.getElementById('mult').textContent=(naive/rag).toFixed(1)+'x more expensive';}
+const C=[
+{q:'SKU RTX-4090-OC',v:'Returns the RTX-4070. Close in meaning, wrong product.',h:'Exact match on the SKU wins. Right product, first hit.'},
+{q:'Invoice INV-2024-00847',v:'Returns a similar looking invoice. Confident. Wrong.',h:'The exact ID wins outright. Right invoice.'},
+{q:'What did I approve last Tuesday?',v:'Returns approvals from any date. Time is not in the vector.',h:'A date filter narrows it first, meaning ranks what is left.'}];
+function mode(m){document.getElementById('bv').classList.toggle('on',m==='v');document.getElementById('bh').classList.toggle('on',m==='h');
+document.getElementById('rows').innerHTML=C.map(c=>'<div class="row"><div class="q">&ldquo;'+c.q+'&rdquo;</div><div><span class="res '+(m==='v'?'w':'r')+'">'+(m==='v'?c.v:c.h)+'</span></div></div>').join('');
+document.getElementById('cap').textContent=m==='v'?'Confident, fluent, wrong, and nothing ever errors.':'Same three questions, right every time.';}
+calc();mode('v');render();
+</script>
+</body>
+</html>
