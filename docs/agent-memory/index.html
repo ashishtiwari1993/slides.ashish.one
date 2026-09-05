@@ -104,7 +104,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>1:00 to 1:45</b> Give them the map. Say it plainly: the first two acts are the problem and every number there comes from someone else's benchmark, not ours. The third act is how we solve it, with real constants from the platform I work on. Sources sit on every slide and the deck goes out afterwards.">
   <div class="k">The argument</div>
-  <h2>Three claims, and every one of them is measured.</h2>
+  <h2>Three claims, and every one of them is measured</h2>
   <div class="g g3">
     <div class="c"><div class="lbl">Part one</div><h3 style="margin:1.4vh 0;font-size:1.75vw">The window is not memory</h3><p class="mute">Advertised length is not usable length.</p></div>
     <div class="c"><div class="lbl">Part two</div><h3 style="margin:1.4vh 0;font-size:1.75vw">Vectors are not retrieval</h3><p class="mute">Embedding recall has a hard ceiling.</p></div>
@@ -114,7 +114,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>1:45 to 3:45</b> Two findings on one slide. Left: RULER measures every model against one fixed accuracy bar. Effective length is where it stops clearing that bar. LWM ships a one million token window that is effective below four thousand. GPT-4 was the best performer tested and it still halves. Right: twenty documents, the answer in exactly one. First position 75.8 percent, middle 53.8. Now the control, same model, zero documents: 56.1. Say it slowly. Handing the model the answer, buried mid context, was worse than handing it nothing at all.">
   <div class="k">Evidence 1</div>
-  <h2>The window is not what the spec sheet says.</h2>
+  <h2>The window is not what the spec sheet says</h2>
   <div class="g g2" style="align-items:center;gap:3.2vw">
     <div>
       <div class="big a" style="font-size:6vw">250x</div>
@@ -147,7 +147,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>3:45 to 5:30</b> NoLiMa strips literal keyword overlap so the model has to actually associate rather than pattern match. Ten of twelve models drop below half their own short context baseline at 32K. Not one million. Thirty two thousand. Chroma ran eighteen models and one hundred ninety four thousand calls and got the same shape, on the right. The line to read out: models scored better on a shuffled haystack than on a logically coherent one. Whatever long context attention is doing, it is not reading.">
   <div class="k">Evidence 2</div>
-  <h2>It breaks at 32K, not at 1M.</h2>
+  <h2>It breaks at 32K, not at 1M</h2>
   <div class="g g2" style="gap:3vw;align-items:center">
     <div>
       <figure class="fig lg" data-file="images/distractor_irrelevance.png">
@@ -166,8 +166,8 @@ svg text{font-family:var(--sans)}
 </div>
 
 <div class="s" data-n="<b>5:30 to 8:30</b> One slide, two halves. Left is the controlled experiment. Hand the model only the sessions containing the evidence and GPT-4o scores 0.87. Hand it the whole history, about a hundred thousand tokens, and it scores 0.61. Llama 70B loses fifty five percent. Same model, same question. The only variable is who picked the context. That is a clean causal result, not a vibe. Now go right, because the obvious pushback is 'that is a benchmark.' This is a published year of real production traffic, 209,220 threads and 955,020 messages. When retrieval found the right context, quality 9.81. Found nothing, 9.18. Found only part of it, 8.15. Read that order out loud and let it land: partial retrieval scored WORSE than no retrieval at all. An empty result fails loudly, so the model abstains or the user retries. A confident half answer is unfalsifiable, and in a real workflow that is the risky one, because it gets acted on. Benchmark and production agree: the failure is not that context is missing, it is that the wrong context is present. IF CHALLENGED: the same report shows deep sessions above 50K tokens scored 9.74 against a 9.45 average. Long context is not the enemy. Irrelevant context is.">
-  <div class="k">Evidence 3. Benchmark, then production.</div>
-  <h2>Wrong context is worse than no context.</h2>
+  <div class="k">Evidence 3. Benchmark, then production</div>
+  <h2>Wrong context is worse than no context</h2>
   <div class="g g2" style="gap:3vw;align-items:center">
     <div>
       <div class="lbl" style="margin-bottom:1.2vh">Controlled benchmark &mdash; long-term chat memory</div>
@@ -202,12 +202,12 @@ svg text{font-family:var(--sans)}
 
 <div class="s ctr divider" data-n="<b>9:00 to 9:20</b> Breathe. Land part one, pause, then pivot: 'so we retrieve. And the industry's answer to retrieval is embeddings. That is part two, and its limit is not an engineering problem. It is a theorem.'">
   <div class="rule" style="margin:0 auto 3.4vh"></div>
-  <h1 style="font-size:3.6vw;max-width:74vw">A context window is a cache.<br>Memory decides what goes in it.</h1>
+  <h1 style="font-size:3.6vw;max-width:74vw">A context window is a cache.<br>Memory decides what goes in it</h1>
 </div>
 
 <div class="s" data-n="<b>9:20 to 11:50</b> CENTREPIECE. Read the three questions, then hit Hybrid. These three shapes break embedding only retrieval in every production system I have worked on: exact identifiers, exact phrasing, temporal scoping. Then the part that matters: the failure is silent. Cosine similarity always returns something, ranked, with a confident score. There is no error to alert on, which is why teams ship this and hear about it from a customer.">
   <div class="k">The obvious fix, and its blind spot</div>
-  <h2>Three questions that break vector search.</h2>
+  <h2>Three questions that break vector search</h2>
   <div style="margin-bottom:1.4vh">
     <button class="t on" id="bv" onclick="mode('v')">Vector only</button>
     <button class="t" id="bh" onclick="mode('h')">Hybrid</button>
@@ -219,7 +219,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>11:50 to 13:50</b> The slide for the advanced crowd, because it is a theorem, not a benchmark. DeepMind: the number of distinct top-k document sets an embedding of dimension d can express is bounded by d. Not a training problem, an architectural ceiling, and you can see it in the plot: every model flattens as you push the dimension. Their LIMIT benchmark is deliberately trivial and state of the art embedders still get under twenty percent recall at one hundred. On a forty six document version the best model manages fifty four percent recall at two. Forty six documents. Sparse lexical does not hit this ceiling, which is the dashed line sitting above all of them. Then BEIR out of domain.">
   <div class="k">The ceiling</div>
-  <h2>Embeddings have a proven upper bound.</h2>
+  <h2>Embeddings have a proven upper bound</h2>
   <div class="g" style="grid-template-columns:1.45fr 1fr;gap:2.6vw;align-items:center">
     <figure class="fig" data-file="images/limit_recall.png">
       <img src="images/limit_recall.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
@@ -234,7 +234,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>13:50 to 15:20</b> The fix, with the cleanest published before and after numbers. Anthropic measured top twenty retrieval failure rate. Embeddings alone: 5.7 percent. Add context to the chunks: 3.7. Add BM25, an algorithm from the 1970s: 2.9, a 49 percent cut. Add reranking: 1.9, a 67 percent cut. Each signal covers another's blind spot. This is not vectors plus a bit of keyword, it is a four stage pipeline, and everything in part twoI is about making that pipeline the default instead of a project.">
   <div class="k">What fixes it</div>
-  <h2>Every signal covers another one's blind spot.</h2>
+  <h2>Every signal covers another one's blind spot</h2>
   <div class="g" style="grid-template-columns:1.5fr 1fr;gap:2.4vw;align-items:center;margin-bottom:2.4vh">
     <figure class="fig" data-file="images/cover_blindspot.webp">
       <img src="images/cover_blindspot.webp" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
@@ -255,7 +255,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>15:20 to 17:20</b> Start the solution with the model, because most teams get this wrong first. Memory is not one bucket, it is four, and each wants a different query plan. Then point at the chart, which is measured on our open source agent memory reference build. Overall recall at ten is 0.89. But episodic is 0.98 and procedural is a perfect 1.00, while semantic sits at 0.81. Same pipeline, same corpus, twenty points apart. Your worst store sets the agent's ceiling, and the average hides it. That is why one retrieval strategy for all four is how agents end up feeling amnesiac.">
   <div class="k">What that means for memory</div>
-  <h2>There is no single memory. There are four.</h2>
+  <h2>There is no single memory. There are four</h2>
   <div class="g g4" style="gap:1.1vw">
     <div class="c" style="padding:1.2vw"><div class="lbl">Working</div><h3 style="margin-top:.8vh;font-size:1.35vw">This turn</h3></div>
     <div class="c" style="padding:1.2vw"><div class="lbl">Episodic</div><h3 style="margin-top:.8vh;font-size:1.35vw">What happened</h3></div>
@@ -285,12 +285,12 @@ svg text{font-family:var(--sans)}
 
 <div class="s ctr divider" data-n="<b>17:20 to 17:40</b> Short beat to switch gears. 'Everything so far was someone else's benchmark. The rest is what we actually run, and I am going to give you the constants, not the marketing.'">
   <div class="rule" style="margin:0 auto 3.4vh"></div>
-  <h1 style="font-size:3.4vw;max-width:76vw">So we stopped enlarging the window<br>and started engineering the retrieval.</h1>
+  <h1 style="font-size:3.4vw;max-width:76vw">So we stopped enlarging the window<br>and started engineering the retrieval</h1>
 </div>
 
 <div class="s" data-n="<b>17:40 to 19:00</b> What all of that buys, measured. Skills load as stubs, so the agent reads the full instructions only when it actually needs them: 21 to 39 percent fewer input tokens across their test sets. Tools return snippets rather than whole documents: another 27 to 34 percent. Together, up to 40 percent lower token cost, and chats that stay inside the window past thirty turns. Every one of those is the same idea in a different place: retrieve less, but retrieve the right thing. That is the whole talk in one sentence.">
   <div class="k">Inside Agent Builder</div>
-  <h2>Load the context you need, when you need it.</h2>
+  <h2>Load the context you need, when you need it</h2>
   <div class="g" style="grid-template-columns:1.6fr 1fr;gap:2.6vw;align-items:center">
     <figure class="fig lg" data-file="images/skills_as_stubs.png">
       <img src="images/skills_as_stubs.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
@@ -307,7 +307,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>19:00 to 20:40</b> Now the failure everyone in this room recognises, and it is their sentence, not mine: an agent that starts contradicting itself at turn twelve. The window fills, fidelity drops, token costs climb. Two mechanisms answer it. First, selective compaction: rather than truncating the oldest turns, keep what is most likely to matter for the next one. Second, and this is the one I would steal for any agent you build: query results do not go into the conversation at all. They sit in an in-memory file store and get pulled into active context only when the agent actually needs them, which is what lets a conversation work across several large result sets without the cost scaling with the number of turns. The outcome they publish is chats past thirty turns and up to forty percent lower token cost. If you take one design idea home from part twoI, take this one: large results belong beside the context, not inside it.">
   <div class="k">Inside Agent Builder</div>
-  <h2>Agents start contradicting themselves at turn twelve.</h2>
+  <h2>Agents start contradicting themselves at turn twelve</h2>
   <div class="g" style="grid-template-columns:1.25fr 1fr;gap:2.6vw;align-items:center">
     <figure class="fig lg" data-file="images/context_store.png">
       <img src="images/context_store.png" alt="" onerror="this.remove();this.parentNode.classList.remove('has-img')" onload="this.parentNode.classList.add('has-img')">
@@ -325,7 +325,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>20:40 to 21:40</b> Slide to photograph. Five things anyone here can take from how we built this, whatever stack they are on. One, lazy load instructions: skills arrive as stubs and the full text only when needed. Two, keep big results out of the conversation entirely, park them in a store and pull them in on demand. Three, return the passages that matter rather than whole documents. Four, when you compact, keep what the next turn will need instead of dropping the oldest turns, because oldest is not the same as least useful. Five, and this one is governance rather than tokens: connect to data at the source with the user's own permissions, so your agent is not quietly accumulating copies of enterprise data. Say the last one slowly, it is the one that gets security teams nodding.">
   <div class="k">Take these with you</div>
-  <h2>Five things to steal, whatever you are building on.</h2>
+  <h2>Five things to steal, whatever you are building on</h2>
   <div class="g" style="gap:1.1vh;margin-top:1vh">
     <div class="box a" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--accent)">01</span> &nbsp; Load instructions lazily. Stubs first, full text only when needed.</div>
     <div class="box" style="font-size:1.3vw"><span style="font-family:var(--mono);color:var(--mute)">02</span> &nbsp; Keep large results out of the conversation. Park them, pull on demand.</div>
@@ -338,7 +338,7 @@ svg text{font-family:var(--sans)}
 
 <div class="s" data-n="<b>21:40 to 23:00</b> The blueprint they photograph, and it is platform agnostic on purpose: everything on this slide you can build anywhere. Call out the two steps everyone skips: tag time, actor and tenant at write time, because you cannot filter on what you never indexed; and budget tokens per store before you assemble. Then the metrics: if you cannot state recall at ten and MRR for your agent's memory, you do not know whether it works. You know that it demoed.">
   <div class="k">Build this Monday</div>
-  <h2>Two paths, and five numbers worth watching.</h2>
+  <h2>Two paths, and five numbers worth watching</h2>
   <div class="g g2" style="gap:2.6vw">
     <div>
       <div class="lbl" style="color:var(--accent);margin-bottom:1.2vh">When you write</div>
@@ -364,13 +364,17 @@ svg text{font-family:var(--sans)}
 
 <div class="s ctr closing" data-n="<b>23:00</b> Land it, pause two seconds, then open Q&A: 'and if it goes quiet, ask me where I have seen hybrid retrieval fail, because the honest answer is bad chunking and no evaluation set, and that is a better conversation than any of my slides.'">
   <div class="rule" style="margin:0 auto 3.4vh"></div>
-  <h1 style="font-size:3.6vw;max-width:74vw">Tokens are just fuel,<br>retrieval is the engine,<br><span>and memory is the architecture in between.</span></h1>
-  <p style="margin-top:4vh;font-family:var(--mono);font-size:1.15vw" class="mute">Ashish Tiwari &nbsp;|&nbsp; Search AI Specialist @ Elastic</p>
+  <h1 style="font-size:3.6vw;max-width:74vw">Tokens are just fuel,<br>retrieval is the engine,<br><span>and memory is the architecture in between</span></h1>
+  <p style="margin-top:3.4vh;font-family:var(--mono);font-size:1.15vw" class="mute">Ashish Tiwari &nbsp;|&nbsp; Search AI Specialist @ Elastic</p>
+  <img src="images/linkedin.jpeg" alt="LinkedIn QR code"
+       style="display:block;margin:2.2vh auto 0;height:20vh;width:auto;border-radius:6px"
+       onerror="this.style.display='none'">
+  <p class="lbl" style="margin-top:1.1vh">Connect on LinkedIn</p>
 </div>
 
 <div class="s tight refs" data-n="Leave this up through Q&A. Anticipated: which reranker (cross encoder over the top 100, budget 50 to 100 ms); chunking (sentence based with overlap, entities pulled at write time); when do I need relationship traversal (genuinely multi hop questions, not an agent that is wrong about IDs); cost of indexing twice (storage is cheap, silent wrong answers are not); eval sets (about 40 annotated queries is enough to tune rank fusion, roughly 300 if you want weighted fusion).">
   <div class="k">References</div>
-  <h2>Every number here, with its source.</h2>
+  <h2>Every number here, with its source</h2>
   <div class="g g2" style="gap:2.6vw;line-height:1.9">
     <div>
       <p><strong style="color:#1C1E23">The problem</strong><br>
